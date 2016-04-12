@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+	<head>
+  		<meta charset="utf-8">
+      <script type="text/javascript" src="scripts/msart.common.js"></script>
+      <script type="text/javascript" src="scripts/msart.language.js"></script>
+  		{% block script %}
+  		{% endblock script %}
+      <link rel="stylesheet" href="css/perfect-scrollbar.min.css" />
+  		<link rel="stylesheet" href="css/index.css" />
+      <link rel="icon shortcut" type="image/ico" href='favicon.ico' />
+  		<title>MS Craftshop</title>
+	</head>
+	<body>
+	<div id="header">
+		<div id="title" class="main-title written-text noselect">
+		</div>
+    {% block menu %}
+    {% endblock menu %}
+	</div>
+	{% block content %}
+  {% endblock content %}
+	</body>
+</html>

@@ -1,0 +1,389 @@
+{% extends 'layout.html' %}
+
+{% block script %}
+{% block custom_scripts %}
+{% endblock custom_scripts %}
+{% if admin %}
+<script type="text/javascript">
+window.admin = true;
+window.addEventListener("load", function () {
+	document.body.setAttribute("admin", true);
+});
+</script>
+{% endif %}
+<!-- <script type="text/javascript" src="compiled/msart.min.js"></script> -->
+<script type="text/javascript" src="scripts/perfect-scrollbar.js"></script>
+<script type="text/javascript" src="scripts/morpheus.js"></script>
+<script type="text/javascript" src="scripts/spin.js"></script>
+<script type="text/javascript" src="scripts/msart.header.js"></script>
+<script type="text/javascript" src="scripts/msart.home.js"></script>
+<script type="text/javascript" src="scripts/msart.shop.js"></script>
+<script type="text/javascript" src="scripts/msart.order.js"></script>
+<script type="text/javascript" src="scripts/msart.gallery.js"></script>
+<script type="text/javascript" src="scripts/msart.contact.js"></script>
+{% endblock %}
+
+{% block content %}
+	<div id="content-wrapper">
+		<div id="content">
+			<div id="about_panel" navigator="about" class="content-panel text">
+				<div class="layout">
+					<div id="columns">
+						{% if admin %}
+						<div id="create_about_column" class="about-column"></div>
+						<div id="save_about_column" class="about-column"></div>
+						{% endif %}
+					</div>
+					<div id="demo_show">
+						<div class="demo-image demo-1"></div>
+						<div class="demo-image demo-2"></div>
+						<div class="demo-image demo-3"></div>
+						<div class="demo-image demo-4"></div>
+					</div>
+				</div>
+			</div>
+			<div id="shop_panel" navigator="shop" class="content-panel">
+				<div class="header-text content-panel-title written-text" lang="shop">Shop</div>
+				<div class="layout">
+					<div id="category_view">
+						{% if admin %}
+						<div id="category_item_new" class="category-item new">
+							<input type="text" class="category-item-title text" placeholder="Title"/>
+							<div class="category-item-create"></div>
+						</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<div id="order_panel" navigator="order" class="content-panel">
+				<div class="header-text content-panel-title written-text" lang="orders">Orders</div>
+				<div class="layout" id="order_panel_inner">
+					<div class="checkout-control"> 
+						<div id="progress_view">
+							<div class="progress-step" step="0" status="0"><span></span></div>
+							<div class="progress-glue"><span></span></div>
+							<div class="progress-step" step="1"><span></span></div>
+							<div class="progress-glue"><span></span></div>
+							<div class="progress-step" step="2"><span></span></div>
+							<div class="progress-glue"><span></span></div>
+							<div class="progress-step" step="3"><span></span></div>
+						</div>
+					</div>
+					<div id="order_list_view" class="checkout-step-view">
+						<div class="checkout-control"> 
+							<table id="order_list_table">
+								<tr>
+									<th class="text-invert"></th>
+									<th class="text-invert" lang="title">Title</th>
+									<th class="text-invert" lang="quantity">Quantity</th>
+									<th class="text-invert" lang="price">Price</th>
+									<th class="text-invert" lang="shipping">Shipping</th>
+									<th class="text-invert"></th>
+								</tr>
+							</table>
+							<table class="totals">
+								<tr>
+									<td class="text"></td>
+									<td class="text"></td>
+									<td class="text"></td>
+									<td class="text" lang="total">Total</td>
+									<td id="order_list_totals" class="text"></td>
+									<td class="text"></td>
+								</tr>
+							</table>
+						</div>
+						<div class="checkout-control">
+							<div id="order_list_advance" class="text-invert checkout-step-advance" lang="checkout">Checkout</div>
+						</div>
+					</div>
+					<div id="shipping_view" class="checkout-step-view">
+						<div class="checkout-control"> 
+							<div class="text seperator" lang="personal_details">Personal details</div>
+							<div class="layout-control" style="display: inline-block;">
+								<div class="label text" lang="forename">First name</div>
+								<input class="text data-input" user-input="forename"/>
+							</div>
+							<div class="layout-control" style="display: inline-block; float: right;">
+								<div class="label text" lang="surname">Last name</div>
+								<input class="text data-input" user-input="surname"/>
+							</div>
+							<div class="layout-control" style="display: inline-block;">
+								<div class="label text" lang="email">Email address</div>
+								<input class="text data-input" user-input="email"/>
+							</div>
+							<div class="layout-control" style="display: inline-block; float: right;">
+								<div class="label text" lang="phone">Phone number</div>
+								<input class="text data-input" user-input="phone"/>
+							</div>
+							<div class="text seperator" lang="shipping_address">Shipping address</div>
+							<div class="layout-control" style="display: block;">
+								<div class="label text" lang="company">Company</div>
+								<input class="text data-input" user-input="company"/>
+							</div>
+							<div class="layout-control" style="display: block;">
+								<div class="label text" lang="address">Street address</div>
+								<input class="text data-input" user-input="address"/>
+								<input class="text data-input" user-input="address2"/>
+							</div>
+							<div class="layout-control" style="display: inline-block;">
+								<div class="label text" lang="city">City</div>
+								<input class="text data-input" user-input="city"/>
+							</div>
+							<div class="layout-control" style="display: inline-block; float: right;">
+								<div class="label text" lang="county">County</div>
+								<div class="text data-input" control="county" user-input="county"></div>
+							</div>
+							<div class="layout-control" style="display: inline-block;">
+								<div class="label text" lang="post_code">Post code</div>
+								<input class="text data-input" user-input="postCode"/>
+							</div>
+							<div class="layout-control" style="display: inline-block; float: right;">
+								<div class="label text" lang="country">Country</div>
+								<div class="text data-input" control="country" user-input="country"></div>
+							</div>
+						</div>
+						<div class="checkout-control">
+							<div id="shipping_back" class="text-invert checkout-step-back" lang="back">Back</div>
+							<div id="shipping_advance" class="text-invert checkout-step-advance" lang="next">Next</div>
+						</div>
+					</div>
+					<div id="payment_view" class="checkout-step-view">
+						<div class="checkout-control">
+							<div id="payment_type">
+								<div class="text seperator" lang="payment_type">Payment type</div>
+<!-- 								<div class="payment-option paypal" option=0 checked>
+									<div class="checkbox"></div>
+									<div class="banner paypal"></div>
+								</div>
+								<div class="payment-option card" option=1 expand>
+									<div class="checkbox"></div>
+									<div class="banner card"></div>
+								</div> -->
+							</div>
+							<div id="payment_details">
+								<div class="text seperator" lang="card_details">Card information</div>
+								<div class="layout-control" style="display: inline-block;">
+								<div class="label text" lang="forename">First name</div>
+								<input class="text data-input" user-input="forename"/>
+								</div>
+								<div class="layout-control" style="display: inline-block; float: right;">
+								<div class="label text" lang="surname">Last name</div>
+								<input class="text data-input" user-input="surname"/>
+								</div>
+								<div class="layout-control" style="display: inline-block;">
+									<div class="label text" lang="card_no">Card number</div>
+									<input class="text data-input card" control="card_number" user-input="card" autocomplete="off"/>
+								</div>
+								<div class="layout-control" style="display: inline-block; float: right; width: 178px">
+									<div class="label text" lang="cvv">Security code</div>
+									<input class="text data-input" user-input="cvv" autocomplete="off"/>
+								</div>
+								<div class="layout-control" style="display: inline-block;">
+									<div class="label text" lang="expiry">Expiry date</div>
+									<div class="text data-input" style="width: 178px; display: inline-block;" control="expiry_month" user-input="expiryMonth"></div>
+									<div class="text data-input" style="width: 178px; display: inline-block;" control="expiry_year" user-input="expiryYear"></div>
+								</div>
+								<div class="layout-control cvv" style="display: inline-block; float: right; height: 70px; width: 178px;"></div>
+							</div>
+							<div id="billing_details">
+								<div class="text seperator" lang="billing_address">Billing address</div>
+								<div class="layout-control" style="display: block;">
+								<div class="label text" lang="company">Company</div>
+								<input class="text data-input" user-input="company"/>
+								</div>
+								<div class="layout-control" style="display: inline-block;">
+								<div class="label text" lang="address">Street address</div>
+								<input class="text data-input" user-input="address"/>
+								<input class="text data-input" user-input="address2"/>
+								</div>
+								<div class="layout-control" style="display: inline-block; float: right; width: 178px;">
+								<div class="label text" lang="vat">VAT Number</div>
+								<input class="text data-input" user-input="vat"/>
+								</div>
+								<div class="layout-control" style="display: inline-block;">
+								<div class="label text" lang="city">City</div>
+								<input class="text data-input" user-input="city"/>
+								</div>
+								<div class="layout-control" style="display: inline-block; float: right;">
+								<div class="label text" lang="county">County</div>
+								<div class="text data-input" control="county" user-input="county"></div>
+								</div>
+								<div class="layout-control" style="display: inline-block;">
+								<div class="label text" lang="post_code">Post code</div>
+								<input class="text data-input" user-input="postCode"/>
+								</div>
+								<div class="layout-control" style="display: inline-block; float: right;">
+								<div class="label text" lang="country">Country</div>
+								<div class="text data-input" control="country" user-input="country"></div>
+								</div>
+							</div>
+						</div>
+						<div class="checkout-control">
+							<div id="payment_back" class="text-invert checkout-step-back" lang="back">Back</div>
+							<div id="payment_advance" class="text-invert checkout-step-advance" lang="next">Next</div>
+						</div>
+					</div>
+					<div id="done_view" class="checkout-step-view">
+						<div id="data_preview" class="checkout-control">
+							<div class="preview-group">
+								<div class="preview-block" block-type="shipping">
+									<div class="text seperator" lang="personal_details">Personal details</div>
+									<div class="preview-layout-control" inline>
+									<div class="preview-label text" lang="forename">First name</div>
+									<div class="text preview-data" user-input="forename"></div>
+									</div>
+									<div class="preview-layout-control" style="float: right;" inline>
+									<div class="preview-label text" lang="surname">Last name</div>
+									<div class="text preview-data" user-input="surname"></div>
+									</div>
+									<div class="preview-layout-control" inline>
+									<div class="preview-label text" lang="email">Email</div>
+									<div class="text preview-data" user-input="email"></div>
+									</div>
+									<div class="preview-layout-control" style="float: right;" inline>
+									<div class="preview-label text" lang="phone">Phone number</div>
+									<div class="text preview-data" user-input="phone"></div>
+									</div>
+								</div>
+								<div class="preview-block" 	block-type="billing">
+									<div class="text seperator" lang="payment_type">Payment type</div>
+									<div class="payment-type preview-layout-control" control="paymentType" user-input="paymentType" inline>
+									</div>
+									<div class="preview-layout-control" style="float: right;" inline>
+									<div class="preview-label text" lang="full_name">Name on the card</div>
+									<div class="text preview-data" style="display: inline;" user-input="forename"></div>
+									<span></span>
+									<div class="text preview-data" style="display: inline;" user-input="surname"></div>
+									</div>
+									<div class="preview-layout-control" control="cardNumber" user-input="card" inline>
+									<div class="preview-label text" lang="card_no">Card number</div>
+									<div class="text preview-data"></div>
+									</div>
+									<div class="preview-layout-control" style="width: 25%; float: right;" inline>
+									<div class="preview-label text" lang="expiry">Expiry</div>
+									<div class="text preview-data" style="display: inline;" user-input="expiryMonth"></div>
+									<span>/</span>
+									<div class="text preview-data" style="display: inline;" user-input="expiryYear"></div>
+									</div>
+									<div class="preview-layout-control" style="width: 25%; float: right;" inline>
+									<div class="preview-label text">CVV</div>
+									<div class="text preview-data" user-input="cvv"></div>
+									</div>
+								</div>
+							</div>
+							<div class="preview-group">
+								<div class="preview-block" block-type="shipping">
+									<div class="text seperator" lang="shipping_address">Shipping address</div>
+									<div class="preview-layout-control" block>
+									<div class="preview-label text" lang="company">Company</div>
+									<div class="text preview-data" user-input="company"></div>
+									</div>
+									<div class="preview-layout-control" block>
+									<div class="preview-label text" lang="address">Street address</div>
+									<div class="text preview-data" user-input="address"></div>
+									<div class="text preview-data" user-input="address2"></div>
+									</div>
+									<div class="preview-layout-control" inline>
+									<div class="preview-label text" lang="city">City</div>
+									<div class="text preview-data" user-input="city"></div>
+									</div>
+									<div class="preview-layout-control" style="float: right;" inline>
+									<div class="preview-label text" lang="county">County</div>
+									<div class="text preview-data" user-input="county"></div>
+									</div>
+									<div class="preview-layout-control" inline>
+									<div class="preview-label text" lang="post_code">Post code</div>
+									<div class="text preview-data" user-input="postCode"></div>
+									</div>
+									<div class="preview-layout-control" style="float: right;" inline>
+									<div class="preview-label text" lang="country">Country</div>
+									<div class="text preview-data" user-input="country"></div>
+									</div>
+								</div>
+								<div class="preview-block" block-type="billing">
+									<div class="text seperator" lang="billing_address">Billing details</div>
+									<div class="preview-layout-control" block>
+									<div class="preview-label text" lang="company">Company</div>
+									<div class="text preview-data" user-input="company"></div>
+									</div>
+									<div class="preview-layout-control" inline>
+									<div class="preview-label text" lang="address">Street address</div>
+									<div class="text preview-data" user-input="address"></div>
+									<div class="text preview-data" user-input="address2"></div>
+									</div>
+									<div class="preview-layout-control" style="float: right;" inline>
+									<div class="preview-label text" lang="vat">VAT Number</div>
+									<div class="text preview-data" user-input="vat"></div>
+									</div>
+									<div class="preview-layout-control" inline>
+									<div class="preview-label text" lang="city">City</div>
+									<div class="text preview-data" user-input="city"></div>
+									</div>
+									<div class="preview-layout-control" style="float: right;" inline>
+									<div class="preview-label text" lang="county">County</div>
+									<div class="text preview-data" user-input="county"></div>
+									</div>
+									<div class="preview-layout-control" inline>
+									<div class="preview-label text" lang="post_code">Post code</div>
+									<div class="text preview-data" user-input="postCode"></div>
+									</div>
+									<div class="preview-layout-control" style="float: right;" inline>
+									<div class="preview-label text" lang="country">Country</div>
+									<div class="text preview-data" user-input="country"></div>
+									</div>
+								</div>
+							</div>
+							<div class="preview-group">
+								<div class="preview-block"></div>
+								<div class="preview-block">
+								<div class="text seperator" lang="price_summary">Price summary</div>	
+								<div id="order_summary"></div>
+								</div>
+							</div>
+						</div>
+						<div class="checkout-control">
+							<div id="done_back" class="text-invert checkout-step-back" lang="back">Back</div>
+							<div id="done_advance" class="text-invert checkout-step-advance" lang="pay">Pay</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="gallery_panel" navigator="gellery" class="content-panel">
+				<div class="text-invert content-panel-title written-text" lang="gallery">Gallery</div>
+				<div class="layout">
+					<div id="gallery_thumbs">
+						<div id="thumbs_container"></div>
+					</div>
+					<div id="gallery_view">
+					</div>
+				</div>
+			</div>
+			<div id="contact_panel" navigator="contact" class="content-panel">
+			<div class="layout">
+				<div id="company_data">
+					<div id="logo"></div>
+					<div class="header-data header-text" lang="about_us">About Us</div>
+					<div id="company_description" class="text" lang="about_us_value">
+					A new interior design company based in Warsaw, 
+					commited to providing fresh and unique design to your home or office.
+					</div>
+					<div class="header-data header-text" lang="office">Our office</div>
+					<div id="office" class="text">
+					ul. Puszczyka 15 lok 18<br/>
+					02-785<br/>
+					Warszawa<br/>
+					Polska<br/>
+					</div>
+				</div>
+				<div id="contact_form">
+					<div class="header-data header-text" lang="contact">Contact us</div>
+					<input id="contact_name" type="text" class="text" placeholder-lang="full_name"/>
+					<input id="contact_email" type="text" class="text" placeholder-lang="email"/>
+					<textarea id="contact_message" class="text" placeholder-lang="message"></textarea>
+					<div id="contact_send" class="text-invert" lang="send">Send</div>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

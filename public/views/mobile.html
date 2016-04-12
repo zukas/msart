@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+{% block custom_scripts %}
+<script type="text/javascript">
+window.mobile = true;
+window.addEventListener("load", function () {
+	document.body.setAttribute("mobile", true);
+});
+</script>
+{% endblock %}
+
+{% block menu %}
+<div id="main_menu" class="written-text no-select">
+	<ul id="menu_list">
+		<li id="about" class="menu_item noselect text" scrollto="about_panel" lang="about">About</li>
+		<li id="shop" class="menu_item noselect text" scrollto="shop_panel" lang="shop">Shop</li>
+		<li id="order" class="menu_item noselect text" scrollto="order_panel" lang="orders">Orders</li>
+		<li id="gellery" class="menu_item noselect text" scrollto="gallery_panel" lang="gallery">Gallery</li>
+		<li id="contact" class="menu_item noselect text" scrollto="contact_panel" lang="contact">Contact</li>
+	</ul>
+</div>
+{% endblock %}

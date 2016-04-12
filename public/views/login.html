@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block script %}
+<script type="text/javascript" src="scripts/msart.user.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id='login_box'>
+	<div id="username" class="input-container">
+	<div id="username-img" class="input-img"></div>
+	<input id='username_input' class="input-field text" placeholder="username" type="text"/>
+	</div>
+	<div id="password" class="input-container">
+	<div id="password-img" class="input-img"></div>
+	<input id='password_input' class="input-field text" placeholder="password" type="password"/>
+	<div id='login'></div>
+	</div>
+	
+</div>
+{% endblock %}

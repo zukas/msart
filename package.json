@@ -1,0 +1,52 @@
+{
+  "name": "msart",
+  "version": "1.0.0",
+  "description": "MS CraftShop website",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "connect": "^3.4.1",
+    "connect-mongodb-session": "^1.1.1",
+    "errorhandler": "^1.4.3",
+    "express": "^4.13.4",
+    "express-device": "^0.4.2",
+    "express-generator": "^4.13.1",
+    "express-session": "^1.13.0",
+    "gm": "^1.22.0",
+    "gridfs-stream": "^1.1.1",
+    "help": "^2.1.2",
+    "install": "^0.6.1",
+    "method-override": "^2.3.5",
+    "mongo": "^0.1.0",
+    "mongodb": "^2.1.16",
+    "morgan": "^1.7.0",
+    "multer": "^0.1.8",
+    "node-html-encoder": "0.0.2",
+    "nodemailer": "^2.3.2",
+    "npm": "^3.8.6",
+    "password-hash": "^1.2.2",
+    "paypal-rest-sdk": "^1.6.8",
+    "serve-favicon": "^2.3.0",
+    "swig": "^1.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zukas/msart.git"
+  },
+  "keywords": [
+    "charity",
+    "children",
+    "family",
+    "help"
+  ],
+  "author": "Julius Zukauskas",
+  "license": "GPLv2",
+  "bugs": {
+    "url": "https://github.com/zukas/msart/issues"
+  },
+  "homepage": "https://github.com/zukas/msart"
+}
