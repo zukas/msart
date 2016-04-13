@@ -2644,14 +2644,14 @@ body[mobile] #shop_panel .picture-container {
 }
 
 #contact_panel #logo {
-	display: block;
+	display: inline-block;
 	background-image: url("../images/logo.png");
 	background-size: contain;
 	background-repeat: no-repeat;
 	width: 120px;
 	height: 120px;
-	margin-right: 10px;
-	float: left;
+	/*margin-right: 10px;*/
+	/*float: left;*/
 }
 
 #contact_panel #company_description {
