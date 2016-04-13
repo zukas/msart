@@ -1,6 +1,7 @@
 var util 		= require('util'),
 	path 		= require('path'),
-	ObjectID 	= require('mongodb').ObjectID;
+	ObjectID 	= require('mongodb').ObjectID,
+	logging 	= false;
 
 global.async = function () {
 	if(arguments.length === 0 && typeof arguments[0] !== "function") throw "Bad argument to async";
@@ -21,8 +22,14 @@ global.makePath = function () {
 	return path.join.apply(this, _args);
 };
 
+global.enableLog = function () {
+	logging = true;
+}
+
 global.log = function () {
-	util.log(util.inspect(arguments, { showHidden: false, depth: null, colors : true }));
+	if(logging) {
+		util.log(util.inspect(arguments, { showHidden: false, depth: null, colors : true }));
+	}
 };
 
 global.String.prototype.toObjectID = function() {

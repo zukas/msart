@@ -21,7 +21,7 @@ exports.save = function (data, callback) {
 			fields: {
 				type: check.TYPE.ARRAY,
 				members: {
-					type: check.OBJECT.VALUE,
+					type: check.TYPE.VALUE,
 					class: "String"
 				}
 			}

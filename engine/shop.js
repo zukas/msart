@@ -222,8 +222,23 @@ exports.load = function (data, callback) {
 
 
 exports.delete = function (data, callback) {
-	if(data.id) {
-		db.db.shop.remove({ _id : ObjectID(data.id) }, function (err, res) {
+
+	var res = check.run(data,
+	{
+		type : check.TYPE.OBJECT,
+		properties: {
+			id : {
+				type : check.TYPE.VALUE,
+				class : "String",
+				regex : "$ObjectID"
+			}
+		}
+	});
+
+
+	if(res.status) {
+		data = res.data;
+		db.db.shop.remove({ _id : data.id.toObjectID() }, function (err, res) {
 			if(err) {
 				callback({status : false, error : err});
 			} else {
@@ -231,7 +246,7 @@ exports.delete = function (data, callback) {
 			}
 		});
 	} else {
-		callback({status : false, error : "Missing id"});
+		callback(res);
 	}
 }
 

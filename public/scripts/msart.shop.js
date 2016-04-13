@@ -993,6 +993,19 @@
                     });
                 });
             }
+            details_.remove = function () {
+                
+                window.ajax({
+                    type: "POST",
+                    data: { id : item.id() },
+                    url: '/async/shop/delete'
+                }).done(function (result) {
+                    if(result.status) {
+                        category.removeItem(item);
+                        closePanel();
+                    }
+                });
+            }
         }
 
         details_.close = closePanel;

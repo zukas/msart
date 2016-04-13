@@ -25,7 +25,7 @@
         self.el = container;
 
         self.text = function () {
-            return field.getValue();
+            return field.value();
         }
     }
 

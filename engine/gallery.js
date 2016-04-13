@@ -32,7 +32,14 @@ exports.save = function (data, callback) {
 		if(err) {
 			callback({status: false, error: err});
 		} else {	
-			callback({status : true, id: res[0]._id});
+			log(res);
+			if(res.insertedIds && res.insertedIds.length == 1) {
+				callback({status : true, id: res.insertedIds[0]});
+			} else if(res.ops && res.ops.length == 1) {
+				callback({status : true, id: res.ops[0]._id});
+			} else {
+				callback({status: false, error: "Unknown"});
+			}
 		}
 	});
 }

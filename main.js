@@ -109,6 +109,12 @@ app.get('*', function (req, res) {
 	res.redirect('/');
 });
 
+process.argv.forEach(function (val) {
+	if(val == "-v") {
+		enableLog();
+	}
+});
+
 db.start({
 	name: "msart",
 	collections: [
