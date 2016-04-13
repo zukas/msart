@@ -1569,7 +1569,7 @@ body[mobile] #shop_panel .picture-container {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 	display: inline-block;
-	width: 300px;
+	width: auto;
 	height: 50px;
 	line-height: 50px;
 	font-size: 34px;

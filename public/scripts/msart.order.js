@@ -573,7 +573,9 @@
                             order.remove = removeOrder;
                             shop_item_ordered(order.item());
                         }
-                        fragment.appendChild(orders[item.id].el);
+                        if(orders[item.id]) {
+                            fragment.appendChild(orders[item.id].el);
+                        }
                     }
                     table.appendChild(fragment); 
 

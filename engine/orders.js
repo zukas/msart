@@ -114,14 +114,14 @@ exports.session_order_add = function (data, callback) {
 				{ 
 					upsert : true 
 				},
-				function (err2, u, status) {
+				function (err2, update) {
 					if(err2) {
 						callback({ status : false, error: err2 });
 					} else {
-						log(status);
+						log(update.result);
 						load_order_totals(data.sessionID, function (result) {
-							if(status.upserted) {
-								result.added = status.upserted[0]._id;
+							if(update.result.upserted) {
+								result.added = update.result.upserted[0]._id;
 							}
 							callback(result);
 						});
