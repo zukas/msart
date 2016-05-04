@@ -1,6 +1,8 @@
 var mongo = require("mongodb"),
 	events = {};
 
+require("./utils");
+
 exports.db = null;
 
 exports.start = function (info, callback) {

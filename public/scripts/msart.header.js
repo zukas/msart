@@ -111,6 +111,10 @@
                 }
             }
 
+            window.events.listen("requestHeaderHeight", function (callback) {
+                callback(header.offsetHeight);
+            });
+
             window.addEventListener("resize", function () {
                 if(min) {
                     title.style.marginLeft = (header.offsetWidth < menu.offsetWidth + 350 ? -350 : 0) + "px";
@@ -137,7 +141,10 @@
                         marginLeft: function (el) {
                             return el.unset.marginLeft;
                         },
-                        duration: 350
+                        duration: 350,
+                        complete: function () {
+                            window.events.emit("headerChanged", [header.unset.height]);
+                        }
                     });
                 } else if(!min && scroll_top > 0) {
                     min = true;
@@ -159,7 +166,10 @@
                         marginLeft: function (el) {
                             return el.set.marginLeft;
                         },
-                        duration: 500
+                        duration: 500,
+                        complete: function () {
+                            window.events.emit("headerChanged", [header.set.height]);
+                        }
                     });
                 }
             });     

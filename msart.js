@@ -127,7 +127,8 @@ db.start({
 		"order_details",
 		"gallery",
 		"history",
-		"access"
+		"access",
+		"internal"
 	]
 }, function () {
 	app.listen(app.get('port'), function() {

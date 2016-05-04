@@ -175,23 +175,25 @@ exports.load_about = function (req, res) {
 
 
 exports.list_shop_item = function (req, res) {
-	shop.list(req.body, function (data) {
-		if(req.session.admin) {
-			shop.access_count(function (counts) {
-				if(data.status && counts.status) {
-					for(var i in data.items) {
-						for(var j in data.items[i].items) {
-							var count = counts.result[data.items[i].items[j].id];
-							data.items[i].items[j].counts = count;
-						}
-					}
-				}
-				res.send(data);
-			});
+	shop.list2(req.body, function (data) {
+		// if(req.session.admin) {
+		// 	shop.access_count(function (counts) {
+		// 		if(data.status && counts.status) {
+		// 			for(var i in data.items) {
+		// 				for(var j in data.items[i].items) {
+		// 					var count = counts.result[data.items[i].items[j].id];
+		// 					data.items[i].items[j].counts = count;
+		// 				}
+		// 			}
+		// 		}
+		// 		res.send(data);
+		// 	});
 
-		} else {
-			res.send(data);
-		}
+		// } else {
+		// 	res.send(data);
+		// }
+
+		res.send(data);
 	});
 }
 

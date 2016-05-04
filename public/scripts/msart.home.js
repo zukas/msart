@@ -117,10 +117,12 @@
                 }
             });
             idx = idx + 1;
-            async(animate, null, 7000);
+            // async(animate, null, 7000);
         }
 
-        async(animate, null, 7000);
+        setInterval(animate, 7000);
+
+        // async(animate, null, 7000);
     }
 
     window.addEventListener("load", function () {

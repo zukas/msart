@@ -57,7 +57,7 @@
             },
             set         = function (thumb) {
                 viewport.loadImage({
-                    url : "/async/images/load/" + thumb.id() + "?height=600",
+                    url : "/async/images/load/" + thumb.id() + "?height=700",
                     color: "#e0e0e0", 
                     shadow: true, 
                     radius: 22, 

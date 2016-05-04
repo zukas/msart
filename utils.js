@@ -32,6 +32,13 @@ global.log = function () {
 	}
 };
 
+String.prototype.normalize = function () {
+	var str = this.valueOf().toLowerCase();
+	str = str.charAt(0).toUpperCase().concat(str.substring(1));
+	return str;
+}
+
+
 global.String.prototype.toObjectID = function() {
 	if(/[\w\d]{24}/.test(this.valueOf())) {
 		return new ObjectID(this.valueOf());

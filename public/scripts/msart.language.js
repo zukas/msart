@@ -105,7 +105,11 @@
 			l_month : "Miesiąc",
 			l_time : "Cały czas",
 			lead_avail : "- Realizacja zamówienia: 1 dzień roboczy\n- Czas dostawy: 2 - 3 dni robocze",
-			lead_wait: "- Realizacja zamówienia: 2 - 3 tygodnie\n- Czas dostawy: 2 - 3 dni robocze"
+			lead_wait: "- Realizacja zamówienia: 2 - 3 tygodnie\n- Czas dostawy: 2 - 3 dni robocze",
+			components: "Składniki",
+			none: "Żaden",
+			labeled: "Oznaczonych",
+			projects: "Projekt"
 		}
 	}
 

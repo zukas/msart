@@ -5,14 +5,30 @@ var db = require("../db"),
 
 exports.create_category = function (data, callback) {
 
-	data.id = data.id ? ObjectID(data.id) : new ObjectID();
-	if(data.title && data.title.length > 0) {
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			id: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			},
+			title: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$Other"
+			}
+		}
+	});
 
+	if(res.status) {
+		data.id = data.id.toObjectID();
 		db.db.category.update(
 			{ _id : data.id }, 
 			{ _id : data.id, title: data.title, norm: data.title.toLowerCase() }, 
 			{ upsert : true }, 
-			function (err, res) {
+			function (err, update) {
 				if(err) {
 					callback({status : false, error : err});
 				} else {
@@ -20,32 +36,127 @@ exports.create_category = function (data, callback) {
 				}
 			});
 	} else {
-		callback({status : false, error: "Missing title"});
+		callback(res);
 	}
 }
 
 exports.delete_category = function (data, callback) {
-	if(data.id) {
-		data.id = ObjectID(data.id);
-		db.db.shop.find({category : data.id}, { _id : 1 })
-		.toArray(function (err, res) {
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			id: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			}
+		}
+	});
+
+	if(res.status) {
+		data.id = data.id.toObjectID();
+		db.db.category.findOne({ _id : data.id }, { items: 1 }, function (err, category) {
 			if(err) {
-				callback({status:false, error: err});
-			} else if(res.length > 0) {
-				callback({status:false, error: "Category is not empty"});
+				callback({status : false, error : err});
 			} else {
-				db.db.category.remove({_id : data.id }, function (err2) {
-					if(err2) {
-						callback({status: false, error : err2});
-					} else {
-						callback({status: true});
-					}
-				});
+				if(category.items && category.items.length > 0) {
+					callback({status : false, error : "Category is not empty" });
+				} else {
+					db.db.category.remove({ _id : data.id }, function (err2) {
+						if(err2) {
+							callback({status : false, error : err2});
+						} else {
+							callback({status : true});
+						}
+					})
+				}
 			}
 		});
 	} else {
-		callback({status : false, error: "Missing id"});
+		callback(res);
 	}
+}
+
+exports.categoryies = function (data, callback) {
+	db.db.category.find({}).sort({norm : 1}).toArray(function (err, res) {
+		if(err) {
+			callback({status:false, error: err});
+		} else {
+			callback({status:true, categoryies : res});
+		}
+	});
+}
+
+exports.category_add_item = function (data, callback) {
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			item: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			},
+			category: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			}
+		}
+	});
+
+	if(res.status) {
+		data.item = data.item.toObjectID();
+		data.category = data.category.toObjectID();
+		db.db.shop.findOne({_id : data.item }, { _id : 1}, function (err, item) {
+			if(err || !item) {
+				callback({status : false, error : err || "No such item"});
+			} else {
+				db.db.category.update({_id : data.category }, { $addToSet: { items: data.item }}, function (err2) {
+					if(err2) {
+						callback({status : false, error : err2});
+					} else {
+						callback({status: true});
+					}
+				})
+			}
+		});
+	} else {
+		callback(res);
+	}
+}
+
+exports.category_remove_item = function (data, callback) {
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			item: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			},
+			category: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			}
+		}
+	});
+
+	if(res.status) {
+		data.item = data.item.toObjectID();
+		data.category = data.category.toObjectID();
+		db.db.category.update({_id : data.category }, { $pull: { items: data.item }}, function (err) {
+			if(err2) {
+				callback({status : false, error : err});
+			} else {
+				callback({status: true});
+			}
+		});
+	} else {
+		callback(res);
+	}	
 }
 
 exports.list = function (data, callback) {
@@ -86,6 +197,18 @@ exports.list = function (data, callback) {
 	});
 }
 
+exports.list2 = function (data, callback) {
+	db.db.shop.find({}, {_id : 1, title: 1, norm: 1, price: 1, preview: 1, category: 1})
+	.sort({norm : 1})
+	.toArray(function (err, items) {
+		if(err) {
+			callback({status : false, error: err});
+		} else {
+			callback({status:true, items: items});
+		}
+	});
+}
+
 exports.save = function (data, callback) {
 
 	var res = check.run(data,
@@ -98,18 +221,14 @@ exports.save = function (data, callback) {
 				regex : "$ObjectID",
 				optional : true
 			},
-			category : {
-				type : check.TYPE.VALUE,
-				class : "String",
-				regex : "$ObjectID"
-			},
 			title : {
 				type : check.TYPE.VALUE,
 				class : "String"
 			},
 			descrition : {
 				type : check.TYPE.VALUE,
-				class : "String"
+				class : "String",
+				optional: true
 			},
 			availability : {
 				type : check.TYPE.VALUE,
@@ -129,12 +248,29 @@ exports.save = function (data, callback) {
 				convert : true,
 				value: "0|1"
 			},
+			components : {
+				type : check.TYPE.VALUE,
+				class : "Number",
+				convert : true,
+				value: "0|1"
+			},
 			images : {
 				type : check.TYPE.ARRAY,
 				members : {
-					type: check.TYPE.VALUE,
-					class : "String",
-					regex : "$ObjectID"
+					type : check.TYPE.OBJECT,
+					properties: {
+						id: {
+							type: check.TYPE.VALUE,
+							class : "String",
+							regex : "$ObjectID"
+						},
+						label : {
+							type: check.TYPE.VALUE,
+							class : "String",
+							regex : "$Name",
+							optional : true
+						}
+					}
 				},
 				minLength : 1
 			},
@@ -186,8 +322,18 @@ exports.save = function (data, callback) {
 		} else {
 			data._id = new ObjectID();
 		}
-		data.category = data.category.toObjectID();
 		data.preview = data.images[0];
+		data.labels = [];
+		for(var i = 0; i < data.images.length; ++i) {
+			if(data.images[i].label) {
+				data.images[i].label = data.images[i].label.normalize();
+				var idx = data.labels.indexOf(data.images[i].label);
+				if(idx < 0) {
+					data.labels[i] = data.images[i].label;
+				}
+			}
+		}
+		data.norm = data.title.toLowerCase();
 		data.updated = new Date();
 		db.db.shop.update({ _id : data._id }, 
 			{ 
@@ -207,8 +353,34 @@ exports.save = function (data, callback) {
 }
 
 exports.load = function (data, callback) {
-	if(data.id) {
-		db.db.shop.findOne({ _id : ObjectID(data.id) }, { title: 1, type: 1, availability: 1, action: 1, price: 1, descrition: 1, images: 1 }, function (err, res) {
+
+	log(data);
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			id: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			}
+		}
+	});
+
+	log(res);
+
+	if(res.status) {
+		db.db.shop.findOne({ _id : data.id.toObjectID() }, { 
+			title: 1, 
+			type: 1, 
+			availability: 1, 
+			action: 1, 
+			components: 1, 
+			price: 1, 
+			descrition: 1, 
+			images: 1, 
+			labels: 1
+		}, function (err, res) {
 			if(err) {
 				callback({status : false, error : err});
 			} else {
@@ -216,7 +388,7 @@ exports.load = function (data, callback) {
 			}
 		});
 	} else {
-		callback({status : false, error : "Missing id"});
+		callback(res);
 	}
 }
 

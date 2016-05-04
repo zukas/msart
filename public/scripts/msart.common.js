@@ -63,6 +63,12 @@
                     self.el.value = text;
                 }
             }
+
+            self.el.onchange = function () {
+                if(self.onchange) {
+                    self.onchange(self);
+                }
+            }
             if(options.placeholder) {
                 this.el.setAttribute("placeholder", options.placeholder);
             }
@@ -87,13 +93,11 @@
     }
 
     MSInputObject.prototype.value = function () {
-        return this.__get_value();
+        return this.__get_value() || "";
     }
 
     MSInputObject.prototype.setValue = function (text) {
-        if(text) {
-            this.__set_value(text); 
-        }
+        this.__set_value(text || "");
     }
 
 
@@ -254,22 +258,24 @@
 
     MSDivObject.prototype.loadImage = function(options) {
         var self    = this,
-            url     = options.url,
-            img     = document.createElement("img"),
-            spinner = null;
+            url     = options.url;
 
-        delete options.url;
-        img.src = url;
-        if(img.complete) {
-            self.el.style.backgroundImage = "url(" + url + ")";
-        } else {
-            spinner = new Spinner(options);
-            spinner.spin(self.el);
-            img.onload = function () {
-                self.el.style.backgroundImage = "url(" + url + ")";
-                spinner.stop();
-            }
-        }
+        async(function(){
+            self.el.style.backgroundImage = "url(" + url + ")";   
+        });
+
+        // delete options.url;
+        // img.src = url;
+        // if(img.complete) {
+        //     self.el.style.backgroundImage = "url(" + url + ")";
+        // } else {
+        //     spinner = new Spinner(options);
+        //     spinner.spin(self.el);
+        //     img.onload = function () {
+        //         self.el.style.backgroundImage = "url(" + url + ")";
+        //         spinner.stop();
+        //     }
+        // }
     }
 
     root.FileUpload = function (options) {
@@ -310,7 +316,9 @@
                 ctl     = [];
 
             function applyValue(control, value) {
-                if(control.firstChild && control.firstChild.nodeType == 3) {
+                if(control.manager) {
+                    control.manager.setValue(value);
+                } else if(control.firstChild && control.firstChild.nodeType == 3) {
                     control.firstChild.nodeValue = value;
                 } else {
                     var txt = document.createTextNode(value);
@@ -380,13 +388,14 @@
         container.controller = self;
 
         self.addItem = function (key, perm) {
-            var cont = new DropDownValue();
+            var cont = new DropDownValue(),
+                item = null;
             items[key] = cont;
             if(perm) {
                 cont.setValue(key);
             }
             if(can_show) {
-                var item = document.createElement("li");
+                item = document.createElement("li");
                 item.className = "dropdown-item text-invert";
                 item.onclick = function () {
                     change(key);
@@ -397,14 +406,14 @@
             if(!current) {
                 change(key);
             }
-            return { controller : cont };
+            return { controller : cont, item: item };
         }
 
         if(options.className) {
             if(container.className.length > 0) {
-                container.className += " dropdown-container text " + options.className;
+                container.className += " dropdown-container no-select text " + options.className;
             } else {
-                container.className = "dropdown-container text " + options.className;
+                container.className = "dropdown-container no-select text " + options.className;
             }
         } else {
             if(container.className.length > 0) {
@@ -414,7 +423,7 @@
             }
         }
         if(can_show) {
-            arrow.src = "../images/down.png";
+            arrow.src = options.src || "../images/down.png";
             container.appendChild(arrow);
 
             list.className = "dropdown-list no-select";
@@ -464,7 +473,7 @@
             elmMargin;
         if(document.all) {// IE
             elmHeight = parseInt(elm.currentStyle.height);
-            elmMargin = parseInt(elm.currentStyle.marginTop, 10) + parseInt(elm.currentStyle.marginBottom, 10) + "px";
+            elmMargin = parseInt(elm.currentStyle.marginTop, 10) + parseInt(elm.currentStyle.marginBottom, 10);
         } else {// Mozilla
             elmHeight = parseInt(document.defaultView.getComputedStyle(elm, '').getPropertyValue('height'));
             elmMargin = parseInt(
@@ -519,12 +528,13 @@
         return new Request(options);
     }
 
-    root.scrollBodyTo = function (target) {
+    root.scrollBodyTo = function (target, offset) {
         var content     = document.getElementById("content-wrapper"),
             next_top    = parseInt(target.offsetTop),
-            curr_top    = parseInt(content.scrollTop);
+            curr_top    = parseInt(content.scrollTop),
+            offset      = parseInt(offset || 0);
         if(curr_top != next_top) {
-            var ajust = next_top - curr_top;
+            var ajust = next_top - curr_top + offset;
             morpheus.tween(500,
                 function (ratio) {
                     var value = curr_top + ajust * ratio;
@@ -648,6 +658,7 @@
                         },
                         schedule    = function () {
                             if(tasks.length() > 0) {
+                                
                                 frame(exec);  
                             }
                         };
@@ -675,11 +686,40 @@
         }
     }
 
+    function EventManager(win) {
+        var self        = this,
+            handlers    = {};
 
+
+        win.events = {
+            listen : function (event, callback) {
+                var funcs = handlers[event] || [];
+                funcs[funcs.length] = callback;
+                handlers[event] = funcs;
+            },
+            remove : function (event, callback) {
+                var funcs   = handlers[event] || [],
+                    idx     = funcs.indexOf(callback);
+
+                if(idx >= 0) {
+                    funcs.splice(idx, 1);
+                }
+            },
+            emit : function (event, args) {
+                var funcs = handlers[event];
+                if(funcs) {
+                    for(var i = 0; i < funcs.length; ++i) {
+                        win.async(funcs[i], args);
+                    }
+                }
+            }
+        }
+    }
 
 
     root.addEventListener("load", function () {
         new EventLoop(root);
+        new EventManager(root);
     });
   
 }(this));

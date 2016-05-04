@@ -135,20 +135,51 @@
         }
     }
 
-    function PictureThumb (picture_id, file) {
+    function PictureThumb (packet) {
 
         var self_       = this,
-            id_         = picture_id,
-            temp_       = file ? true : false,
-            file_       = file,
+            id_         = packet.id,
+            temp_       = packet.file ? true : false,
+            file_       = packet.file,
+            label_txt_  = packet.label,
+            label_      = null,
             data_       = null,
             removed_    = false,
             load_cb_    = null,
             loaded_     = false,
             container_  = new MSDivObject(),
-            del_        = window.admin ? document.createElement("div") : null;
+            del_        = window.admin ? document.createElement("div") : null,
+            createLabel = function () {
+                if(!label_) {
+                    label_ = document.createElement("div"),
+                    label_.className = "picture-thumb-label header-text no-select";
+                    container_.el.appendChild(label_);
+                }
+                if(label_) {
+                    label_.innerHTML = label_txt_ || "";
+                }
+            },
+            delLabel    = function () {
+                if(label_) {
+                    container_.el.removeChild(label_);
+                    label_ = null;
+                }
+            },
+            getLabel    = function () {
+                return label_txt_;
+            },
+            setLabel    = function (text) {
+                label_txt_ = text;
+                if(label_) {
+                    label_.innerHTML = label_txt_ || "";
+                }
+            };
 
         container_.el.className = "picture-thumb";
+
+        // if(packet.label) {
+        //     setLabel(packet.label);
+        // }
 
         if(del_) {
             del_.className = "picture-thumb-remove";
@@ -198,6 +229,14 @@
             return file_;
         }
 
+        self_.label = getLabel;
+
+        self_.setLabel = setLabel;
+
+        self_.enableLabel = createLabel;
+
+        self_.disableLabel = delLabel;
+
         self_.data = function () {
             return data_;
         }
@@ -212,6 +251,7 @@
                 id : id_,
                 temp : temp_,
                 file : file_,
+                label : label_txt_,
                 data : data_,
                 removed : removed_
             };
@@ -243,16 +283,19 @@
                     files : true,
                     url: '/async/images/save'
                 }).done(function (result) {
-                    callback(result.id);
+                    
+                    callback({ id : result.id, label: label_txt_ });
                 });  
             } else {
-                callback(id_);
+                
+                callback({ id: id_, label: label_txt_ });
             }
         }
 
         self_.update = function (new_picture_pack) {
             id_ = new_picture_pack.id;
             temp_ = new_picture_pack.temp;
+            setLabel(new_picture_pack.label);
             file_ = new_picture_pack.file;
             data_ = new_picture_pack.data;
             removed_ = new_picture_pack.removed;
@@ -296,12 +339,14 @@
 
     function PicureViewer () {
         var self_       = this,
+            wrapper_    = document.createElement("div"),
             container_  = document.createElement("div"),
             carousel_   = document.createElement("div"),
             preview_    = new MSDivObject(),
             new_        = window.admin ? new FileUpload({ multiple : true, className : "picture-thumb add"}) : null,
+            label_      = null,
             temp_       = null,
-            ready_      = false,
+            ready_      = true,
             thumbs_     = {},
             ordered_    = [],
             touch_      = 0,
@@ -333,10 +378,11 @@
 
                 var idx1    = ordered_.indexOf(picture_id_1),
                     idx2    = ordered_.indexOf(picture_id_2);
-
+                
+                
                 ordered_[idx1] = picture_id_2;
                 ordered_[idx2] = picture_id_1;
-
+                
             },
             present_    = function (thumb) {
                 if(thumb.isTemp()) {
@@ -353,8 +399,42 @@
                         speed: 0.75 
                     });
                 }
-            }
+                preview_.el.setAttribute("current", thumb.id());
+                if(label_) {
+                    label_.onchange = null;
+                    label_.setValue(thumb.label());
+                    label_.onchange = function () {
+                        thumb.setLabel(label_.value());
+                    }
+                }
+            },
+            enableLabel    = function (text) {
+                if(!label_) {
+                    label_ = new MSInputObject({className : "picture-preview-label text"});
+                    preview_.el.appendChild(label_.el);
+                }
+                label_.setValue(text);
 
+                for(var key in thumbs_) {
+                    if(thumbs_.hasOwnProperty(key)) {
+                        thumbs_[key].enableLabel();
+                    }
+                }  
+            },
+            disableLabel    = function () {
+                if(label_) {
+                    preview_.el.removeChild(label_.el);
+                    label_ = null;
+                }
+
+                for(var key in thumbs_) {
+                    if(thumbs_.hasOwnProperty(key)) {
+                        thumbs_[key].disableLabel();
+                    }
+                }
+            };
+
+        wrapper_.className = "picture-manager";
         container_.className = "picture-container";
         carousel_.className = "picture-carousel";
 
@@ -369,7 +449,7 @@
                     self_.beginAdd();
                     var first = null;
                     for(var i = 0; i < files.length; ++i) {
-                        var thumb = new PictureThumb(hashCode(files[i].name), files[i]);
+                        var thumb = new PictureThumb({ id : String(hashCode(files[i].name)), file : files[i] });
                         if(!first) {
                             first = thumb;
                         }
@@ -381,76 +461,84 @@
             }
         }
 
-        var tmp = document.createDocumentFragment();
-        tmp.appendChild(container_);
-        tmp.appendChild(preview_.el);
-        self_.el = tmp;
+        wrapper_.appendChild(preview_.el);
+        wrapper_.appendChild(container_);
+        self_.el = wrapper_;
 
         self_.imageList = function () {
             return ordered_;
         }
 
+        self_.enableLabel = enableLabel;
+
+        self_.disableLabel = disableLabel;
+
         self_.commit = function (callback) {
             var commit_next = function (idx, total, container, result, done) {
                 if(idx == total) {
+                    
                     done(result);
                 } else {
-                    thumbs_[container[idx]].commit(function (id) {
-                        if(id) {
+                    thumbs_[container[idx]].commit(function (res) {
+                        if(res) {
 
-                            result.push(id);
+                            result.push(res);
                         }
                         commit_next(idx+1, total, container, result, done);
                     }); 
                 }
-            }
+            };
+            
             commit_next(0, ordered_.length, ordered_, [], callback);
-        }
+        };
 
         self_.beginAdd = function () {
             if(temp_ == null) {
                 temp_ = document.createDocumentFragment();
+                ready_ = false;
             }
-        }
+        };
 
         self_.endAdd = function () {
             ready_ = true;
+            if(temp_) {
+                carousel_.appendChild(temp_);
+                temp_ = null;
+                if(ordered_.length > 0) {
+                    thumbs_[ordered_[0]].onload(present_);
+                }
+            }
         }
-
-
 
         self_.add = function (picture_thumb) {
             if(temp_) {
                 if(!thumbs_[picture_thumb.id()]) {
+                    
                     ordered_.push(picture_thumb.id());
                     thumbs_[picture_thumb.id()] = picture_thumb;
                     picture_thumb.removed = removed_;
                     picture_thumb.swap = swap_;
                     picture_thumb.click = present_;
                     temp_.appendChild(picture_thumb.el);
+                    if(label_) {
+                        picture_thumb.enableLabel();
+                    }
                 }
             }
-        }
+        };
 
         self_.show = function (thumb) {
-             var timer_ = setInterval(function () {
-                if(ready_) {
-                    clearInterval(timer_);
-                    if(temp_) {
-                        carousel_.appendChild(temp_);
-                        temp_ = null;
-                        Ps.update(carousel_);
-                        if(ordered_.length > 0) {
-                            (thumb || thumbs_[ordered_[0]]).onload(present_);
-                        }
-                    } 
+            var presenter = function () {
+                if(temp_) {
+                    async(presenter);
+                } else {
+                    if(thumb) {
+                        thumb.onload(present_);
+                    }
                 }
-            }, 50);
+            };
+            async(presenter);
         }
-
-        Ps.initialize(carousel_, {
-            suppressScrollX: true
-        });
     }
 
     function SinglePriceTag () {
@@ -738,6 +826,27 @@
 
     }
 
+    function ProjectView () {
+        var self        = this,
+            head        = document.createElement("div"),
+            select      = new DropDown({ className : "component-ctl" });
+
+        head.className = "text-header header-text";
+        language.bind("projects", head);
+
+        self.setValue = function (data) {
+            if(data) {
+                for(var i = 0; i < data.length; ++i) {
+                    select.addItem(data[i], true);
+                }
+            }
+        }
+        var doc = document.createDocumentFragment();
+        doc.appendChild(head);
+        doc.appendChild(select.el);
+        self.el = doc;
+    }
+
     function DetailsView(item) {
         var self        = this,
             container   = document.createElement("div"),
@@ -751,6 +860,17 @@
             avail       = new DropDown({ className : "avail-ctl", adminOnly : true }),
             haction     = window.admin ? document.createElement("div") : null,
             action      = window.admin ? new DropDown({ className : "action-ctl" }) : null,
+            hcomponent  = window.admin ? document.createElement("div") : null,
+            component   = window.admin ? new DropDown({ className : "component-ctl" }) : {
+                setValue: function (data) {
+                    if(data == 0) {
+                        self.disableLabel();
+                    } else {
+                        self.enableLabel();
+                    }
+                }
+            },
+            proj        = window.admin ? null : new ProjectView(),
             hprice      = document.createElement("div"),
             price       = new PriceControl({ type : 0 }),
             hpayment    = document.createElement("div"),
@@ -769,6 +889,8 @@
                 type: type,
                 availability: avail,
                 action: action,
+                components : component,
+                labels: proj,
                 price: price,
                 descrition: desc
             };
@@ -799,14 +921,17 @@
                 if(val == 1) {
                     price.change(1);
                     avail.setValue(1);
-                    avail.lock(); 
                     action.setValue(0);
+                    avail.lock(); 
                     action.lock();
+                    component.unlock();
                 } else {
                     price.change(0);
                     avail.setValue(0);
+                    component.setValue(0);
                     avail.unlock();
                     action.unlock();
+                    component.lock();
                 }
             }
         }
@@ -838,6 +963,27 @@
             language.bind("process", haction);
             view.appendChild(haction);
             view.appendChild(action.el);
+
+            language.bind("components", hcomponent);
+            hcomponent.className = "text-header header-text";
+
+            language.bind("none", component.addItem(0));
+            language.bind("labeled", component.addItem(1));
+
+            view.appendChild(hcomponent);
+            view.appendChild(component.el);
+
+            component.changed = function (idx) {
+                if(idx == 0) {
+                    self.disableLabel();
+                } else {
+                    self.enableLabel();
+                }
+            }
+            component.lock();
+
+        } else {
+            view.appendChild(proj.el);
         }
 
         hprice.className = "text-header header-text";
@@ -880,14 +1026,6 @@
         language.bind("description", hdesc);
         language.bindInput("description", desc.el);
 
-        cl_btn.className = "close-btn no-select text-invert";
-        language.bind("close", cl_btn);
-        ctl.appendChild(cl_btn);
-
-        cl_btn.onclick = function () {
-            self.close();
-        }
-
         act_btn.className = "action-btn no-select text-invert";
         language.bind(window.admin ? "save" : "order", act_btn);
         ctl.appendChild(act_btn);
@@ -897,7 +1035,7 @@
             if(window.admin) {
                 var data = {};
                 for(var key in collective) {
-                    if(collective.hasOwnProperty(key)) {
+                    if(collective.hasOwnProperty(key) && collective[key]) {
                         data[key] = collective[key].value();
                     }
                 }
@@ -910,6 +1048,14 @@
                 data.availability = avail.value();
                 self.order(data);
             }
+        }
+
+        cl_btn.className = "close-btn no-select text-invert";
+        language.bind("close", cl_btn);
+        ctl.appendChild(cl_btn);
+
+        cl_btn.onclick = function () {
+            self.close();
         }
 
         if(del_btn) {
@@ -928,14 +1074,15 @@
 
         self.el = container;
 
-        Ps.initialize(view, {
-            suppressScrollX: true
-        });
+        // Ps.initialize(view, {
+        //     suppressScrollX: true
+        // });
 
-        title.el.addEventListener("resize", reflow);
-        desc.el.addEventListener("resize", reflow);
+        // title.el.addEventListener("resize", reflow);
+        // desc.el.addEventListener("resize", reflow);
 
-        self.show = reflow;
+        self.show = function () {
+        };
 
 
         self.setValue = function (data) {
@@ -950,70 +1097,126 @@
 
     function PreviewPanel(item, category) {
 
+        function Controller (c_item, c_category, container) {
+            var self        = this,
+                viewer      = new PicureViewer(),
+                details     = new DetailsView(c_item);
+
+            details.close = function () {
+                self.close();
+            }
+
+            details.order = function (data) {
+                self.close();
+                // window.orders.addOrder(data);
+            }
+
+            details.enableLabel = function () {
+                viewer.enableLabel();
+            }
+
+            details.disableLabel = function () {
+                viewer.disableLabel();
+            }
+
+            self.load = function (callback) {
+                if(item.id()) {
+                    window.ajax({
+                        type: "POST",
+                        data: { id : item.id() },
+                        url: '/async/shop/load',
+                    }).done(function (result) {
+                        if(result.item) {
+                            details.setValue(result.item);
+                            viewer.beginAdd();
+                            for(var i in result.item.images) {
+                                viewer.add(new PictureThumb(result.item.images[i]));
+                            }
+                            viewer.endAdd();
+                        }
+                        if(callback) {
+                            callback();
+                        }
+                    });
+                } else if(callback) {
+                    callback();
+                }
+            }
+
+            self.create = function () {
+                container.appendChild(viewer.el);
+                container.appendChild(details.el);
+            }
+
+            self.destroy = function () {
+                container.removeChild(viewer.el);
+                container.removeChild(details.el);
+            }
+
+            self.show = function () {
+                viewer.show();
+                details.show();
+            }
+
+            if(window.admin) {
+                details.save = function (data) {
+                    viewer.commit(function (pictures) {
+
+                        data.id = item.id();
+                        data.images = pictures;
+                        
+                        window.ajax({
+                            type: "POST",
+                            data: data,
+                            url: '/async/shop/save'
+                        }).done(function (result) {
+                            if(result.status) {
+                                if(c_item.id() == result.id) {
+                                    c_item.update({
+                                        title: data["title"],
+                                        price: data["price"], 
+                                        preview: pictures[0]
+                                    });
+                                } else {
+                                    c_category.createItem(new ShopItem({
+                                        id : result.id, 
+                                        title: data["title"], 
+                                        price: data["price"],
+                                        preview: pictures[0]
+                                    }), true);
+                                }
+                                self.close();
+                            }
+                        });
+                    });
+                }
+                details.remove = function () {
+                    
+                    window.ajax({
+                        type: "POST",
+                        data: { id : c_item.id() },
+                        url: '/async/shop/delete'
+                    }).done(function (result) {
+                        if(result.status) {
+                            c_category.removeItem(c_item);
+                            self.close();
+                        }
+                    });
+                }
+            }
+
+        }
+
         var self_       = this,
             container_  = document.createElement("div"),
             view_       = document.createElement("div"),
-            pviewer_    = new PicureViewer(),
-            details_    = new DetailsView(item);
+            controller  = new Controller(item, category, view_);
 
         function closePanel() {
             async(self_.close);
         }
 
-        if(window.admin) {
-            details_.save = function (data) {
-                pviewer_.commit(function (picture_ids) {
-
-                    data.id = item.id();
-                    data.images = picture_ids;
-                    data.category = category.id();
-
-                    window.ajax({
-                        type: "POST",
-                        data: data,
-                        url: '/async/shop/save'
-                    }).done(function (result) {
-                        if(result.status) {
-                            if(item.id() == result.id) {
-                                item.update({
-                                    title: data["title"],
-                                    price: data["price"], 
-                                    preview: picture_ids[0]
-                                });
-                            } else {
-                                category.createItem(new ShopItem({
-                                    id : result.id, 
-                                    title: data["title"], 
-                                    price: data["price"],
-                                    preview: picture_ids[0]
-                                }), true);
-                            }
-                            closePanel();
-                        }
-                    });
-                });
-            }
-            details_.remove = function () {
-                
-                window.ajax({
-                    type: "POST",
-                    data: { id : item.id() },
-                    url: '/async/shop/delete'
-                }).done(function (result) {
-                    if(result.status) {
-                        category.removeItem(item);
-                        closePanel();
-                    }
-                });
-            }
-        }
-
-        details_.close = closePanel;
-
-        details_.order = function (data) {
-            closePanel();
-            window.orders.addOrder(data);
-        }
+        controller.close = closePanel;
 
         if(window.admin) {
             container_.className = "shop-item-container edit"; 
@@ -1025,8 +1228,7 @@
 
         view_.className = "shop-item-view";
 
-        view_.appendChild(pviewer_.el);
-        view_.appendChild(details_.el);
+        controller.create();
 
         container_.appendChild(view_);
 
@@ -1036,49 +1238,89 @@
             return item.id();
         } 
 
-        this.show = function (init, position) {
-            container_.style.top = (position + "px");
-            container_.style.display = "block";
-            morpheus(container_, {
-                left: 0,
-                duration: 250,
-                complete : function () {
-                    pviewer_.show();
-                    details_.show();
+        this.item = function () {
+            return item;
+        }
+
+        this.replace = function (n_item, n_category, callback) {
+            item = n_item;
+            category = n_category;
+            var tmp = new Controller(item, category, view_);
+            tmp.close = closePanel;
+            tmp.load(function () {
+                controller.destroy();
+                tmp.create();
+                controller = tmp;
+                if(callback) {
+                    callback();
                 }
             });
         }
 
-        this.hide = function (callback) {
+        this.show = function (options) {
+            options = options || {};
+            if(!options.force) {
+                container_.style.display = "block";
+                var height = container_.offsetHeight;
+                scrollBodyTo(window.shop.el, category.el.offsetTop + container_.offsetTop);
+                container_.style.height = "0px";
+                morpheus(container_, {
+                    height: height,
+                    duration: 300,
+                    complete : function () {
+                        morpheus(container_, {
+                            marginLeft : 0,
+                            duration: 300,
+                            complete: function () {
+                                controller.show();
+                            }
+                        });
+                        container_.style.height = null;
+                    }
+                });
+            } else {
+                scrollBodyTo(window.shop.el, category.el.offsetTop + container_.offsetTop);
+                morpheus(container_, {
+                    marginLeft : 0,
+                    duration: 300,
+                    complete: function () {
+                        controller.show();
+                    }
+                });
+            }
+        }
+
+        this.hide = function (callback, options) {
+            options = options || {};
             morpheus(container_, {
-                left: "-100%",
-                duration: 250,
+                marginLeft: "-110%",
+                duration: 300,
                 complete : function () {
-                    container_.style.display = "none";
-                    if(callback) {
-                        callback();
+                    if(!options.force) {
+                        scrollBodyTo(window.shop.el, category.el.offsetTop + item.position());
+                    }
+                    container_.style.marginLeft = null;
+                    if(!options.inline) {
+                        morpheus(container_, {
+                            height: 0,
+                            duration: 300,
+                            complete: function () {
+                                container_.style.display = "none";
+                                if(callback) {
+                                    callback();
+                                }
+                            }
+                        });
+                    } else {
+                        if(callback) {
+                            callback();
+                        }
                     }
                 }
             });
         }
 
-        if(item.id()) {
-            window.ajax({
-                type: "POST",
-                data: { id : item.id() },
-                url: '/async/shop/load',
-            }).done(function (result) {
-                if(result.item) {
-                    details_.setValue(result.item);
-                    pviewer_.beginAdd();
-                    for(var i in result.item.images) {
-                        pviewer_.add(new PictureThumb(result.item.images[i]));
-                    }
-                    pviewer_.endAdd();
-                }
-            });
-        }
-
+        controller.load();
     }
 
     function NewShopItem() {
@@ -1123,12 +1365,13 @@
             item_int    = document.createElement("div"),
             title_      = document.createElement("div"),
             item_img    = new MSDivObject(),
-            preview_id  = data.preview,
+            preview_id  = data.preview.id,
             price_      = document.createElement("div");
 
+        
         price_.setAttribute("currency", "zł");
 
-        item.id = data.id;
+        item.id = data._id;
         if(window.admin) {
             item.className = "shop-item edit no-select";   
         } else {
@@ -1172,7 +1415,7 @@
         }
 
         self.update = function (new_data) {
-            preview_id = new_data.preview;
+            preview_id = new_data.preview.id;
             item_img.loadImage({ 
                 url : "/async/preview/load/" + preview_id, 
                 color: "#e0e0e0", 
@@ -1390,133 +1633,289 @@
         self.el = container;
     }
 
-    function Shop () {
 
+    function ShopItemList () {
         var self        = this,
-            panel       = document.getElementById("shop_panel"),
-            view        = document.getElementById("category_view"),
-            win_width   = parseInt(window.offsetWidth),
-            categories  = [],
-            create      = null,
-            update      = function (category) {
-                window.ajax({
-                    type: "POST",
-                    data: { id : category.id(), title: category.title() },
-                    url: '/async/shop/save_category',
-                }).done(function (result) {
-                    if(result && result.status) { 
-
-                        var idx     = categories.indexOf(category);
-                            text    = category.title(),
-                            i       = 0;
-                        categories.splice(idx, 1);
-                        view.removeChild(category.el);
-
-                        for(; i < categories.length; ++i) {
-                            var tmp = categories[i],
-                                txt = tmp.title();
-
-                            if(txt.localeCompare(text) >= 0) {
-                                break;
-                            }
-                        }
-
-                        if(i < categories.length) {
-                            var inst = categories[i].el;
-                            categories.splice(i, 0, category);
-                            view.insertBefore(category.el, inst);
-                        } else {
-                            categories.push(category);
-                            view.appendChild(category.el);
-                        }
-                    }
-                }); 
-            },
-            remove      = function (category) {
-                window.ajax({
-                    type: "POST",
-                    data: { id : category.id() },
-                    url: '/async/shop/delete_category',
-                }).done(function (result) {
-                    if(result && result.status) {
-                        var idx = categories.indexOf(category);
-                        categories.splice(idx, 1);
-                        view.removeChild(category.el);
-                    }
-                });    
-            },
+            container   = document.getElementById("shop_item_view"),
+            creator     = window.admin ? new NewShopItem() : null,
             preview     = null,
-            close       = function () {
-                preview.hide(function () {
-                    view.removeChild(preview.el); 
-                    preview = null;
-                });
-            },
-            open        = function (item, category) {
-                if(!preview) {
-                    preview = new PreviewPanel(item, category);
-                    preview.close = close;
-                    view.appendChild(preview.el);
-                    preview.show(true, item.position());
-                }
-            };
+            marker      = null,
+            items       = {};
 
-        if(window.admin) {
-            create = new NewCategory();
-            create.create = function (text) {
-                window.ajax({
-                    type: "POST",
-                    data: { title : text },
-                    url: '/async/shop/save_category',
-                }).done(function (result) {
-                    if(result && result.status) { 
-                        var cat     = new Category({id : result.id, title: text}),
-                            i       = 0;
+        function update (callback) {
+            async(function(){
+                if(preview) {
+                    var nodes   = container.childNodes,
+                        item    = preview.item(),
+                        pos     = item.position(),
+                        ins     = null;
+                    if(container.contains(preview.el)) {
+                        container.removeChild(preview.el);
+                    }
 
-                        cat.open = open;
-                        cat.remove = remove;
-                        cat.save = update;
-
-                        for(; i < categories.length; ++i) {
-                            var tmp = categories[i],
-                                txt = tmp.title();
-
-                            if(txt.localeCompare(text) >= 0) {
-                                break;
-                            }
-                        }
-
-                        if(i < categories.length) {
-                            var inst = categories[i].el;
-                            categories.splice(i, 0, cat);
-                            view.insertBefore(cat.el, inst);
-                        } else {
-                            categories.push(cat);
-                            view.appendChild(cat.el);
+                    for(var i = 0; i < nodes.length; ++i) {
+                        if(pos < nodes[i].offsetTop) {
+                            ins = nodes[i];
+                            break;
                         }
                     }
-                }); 
+
+                    if(ins) {
+                        container.insertBefore(preview.el, ins);
+                    } else {
+                        container.appendChild(preview.el);
+                    }
+
+                    if(callback && classOf(callback) == "Function") {
+                        callback();
+                    }
+                }
+            });
+        }
+
+        function close (callback) {
+            if(preview) {
+                window.removeEventListener("resize", update);
+                var el = preview.el;
+                preview.hide(function () {
+                    container.removeChild(el);
+                    el = null;
+                    if(callback) {
+                        callback();
+                    }
+                });
+                preview = null;
             }
         }
+
+        function open (item) {
+            if(preview) {
+
+                var inline  = preview.item().position() == item.position();
+                preview.hide(function () {
+                    preview.replace(item, self, function () {
+                        if(!inline) {
+                            update(function () {
+                                preview.show();
+                            });
+                        } else {
+                            preview.show({ force : true });
+                        }
+                    });
+                }, { 
+                    force : true, 
+                    inline: inline
+                });
+            } else {
+                preview = new PreviewPanel(item, self);
+                preview.close = close;
+                update(function () {
+                    preview.show();
+                });
+                window.addEventListener("resize", update);
+
+            }
+        }
+
+        self.createItem = function (shop_item, insert) {
+            if(insert && creator && creator.el.nextSibling) {
+                container.insertBefore(shop_item.el, creator.el.nextSibling);
+            } else {
+                container.appendChild(shop_item.el);
+            }
+            items[shop_item.id()] = shop_item;
+            shop_item.open = open;
+        }
+
+        self.removeItem = function (shop_item) {
+            delete items[shop_item.id()];
+            container.removeChild(shop_item.el);
+        }
+
+        if(creator) {
+            container.appendChild(creator.el);
+            creator.open = open;
+        }
+
+
+        self.el = container;
 
         window.ajax({
             type: "POST",
             data: null,
             url: '/async/shop/list',
         }).done(function (result) {
-            if(result && result.status) { 
+            if(result && result.status && result.items) { 
                 var frag = document.createDocumentFragment();  
-                for(var i in result.items) {
-                    var item = new Category(result.items[i]);
-                    categories.push(item);
-                    frag.appendChild(item.el);
+                for(var i = 0; i < result.items.length; ++i) {
+                    var item = new ShopItem(result.items[i]);
                     item.open = open;
-                    item.remove = remove;
-                    item.save = update;
+                    // item.remove = remove;
+                    // item.save = update;
+                    frag.appendChild(item.el);
                 }
-                view.appendChild(frag);
+
+                container.appendChild(frag);
             }
         });
+    }
+
+    function ShopNavigator() {
+        
+        function CategoryDropDownItem (ctl, perm) {
+            var self        = this,
+                container   = ctl,
+                control     = document.createElement("div");
+
+            ctl.manager = self;
+            container.appendChild(control);
+
+            self.setValue = function (value) {
+                control.innerHTML = value || "";
+            }
+
+            self.value = function () {
+                return control.innerHTML;
+            }
+        }
+
+        var self        = this,
+            container   = document.getElementById("shop_navigator"),
+            categories  = new DropDown({ className : "category-nav", src : "../images/list.png"}),
+            sorter      = new DropDown({ className : "sorter-nav"});
+
+
+        {
+            var tmp = categories.addItem(0);
+            new CategoryDropDownItem(tmp.item, true);
+            tmp.controller.setValue("All items");
+        }
+
+        {
+            var tmp = sorter.addItem(0);
+            tmp.controller.setValue("A  -  Z");
+        }
+
+        container.appendChild(categories.el);
+        container.appendChild(sorter.el);
+        
+
+        self.el = container;
+
+    }
+
+    function Shop () {
+
+        var self        = this,
+            panel       = document.getElementById("shop_panel"),
+            nav         = new ShopNavigator(),
+            items       = new ShopItemList();
+        //     view        = document.getElementById("category_view"),
+        //     win_width   = parseInt(window.offsetWidth),
+        //     categories  = [],
+        //     create      = null,
+        //     update      = function (category) {
+        //         window.ajax({
+        //             type: "POST",
+        //             data: { id : category.id(), title: category.title() },
+        //             url: '/async/shop/save_category',
+        //         }).done(function (result) {
+        //             if(result && result.status) { 
+
+        //                 var idx     = categories.indexOf(category);
+        //                     text    = category.title(),
+        //                     i       = 0;
+        //                 categories.splice(idx, 1);
+        //                 view.removeChild(category.el);
+
+        //                 for(; i < categories.length; ++i) {
+        //                     var tmp = categories[i],
+        //                         txt = tmp.title();
+
+        //                     if(txt.localeCompare(text) >= 0) {
+        //                         break;
+        //                     }
+        //                 }
+
+        //                 if(i < categories.length) {
+        //                     var inst = categories[i].el;
+        //                     categories.splice(i, 0, category);
+        //                     view.insertBefore(category.el, inst);
+        //                 } else {
+        //                     categories.push(category);
+        //                     view.appendChild(category.el);
+        //                 }
+        //             }
+        //         }); 
+        //     },
+        //     remove      = function (category) {
+        //         window.ajax({
+        //             type: "POST",
+        //             data: { id : category.id() },
+        //             url: '/async/shop/delete_category',
+        //         }).done(function (result) {
+        //             if(result && result.status) {
+        //                 var idx = categories.indexOf(category);
+        //                 categories.splice(idx, 1);
+        //                 view.removeChild(category.el);
+        //             }
+        //         });    
+        //     },
+        //     preview     = null,
+        //     close       = function () {
+        //         preview.hide(function () {
+        //             view.removeChild(preview.el); 
+        //             preview = null;
+        //         });
+        //     },
+        //     open        = function (item, category) {
+        //         if(!preview) {
+        //             preview = new PreviewPanel(item, category);
+        //             preview.close = close;
+        //             view.appendChild(preview.el);
+        //             preview.show(true, item.position());
+        //         }
+        //     };
+
+        // if(window.admin) {
+        //     create = new NewCategory();
+        //     create.create = function (text) {
+        //         window.ajax({
+        //             type: "POST",
+        //             data: { title : text },
+        //             url: '/async/shop/save_category',
+        //         }).done(function (result) {
+        //             if(result && result.status) { 
+        //                 var cat     = new Category({id : result.id, title: text}),
+        //                     i       = 0;
+
+        //                 cat.open = open;
+        //                 cat.remove = remove;
+        //                 cat.save = update;
+
+        //                 for(; i < categories.length; ++i) {
+        //                     var tmp = categories[i],
+        //                         txt = tmp.title();
+
+        //                     if(txt.localeCompare(text) >= 0) {
+        //                         break;
+        //                     }
+        //                 }
+
+        //                 if(i < categories.length) {
+        //                     var inst = categories[i].el;
+        //                     categories.splice(i, 0, cat);
+        //                     view.insertBefore(cat.el, inst);
+        //                 } else {
+        //                     categories.push(cat);
+        //                     view.appendChild(cat.el);
+        //                 }
+        //             }
+        //         }); 
+        //     }
+        // }
+
+        
 
         self.el = panel;
 
