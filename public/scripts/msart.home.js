@@ -85,44 +85,6 @@
                 columns.appendChild(frag);
             }
         });
-
-        var children    = demo.getElementsByClassName("demo-image"),
-            length      = children.length,
-            idx         = 0;
-
-        children[0].style.display = "block";
-        children[0].style.opacity = 1;
-
-        function animate() {
-
-            var next    = children[(idx+1) % length],
-                curr    = children[idx % length];
-
-            next.style.zIndex = 1;
-            curr.style.zIndex = 0;
-            next.direction = 1;
-            curr.direction = 0;
-
-            morpheus([next, curr],
-            {
-                opacity: function (el) {
-                    if(el.direction == 1) {
-                        el.style.display = "block";
-                    }
-                    return el.direction;
-                },
-                complete : function (e) {
-                    curr.style.display = "none";
-                    curr.style.opacity = 0;
-                }
-            });
-            idx = idx + 1;
-            // async(animate, null, 7000);
-        }
-
-        setInterval(animate, 7000);
-
-        // async(animate, null, 7000);
     }
 
     window.addEventListener("load", function () {

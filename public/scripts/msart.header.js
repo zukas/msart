@@ -120,6 +120,12 @@
                     title.style.marginLeft = (header.offsetWidth < menu.offsetWidth + 350 ? -350 : 0) + "px";
                 }   
             });
+
+            // content.addEventListener("scroll", function () {
+            //     content.setAttribute("min",content.scrollTop > 0);  
+            //     // header.setAttribute("min",content.scrollTop > 0);
+            // });
+
             content.addEventListener("scroll", function () {
                 var scroll_top = content.scrollTop;
                 if(min && scroll_top == 0) {

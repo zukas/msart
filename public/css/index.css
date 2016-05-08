@@ -63,6 +63,7 @@ html
     height: 100%;
     overflow-x: hidden;
     background-color: #e0e0e0;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -492,34 +493,60 @@ body[mobile] #content-wrapper {
 	float: right;
 }
 
+@keyframes demo_animation {
+   0%{
+      opacity: 0;
+   }
+   5% {
+   	opacity: 1;
+   }
+   25% {
+      opacity: 1;
+   }
+   30%{
+      opacity: 0;
+   }
+   100% {
+      opacity: 0;
+   }
+}
+
 #about_panel .demo-image {
 	height: 100%;
 	width: 49%;
 	top:0px;
 	left:51%;
 	opacity: 0;
-	display: none;
 	position: absolute;
 	background-color: transparent;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: contain;
+	animation-name: demo_animation;
+	animation-iteration-count: infinite;
+	animation-duration: 24s;
 }
+
 
 #about_panel .demo-1 {
 	background-image: url("../images/demo/clock.png");
+	animation-delay: 0s;
+	opacity: 1;
 }
 
 #about_panel .demo-2 {
 	background-image: url("../images/demo/box.png");
+	animation-delay: 6s;
 }
 
 #about_panel .demo-3 {
 	background-image: url("../images/demo/goblet.png");
+	animation-delay: 12s;
 }
 
 #about_panel .demo-4 {
 	background-image: url("../images/demo/furn.png");
+	animation-delay: 18s;
 }
 
 #shop_panel {
