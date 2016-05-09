@@ -77,12 +77,12 @@ exports.delete_category = function (data, callback) {
 	}
 }
 
-exports.categoryies = function (data, callback) {
+exports.categories = function (data, callback) {
 	db.db.category.find({}).sort({norm : 1}).toArray(function (err, res) {
 		if(err) {
 			callback({status:false, error: err});
 		} else {
-			callback({status:true, categoryies : res});
+			callback({status:true, categories : res});
 		}
 	});
 }
@@ -190,9 +190,13 @@ exports.list = function (data, callback) {
 			sort = {
 				0 : { norm : 1 },
 				1 : { norm : -1 },
-				2 : { "price.values.0.price" : 1 },
-				3 : { "price.values.0.price" : -1 }
+				2 : { "price.values.0.price" : 1, norm : 1 },
+				3 : { "price.values.0.price" : -1, norm : 1 }
 			}[data.sort];
+		}
+
+		if(data.filter) {
+			filter = { _id : data.filter.toObjectID() };
 		}
 	}
 
@@ -200,16 +204,28 @@ exports.list = function (data, callback) {
 		sort = { norm : 1 };
 	}
 
+	if(!filter) {
+		filter = { _id : 0 };
+	}
 
-	db.db.shop.find({}, {_id : 1, title: 1, norm: 1, price: 1, preview: 1, category: 1})
-	.sort(sort)
-	.toArray(function (err, items) {
-		if(err) {
-			callback({status : false, error: err});
+	db.db.category.findOne(filter, { items : 1 }, function (err, cat_items) {
+		if(cat_items) {
+			filter = { _id : { $in: cat_items.items || [] } };
 		} else {
-			callback({status:true, items: items});
+			filter = {};
 		}
+		db.db.shop.find(filter, {_id : 1, title: 1, norm: 1, price: 1, preview: 1})
+		.sort(sort)
+		.toArray(function (err, items) {
+			if(err) {
+				callback({status : false, error: err});
+			} else {
+				callback({status:true, items: items});
+			}
+		});
 	});
+
+
 }
 
 exports.save = function (data, callback) {

@@ -191,7 +191,13 @@ exports.list_shop_item = function (req, res) {
 	});
 }
 
-exports.save_shop_category = function (req, res) {
+exports.categories = function (req, res) {
+	shop.categories(req.body, function (data) {
+		res.send(data);
+	});
+}
+
+exports.save_category = function (req, res) {
 	if(req.session.admin) {
 		shop.create_category(req.body, function (data) {
 			res.send(data);
@@ -201,7 +207,7 @@ exports.save_shop_category = function (req, res) {
 	}
 }
 
-exports.delete_shop_category = function (req, res) {
+exports.delete_category = function (req, res) {
 	if(req.session.admin) {
 		shop.delete_category(req.body, function (data) {
 			res.send(data);

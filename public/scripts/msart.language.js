@@ -109,7 +109,8 @@
 			components: "Składniki",
 			none: "Żaden",
 			labeled: "Oznaczonych",
-			projects: "Projekt"
+			projects: "Projekt",
+			category: "Kategoria"
 		}
 	}
 

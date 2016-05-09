@@ -1511,7 +1511,7 @@
     function ShopItemList (navigator) {
         var self        = this,
             container   = document.getElementById("shop_item_view"),
-            view        = document.createElement("span"),
+            view        = document.createElement("div"),
             creator     = window.admin ? new NewShopItem() : null,
             preview     = null,
             marker      = null;
@@ -1611,67 +1611,35 @@
 
 
         function load_shop_items () {
+            console.log(navigator.value());
             window.ajax({
                 type: "POST",
                 data: navigator.value(),
                 url: '/async/shop/list',
             }).done(function (result) {
                 if(result && result.status && result.items) { 
-                    var frag = document.createElement("span");
+                    var frag    = document.createElement("div"),
+                        select  = null;
                     if(creator) {
                         frag.appendChild(creator.el);
                         creator.open = open;
                     }
                     for(var i = 0; i < result.items.length; ++i) {
                         var item = new ShopItem(result.items[i]);
+                        if(preview && preview.item().id() == item.id()) {
+                            select = item;
+                        }
                         item.open = open;
                         frag.appendChild(item.el);
                     }
-                    close(function () {
-                        var runner1  = function (idx, nodes, done) {
-                                if(idx > 0) {
-                                    morpheus(nodes[idx], {
-                                        opacity: 0,
-                                        width: 0,
-                                        duration: 350
-                                    });
-                                    async(runner1, [idx-1, nodes, done], 50);
-                                } else {
-                                    morpheus(nodes[idx], {
-                                        opacity: 0,
-                                        width: 0,
-                                        duration: 350,
-                                        complete: done
-                                    });
-                                }
-                            };
-                        view.style.display = "block";
-                        view.style.height = view.offsetHeight + "px";
-                        runner1(view.childNodes.length - 1, view.childNodes, function () {
-                            var runner2  = function (idx, nodes) {
-                                if(idx >=0) {
-                                    nodes[idx].style.opacity = 0;
-                                    nodes[idx].style.width = "0px";
-                                    morpheus(nodes[idx], {
-                                        opacity: 1,
-                                        width: 300,
-                                        duration: 350,
-                                        done: function () {
-                                            nodes[idx].removeAttribute("style");
-                                        }
-                                    });
-                                    async(runner2, [idx-1, nodes]);
-                                }
-                            };
-                            container.replaceChild(frag, view);
-                            frag.style.display = "block";
-                            frag.style.height = frag.offsetHeight + "px";
-                            view = frag;
-                            runner2(frag.childNodes.length-1, frag.childNodes);
-                            view.removeAttribute("style");
-                        });
 
-                    });
+                    container.replaceChild(frag, view);
+                    view = frag;
+                    if(preview && select) {
+                        open(select);
+                    } else {
+                        preview = null;
+                    }
                 }
             });
         }
@@ -1686,10 +1654,28 @@
         function CategoryDropDownItem (ctl, perm) {
             var self        = this,
                 container   = ctl,
-                control     = document.createElement("div");
+                control     = document.createElement("div"),
+                input       = document.createElement("input"),
+                edit        = document.createElement("div"),
+                parent      = {
+                    onclick : null
+                }
+
+            control.className = "categoty-title";
+            input.className = "categoty-title";
+            edit.className = "category-edit";
 
             ctl.manager = self;
             container.appendChild(control);
+            container.appendChild(edit);
+
+            edit.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                parent.onclick = container.onclick;
+                container.onclick = null;
+                container.replaceChild(input, control);
+            }
 
             self.setValue = function (value) {
                 control.innerHTML = value || "";
@@ -1710,6 +1696,21 @@
             var tmp = categories.addItem(0);
             new CategoryDropDownItem(tmp.item, true);
             tmp.controller.setValue("All items");
+
+            window.ajax({
+                type: "POST",
+                data: null,
+                url: '/async/category/list',
+            }).done(function (result) {
+                if(result.status) {
+                    for(var i = 0; i < result.categories.length; ++i) {
+                        var tmp = categories.addItem(result.categories[i]._id);
+                        new CategoryDropDownItem(tmp.item);
+                        tmp.controller.setValue(result.categories[i].title);
+                    }
+                }
+            });
+
         }
 
         {
@@ -1726,7 +1727,11 @@
         container.appendChild(categories.el);
         container.appendChild(sorter.el);
 
-        sorter.changed = function (idx) {
+        categories.changed = function () {
+            window.events.emit("shop-reload");
+        }
+
+        sorter.changed = function () {
             window.events.emit("shop-reload");
         }
         
@@ -1748,112 +1753,6 @@
             panel       = document.getElementById("shop_panel"),
             nav         = new ShopNavigator(),
             items       = new ShopItemList(nav);
-        //     view        = document.getElementById("category_view"),
-        //     win_width   = parseInt(window.offsetWidth),
-        //     categories  = [],
-        //     create      = null,
-        //     update      = function (category) {
-        //         window.ajax({
-        //             type: "POST",
-        //             data: { id : category.id(), title: category.title() },
-        //             url: '/async/shop/save_category',
-        //         }).done(function (result) {
-        //             if(result && result.status) { 
-
-        //                 var idx     = categories.indexOf(category);
-        //                     text    = category.title(),
-        //                     i       = 0;
-        //                 categories.splice(idx, 1);
-        //                 view.removeChild(category.el);
-
-        //                 for(; i < categories.length; ++i) {
-        //                     var tmp = categories[i],
-        //                         txt = tmp.title();
-
-        //                     if(txt.localeCompare(text) >= 0) {
-        //                         break;
-        //                     }
-        //                 }
-
-        //                 if(i < categories.length) {
-        //                     var inst = categories[i].el;
-        //                     categories.splice(i, 0, category);
-        //                     view.insertBefore(category.el, inst);
-        //                 } else {
-        //                     categories.push(category);
-        //                     view.appendChild(category.el);
-        //                 }
-        //             }
-        //         }); 
-        //     },
-        //     remove      = function (category) {
-        //         window.ajax({
-        //             type: "POST",
-        //             data: { id : category.id() },
-        //             url: '/async/shop/delete_category',
-        //         }).done(function (result) {
-        //             if(result && result.status) {
-        //                 var idx = categories.indexOf(category);
-        //                 categories.splice(idx, 1);
-        //                 view.removeChild(category.el);
-        //             }
-        //         });    
-        //     },
-        //     preview     = null,
-        //     close       = function () {
-        //         preview.hide(function () {
-        //             view.removeChild(preview.el); 
-        //             preview = null;
-        //         });
-        //     },
-        //     open        = function (item, category) {
-        //         if(!preview) {
-        //             preview = new PreviewPanel(item, category);
-        //             preview.close = close;
-        //             view.appendChild(preview.el);
-        //             preview.show(true, item.position());
-        //         }
-        //     };
-
-        // if(window.admin) {
-        //     create = new NewCategory();
-        //     create.create = function (text) {
-        //         window.ajax({
-        //             type: "POST",
-        //             data: { title : text },
-        //             url: '/async/shop/save_category',
-        //         }).done(function (result) {
-        //             if(result && result.status) { 
-        //                 var cat     = new Category({id : result.id, title: text}),
-        //                     i       = 0;
-
-        //                 cat.open = open;
-        //                 cat.remove = remove;
-        //                 cat.save = update;
-
-        //                 for(; i < categories.length; ++i) {
-        //                     var tmp = categories[i],
-        //                         txt = tmp.title();
-
-        //                     if(txt.localeCompare(text) >= 0) {
-        //                         break;
-        //                     }
-        //                 }
-
-        //                 if(i < categories.length) {
-        //                     var inst = categories[i].el;
-        //                     categories.splice(i, 0, cat);
-        //                     view.insertBefore(cat.el, inst);
-        //                 } else {
-        //                     categories.push(cat);
-        //                     view.appendChild(cat.el);
-        //                 }
-        //             }
-        //         }); 
-        //     }
-        // }
-
-        
 
         self.el = panel;
 

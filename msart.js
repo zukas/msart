@@ -75,8 +75,10 @@ app.post('/async/shop/list', engine.list_shop_item);
 app.post('/async/shop/save', engine.save_shop_item);
 app.post('/async/shop/load', engine.load_shop_item);
 app.post('/async/shop/delete', engine.delete_shop_item);
-app.post('/async/shop/save_category', engine.save_shop_category);
-app.post('/async/shop/delete_category', engine.delete_shop_category);
+
+app.post('/async/category/save', engine.save_category);
+app.post('/async/category/delete', engine.delete_category);
+app.post('/async/category/list', engine.categories);
 
 app.post("/async/orders/add", engine.order_add);
 app.post("/async/orders/remove", engine.order_remove);
