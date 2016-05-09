@@ -177,10 +177,6 @@
 
         container_.el.className = "picture-thumb";
 
-        // if(packet.label) {
-        //     setLabel(packet.label);
-        // }
-
         if(del_) {
             del_.className = "picture-thumb-remove";
             del_.onclick = function () {
@@ -413,7 +409,16 @@
                     label_ = new MSInputObject({className : "picture-preview-label text"});
                     preview_.el.appendChild(label_.el);
                 }
-                label_.setValue(text);
+
+                if(!text) {
+                    var id      = preview_.el.getAttribute("current"),
+                        thumb   = thumbs_[id];
+                    if(thumb) {
+                        label_.setValue(thumb.label());
+                    }
+                } else {
+                    label_.setValue(text);
+                }
 
                 for(var key in thumbs_) {
                     if(thumbs_.hasOwnProperty(key)) {
@@ -841,6 +846,18 @@
                 }
             }
         }
+
+        self.enable = function () {
+            head.removeAttribute("style");
+            select.el.removeAttribute("style");
+        }
+
+        self.disable = function () {
+            head.style.display = "none";
+            select.el.style.display = "none";
+        }
+
+
         var doc = document.createDocumentFragment();
         doc.appendChild(head);
         doc.appendChild(select.el);
@@ -865,8 +882,10 @@
                 setValue: function (data) {
                     if(data == 0) {
                         self.disableLabel();
+                        proj.disable();
                     } else {
                         self.enableLabel();
+                        proj.enable();
                     }
                 }
             },
@@ -882,7 +901,6 @@
             del_btn     = window.admin && item.id() ? document.createElement("div") : null,
             act_btn     = document.createElement("div"),
             cl_btn      = document.createElement("div"),
-            reflow      = function () { Ps.update(view); },
             collective  = 
             {
                 title: title,
@@ -1074,13 +1092,6 @@
 
         self.el = container;
 
-        // Ps.initialize(view, {
-        //     suppressScrollX: true
-        // });
-
-        // title.el.addEventListener("resize", reflow);
-        // desc.el.addEventListener("resize", reflow);
-
         self.show = function () {
         };
 
@@ -1108,7 +1119,7 @@
 
             details.order = function (data) {
                 self.close();
-                // window.orders.addOrder(data);
+                window.events.emit("order", data);
             }
 
             details.enableLabel = function () {
@@ -1496,161 +1507,24 @@
 
     }
 
-    function Category (data_in) {
-        var self        = this,
-            data        = 
-            {
-                id : data_in.id,
-                items : [],
-            },
-            container   = document.createElement("div"),
-            items       = document.createElement("div"),
-            title       = null,
-            remove      = null,
-            save        = null,
-            create      = null,
-            open        = function (item) {
-                if(self.open) {
-                    self.open(item, self);
-                }
-            },
-            update      = function () {
-                if(window.admin) {
-                    if(data.items.length > 0) {
-                        remove.style.display = "none";
-                    } else {
-                        remove.style.display = "block";
-                    }
-                }
-            };
 
-        self.id = function () {
-            return data.id;
-        }
-
-        self.title = function () {
-            return window.admin ? title.value : title.innerHTML;
-        }
-
-        self.createItem = function (shop_item, insert) {
-            data.items.push(shop_item);
-            if(insert && create && create.el.nextSibling) {
-                items.insertBefore(shop_item.el, create.el.nextSibling);
-            } else {
-                items.appendChild(shop_item.el);
-            }
-
-            shop_item.open = open;
-            update();
-        }
-
-        self.removeItem = function (shop_item) {
-            var idx     = data.items.indexOf(shop_item);
-
-            data.items.splice(idx, 1);
-            items.removeChild(shop_item.el);
-            update();
-        }
-
-        if(window.admin) {
-            container.className = "category-item edit";
-        } else {
-            container.className = "category-item";  
-        }
-
-        if(window.admin) {
-            title = document.createElement("input");
-            title.className = "category-item-title text";
-            title.value = data_in.title;
-
-            container.appendChild(title);
-            remove = document.createElement("div");
-            save = document.createElement("div");
-
-            create = new NewShopItem();
-
-            remove.className = "category-item-remove";
-            save.className = "category-item-create";
-
-            container.appendChild(remove);
-            container.appendChild(save);
-            container.appendChild(items);
-            items.appendChild(create.el);
-
-            //init new item
-
-            remove.onclick = function () {
-                if(self.remove) {
-                    self.remove(self);
-                }
-            }
-
-            save.onclick = function () {
-                if(self.save) {
-                    self.save(self);
-                }
-            }
-
-            create.open = open;
-
-        } else {
-            title = document.createElement("div");
-            title.className = "category-item-title text";
-            title.innerHTML = data_in.title;
-
-            container.appendChild(title);
-            container.appendChild(items);
-        }
-
-        if(data_in.items) {
-            for(var i in data_in.items) {
-                self.createItem(new ShopItem(data_in.items[i]))
-            }
-            update();
-        }
-        self.el = container;
-
-    }
-
-    function NewCategory() {
-
-        var self        = this,
-            container   = document.getElementById("category_item_new"),
-            title       = container.getElementsByClassName("category-item-title")[0],
-            create      = container.getElementsByClassName("category-item-create")[0];
-
-        create.onclick = function () {
-            var text = title.value;
-            title.value = "";
-
-            if(text.length > 0) {
-                if(self.create) {
-                    self.create(text);
-                }
-            }
-        }
-
-        self.el = container;
-    }
-
-
-    function ShopItemList () {
+    function ShopItemList (navigator) {
         var self        = this,
             container   = document.getElementById("shop_item_view"),
+            view        = document.createElement("span"),
             creator     = window.admin ? new NewShopItem() : null,
             preview     = null,
-            marker      = null,
-            items       = {};
+            marker      = null;
 
         function update (callback) {
             async(function(){
                 if(preview) {
-                    var nodes   = container.childNodes,
+                    var nodes   = view.childNodes,
                         item    = preview.item(),
                         pos     = item.position(),
                         ins     = null;
-                    if(container.contains(preview.el)) {
-                        container.removeChild(preview.el);
+                    if(view.contains(preview.el)) {
+                        view.removeChild(preview.el);
                     }
 
                     for(var i = 0; i < nodes.length; ++i) {
@@ -1661,9 +1535,9 @@
                     }
 
                     if(ins) {
-                        container.insertBefore(preview.el, ins);
+                        view.insertBefore(preview.el, ins);
                     } else {
-                        container.appendChild(preview.el);
+                        view.appendChild(preview.el);
                     }
 
                     if(callback && classOf(callback) == "Function") {
@@ -1678,13 +1552,15 @@
                 window.removeEventListener("resize", update);
                 var el = preview.el;
                 preview.hide(function () {
-                    container.removeChild(el);
+                    view.removeChild(el);
                     el = null;
                     if(callback) {
                         callback();
                     }
                 });
                 preview = null;
+            } else if (callback) {
+                callback();      
             }
         }
 
@@ -1719,45 +1595,90 @@
 
         self.createItem = function (shop_item, insert) {
             if(insert && creator && creator.el.nextSibling) {
-                container.insertBefore(shop_item.el, creator.el.nextSibling);
+                view.insertBefore(shop_item.el, creator.el.nextSibling);
             } else {
-                container.appendChild(shop_item.el);
+                view.appendChild(shop_item.el);
             }
-            items[shop_item.id()] = shop_item;
             shop_item.open = open;
         }
 
         self.removeItem = function (shop_item) {
-            delete items[shop_item.id()];
-            container.removeChild(shop_item.el);
+            view.removeChild(shop_item.el);
         }
 
-        if(creator) {
-            container.appendChild(creator.el);
-            creator.open = open;
-        }
-
-
+        container.appendChild(view);
         self.el = container;
 
-        window.ajax({
-            type: "POST",
-            data: null,
-            url: '/async/shop/list',
-        }).done(function (result) {
-            if(result && result.status && result.items) { 
-                var frag = document.createDocumentFragment();  
-                for(var i = 0; i < result.items.length; ++i) {
-                    var item = new ShopItem(result.items[i]);
-                    item.open = open;
-                    // item.remove = remove;
-                    // item.save = update;
-                    frag.appendChild(item.el);
-                }
 
-                container.appendChild(frag);
-            }
-        });
+        function load_shop_items () {
+            window.ajax({
+                type: "POST",
+                data: navigator.value(),
+                url: '/async/shop/list',
+            }).done(function (result) {
+                if(result && result.status && result.items) { 
+                    var frag = document.createElement("span");
+                    if(creator) {
+                        frag.appendChild(creator.el);
+                        creator.open = open;
+                    }
+                    for(var i = 0; i < result.items.length; ++i) {
+                        var item = new ShopItem(result.items[i]);
+                        item.open = open;
+                        frag.appendChild(item.el);
+                    }
+                    close(function () {
+                        var runner1  = function (idx, nodes, done) {
+                                if(idx > 0) {
+                                    morpheus(nodes[idx], {
+                                        opacity: 0,
+                                        width: 0,
+                                        duration: 350
+                                    });
+                                    async(runner1, [idx-1, nodes, done], 50);
+                                } else {
+                                    morpheus(nodes[idx], {
+                                        opacity: 0,
+                                        width: 0,
+                                        duration: 350,
+                                        complete: done
+                                    });
+                                }
+                            };
+                        view.style.display = "block";
+                        view.style.height = view.offsetHeight + "px";
+                        runner1(view.childNodes.length - 1, view.childNodes, function () {
+                            var runner2  = function (idx, nodes) {
+                                if(idx >=0) {
+                                    nodes[idx].style.opacity = 0;
+                                    nodes[idx].style.width = "0px";
+                                    morpheus(nodes[idx], {
+                                        opacity: 1,
+                                        width: 300,
+                                        duration: 350,
+                                        done: function () {
+                                            nodes[idx].removeAttribute("style");
+                                        }
+                                    });
+                                    async(runner2, [idx-1, nodes]);
+                                }
+                            };
+                            container.replaceChild(frag, view);
+                            frag.style.display = "block";
+                            frag.style.height = frag.offsetHeight + "px";
+                            view = frag;
+                            runner2(frag.childNodes.length-1, frag.childNodes);
+                            view.removeAttribute("style");
+                        });
+
+                    });
+                }
+            });
+        }
+
+        window.events.listen("shop-reload", load_shop_items);
+
+        load_shop_items();
     }
 
     function ShopNavigator() {
@@ -1794,11 +1715,28 @@
         {
             var tmp = sorter.addItem(0);
             tmp.controller.setValue("A  -  Z");
+            tmp = sorter.addItem(1);
+            tmp.controller.setValue("Z  -  A");
+            tmp = sorter.addItem(2);
+            tmp.controller.setValue("Low Price");
+            tmp = sorter.addItem(3);
+            tmp.controller.setValue("Hight Price");
         }
 
         container.appendChild(categories.el);
         container.appendChild(sorter.el);
+
+        sorter.changed = function (idx) {
+            window.events.emit("shop-reload");
+        }
         
+        self.value = function () {
+            var filter = categories.value();
+            return {
+                sort : sorter.value(),
+                filter: filter == 0 ? null : filter
+            };
+        }
 
         self.el = container;
 
@@ -1809,7 +1747,7 @@
         var self        = this,
             panel       = document.getElementById("shop_panel"),
             nav         = new ShopNavigator(),
-            items       = new ShopItemList();
+            items       = new ShopItemList(nav);
         //     view        = document.getElementById("category_view"),
         //     win_width   = parseInt(window.offsetWidth),
         //     categories  = [],

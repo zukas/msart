@@ -159,47 +159,50 @@ exports.category_remove_item = function (data, callback) {
 	}	
 }
 
+
 exports.list = function (data, callback) {
-
-	db.db.category.find({},{ _id: 1, title: 1, norm: 1})
-	.sort({norm : 1})
-	.toArray(function (err, res) {
-		if(err) {
-			callback({status : false, error: err});
-		} else {
-			db.db.shop.find({}, { _id : 1, title: 1, price: 1, preview: 1, category : 1 })
-			.sort({category : 1, created : -1})
-			.toArray(function (err2, items) {
-				if(err) {
-					callback({status : false, error: err2});
-				} else {
-					var result = res;
-					for(var i in result) {
-						result[i].id = result[i]._id;
-						delete result[i]._id;
-						result[i].items = [];
-					}
-
-					for(var i in items) {
-						items[i].id = items[i]._id;
-						delete items[i]._id;
-						for(var j in result) {
-							if(result[j].id.equals(items[i].category)) {
-								result[j].items.push(items[i]);
-							}
-						}
-					}
-					log(result);
-					callback({status: true, items: result});
-				}
-			});
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			sort: {
+				type: check.TYPE.VALUE,
+				class: "Number",
+				value : "0|1|2|3",
+				optional: true,
+				convert : true
+			},
+			filter: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID",
+				optional: true
+			}
 		}
 	});
-}
 
-exports.list2 = function (data, callback) {
+	var filter 	= null,
+		sort 	= null;
+
+	if(res.status) {
+		data = res.data;
+		if(data.sort) {
+			sort = {
+				0 : { norm : 1 },
+				1 : { norm : -1 },
+				2 : { "price.values.0.price" : 1 },
+				3 : { "price.values.0.price" : -1 }
+			}[data.sort];
+		}
+	}
+
+	if(!sort) {
+		sort = { norm : 1 };
+	}
+
+
 	db.db.shop.find({}, {_id : 1, title: 1, norm: 1, price: 1, preview: 1, category: 1})
-	.sort({norm : 1})
+	.sort(sort)
 	.toArray(function (err, items) {
 		if(err) {
 			callback({status : false, error: err});
