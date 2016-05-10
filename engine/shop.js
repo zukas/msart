@@ -181,6 +181,8 @@ exports.list = function (data, callback) {
 		}
 	});
 
+	log(res);
+
 	var filter 	= null,
 		sort 	= null;
 
@@ -208,9 +210,13 @@ exports.list = function (data, callback) {
 		filter = { _id : 0 };
 	}
 
+	log(sort, filter);
+
 	db.db.category.findOne(filter, { items : 1 }, function (err, cat_items) {
 		if(cat_items) {
 			filter = { _id : { $in: cat_items.items || [] } };
+		} else if(filter._id != 0) {
+			filter = { _id : { $in: [] } };
 		} else {
 			filter = {};
 		}

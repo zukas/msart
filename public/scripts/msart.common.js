@@ -364,6 +364,7 @@
             locked      = false,
             items       = {},
             current     = null,
+            man         = false,
             change      = function (idx) {
                 var cont = items[idx];
                 if(cont) {
@@ -374,7 +375,7 @@
                     current = cont;
                     current.bind(container);
                     if(can_show && visible) {
-                        list.style.left = "-100%";
+                        list.style.right = "-200%";
                         async(function () {
                             list.removeAttribute("style");
                         });
@@ -390,6 +391,7 @@
         self.addItem = function (key, perm) {
             var cont = new DropDownValue(),
                 item = null;
+
             items[key] = cont;
             if(perm) {
                 cont.setValue(key);
@@ -398,7 +400,9 @@
                 item = document.createElement("li");
                 item.className = "dropdown-item text-invert";
                 item.onclick = function () {
-                    change(key);
+                    if(!man) {
+                        change(key);
+                    }
                 };
                 list.appendChild(item);
                 cont.bind(item);
@@ -407,6 +411,19 @@
                 change(key);
             }
             return { controller : cont, item: item };
+        }
+
+        self.addVirtual = function () {
+            var item = document.createElement("li");
+            item.className = "dropdown-item virtual text-invert";
+            list.appendChild(item);
+            return item;
+        }
+
+        self.removeVirtual = function (item) {
+            if(list.contains(item)) {
+                list.removeChild(item);
+            }
         }
 
         if(options.className) {
@@ -430,19 +447,45 @@
             container.appendChild(list);
 
             container.onclick = function () {
-                if(!locked) {
-                    visible = true;
-                    list.style.display = "block";
-                }
+                if(!man) {
+                    if(!locked) {
+                        visible = true;
+                        list.style.display = "block";
+                    }
+                } 
             }
 
             container.onmouseleave = function () {
-                visible = false;
-                list.removeAttribute("style");
+                if(!man) {
+                    visible = false;
+                    list.removeAttribute("style");
+                }
             }
         }
 
         self.el = container;
+
+        self.manual = function () {
+            man = true;
+        }
+
+        self.auto = function () {
+            man = false;
+        }
+
+        self.open = function () {
+            if(man) {
+                visible = true;
+                list.style.display = "block";
+            }
+        }
+
+        self.close = function () {
+            if(man) {
+                visible = false;
+                list.removeAttribute("style");
+            }
+        }
 
         self.value = function () {
             return container.getAttribute("current-data-id");

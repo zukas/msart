@@ -1617,20 +1617,23 @@
                 data: navigator.value(),
                 url: '/async/shop/list',
             }).done(function (result) {
-                if(result && result.status && result.items) { 
+                console.log(result);
+                if(result && result.status) { 
                     var frag    = document.createElement("div"),
                         select  = null;
                     if(creator) {
                         frag.appendChild(creator.el);
                         creator.open = open;
                     }
-                    for(var i = 0; i < result.items.length; ++i) {
-                        var item = new ShopItem(result.items[i]);
-                        if(preview && preview.item().id() == item.id()) {
-                            select = item;
+                    if(result.items) {
+                        for(var i = 0; i < result.items.length; ++i) {
+                            var item = new ShopItem(result.items[i]);
+                            if(preview && preview.item().id() == item.id()) {
+                                select = item;
+                            }
+                            item.open = open;
+                            frag.appendChild(item.el);
                         }
-                        item.open = open;
-                        frag.appendChild(item.el);
                     }
 
                     container.replaceChild(frag, view);
@@ -1651,67 +1654,97 @@
 
     function ShopNavigator() {
         
-        function CategoryDropDownItem (ctl, perm) {
+        function CategoryDropDownItem (ctl, data) {
             var self        = this,
-                container   = ctl,
-                control     = document.createElement("div"),
-                input       = document.createElement("input"),
-                edit        = document.createElement("div"),
-                parent      = {
-                    onclick : null
-                }
+                container   = ctl.item,
+                controller  = ctl.controller,
+                title       = document.createElement("div"),
+                input       = !window.admin || !data ? null : document.createElement("input"),
+                del         = !window.admin || !data ? null : document.createElement("div"),
+                changed     = false,
+                deleted     = false;
 
-            control.className = "categoty-title";
-            input.className = "categoty-title";
-            edit.className = "category-edit";
+            container.manager = self;
 
-            ctl.manager = self;
-            container.appendChild(control);
-            container.appendChild(edit);
-
-            edit.onclick = function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                parent.onclick = container.onclick;
-                container.onclick = null;
-                container.replaceChild(input, control);
-            }
+            title.className = "categoty-title";
+            container.appendChild(title);
 
             self.setValue = function (value) {
-                control.innerHTML = value || "";
+                title.innerHTML = value || "";
             }
 
             self.value = function () {
-                return control.innerHTML;
+                return title.innerHTML;
+            }
+
+            self.id = function () {
+                return data ? data._id : null;
+            }
+
+                 
+            if(data) {
+                controller.setValue(data.title);   
+                input.className = "categoty-title header-text";
+                del.className = "category-remove";
+
+                if(window.admin) {
+                    del.onclick = function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        container.parentNode.removeChild(container);
+                        deleted = true;
+                    }
+
+                    self.forceEditStart = function () {
+                        container.replaceChild(input, title);
+                        container.appendChild(del);
+                        input.value = title.innerHTML;
+                        input.onchange = function () {
+                            changed = true;
+                        }
+                    }
+
+                    self.forceEditEnd = function () {
+                        input.onchange = null;
+                        container.replaceChild(title, input);
+                        container.removeChild(del);
+                        title.innerHTML = input.value;
+                    }
+
+                    window.events.listen("shop-category-edit-start", self.forceEditStart);
+
+                    window.events.listen("shop-category-edit-end", self.forceEditEnd);
+                }
+            } else {
+                controller.setValue("All items");  
             }
         }
+
+        function NewCategoryDropDownItem(ctl) {
+            var self        = this,
+                container   = ctl,
+                add         = document.createElement("div");
+
+            add.className = "category-add";
+
+            container.appendChild(add);
+
+            self.el = container;
+
+            add.onclick = function () {
+                if(self.create) {
+                    self.create();
+                }
+            }
+        };
 
         var self        = this,
             container   = document.getElementById("shop_navigator"),
             categories  = new DropDown({ className : "category-nav", src : "../images/list.png"}),
+            cat_add     = null,
+            edit        = null,
+            inc         = 1,
             sorter      = new DropDown({ className : "sorter-nav"});
-
-
-        {
-            var tmp = categories.addItem(0);
-            new CategoryDropDownItem(tmp.item, true);
-            tmp.controller.setValue("All items");
-
-            window.ajax({
-                type: "POST",
-                data: null,
-                url: '/async/category/list',
-            }).done(function (result) {
-                if(result.status) {
-                    for(var i = 0; i < result.categories.length; ++i) {
-                        var tmp = categories.addItem(result.categories[i]._id);
-                        new CategoryDropDownItem(tmp.item);
-                        tmp.controller.setValue(result.categories[i].title);
-                    }
-                }
-            });
-
-        }
 
         {
             var tmp = sorter.addItem(0);
@@ -1724,8 +1757,54 @@
             tmp.controller.setValue("Hight Price");
         }
 
+        if(window.admin) {
+
+            function generateId () {
+                return String("000000000000000000000000" + (inc++)).slice(-24);
+            }
+
+            edit = document.createElement("div"),
+            edit.className = "shop-category-edit";
+
+            categories.el.insertBefore(edit, categories.el.firstChild);
+
+            edit.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if(edit.hasAttribute("open")) {
+                    edit.removeAttribute("open");
+                    categories.el.removeAttribute("edit-mode");
+                    categories.close();
+                    categories.auto();
+
+                    categories.removeVirtual(cat_add.el);
+                    cat_add = null;
+
+                    window.events.emit("shop-category-edit-end");
+                } else {
+                    edit.setAttribute("open",true);
+                    categories.el.setAttribute("edit-mode", true);
+
+                    cat_add = new NewCategoryDropDownItem(categories.addVirtual());
+                    cat_add.create = function () {
+                        var parent = cat_add.el.parentNode;
+                        parent.removeChild(cat_add.el);
+                        var tmp = categories.addItem(generateId());
+                        (new CategoryDropDownItem(tmp, { title : "" })).forceEditStart();
+                        parent.appendChild(cat_add.el);
+                    }
+
+                    categories.manual();
+                    categories.open();
+                    window.events.emit("shop-category-edit-start");
+
+                }
+            }
+        }
+
         container.appendChild(categories.el);
         container.appendChild(sorter.el);
+
 
         categories.changed = function () {
             window.events.emit("shop-reload");
@@ -1744,6 +1823,25 @@
         }
 
         self.el = container;
+
+
+        {
+            new CategoryDropDownItem(categories.addItem(0));
+            
+            window.ajax({
+                type: "POST",
+                data: null,
+                url: '/async/category/list',
+            }).done(function (result) {
+                if(result.status) {
+                    for(var i = 0; i < result.categories.length; ++i) {
+                        var tmp = categories.addItem(result.categories[i]._id);
+                        new CategoryDropDownItem(tmp, result.categories[i]);
+                    }
+                }
+            });
+
+        }
 
     }
 
