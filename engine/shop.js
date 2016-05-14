@@ -12,21 +12,25 @@ exports.create_category = function (data, callback) {
 			id: {
 				type: check.TYPE.VALUE,
 				class: "String",
-				regex : "$ObjectID"
+				regex : "$ObjectID",
+				optional: true
 			},
 			title: {
 				type: check.TYPE.VALUE,
 				class: "String",
-				regex : "$Other"
+				regex : "$Other",
+				mod: "$firstCap"
 			}
 		}
 	});
-
+	log(data);
+	log(res);
 	if(res.status) {
-		data.id = data.id.toObjectID();
+		data = res.data;
+		data.id = data.id ? data.id.toObjectID() : new ObjectID();
 		db.db.category.update(
 			{ _id : data.id }, 
-			{ _id : data.id, title: data.title, norm: data.title.toLowerCase() }, 
+			{ $set: { _id : data.id, title: data.title, norm: data.title.toLowerCase() } }, 
 			{ upsert : true }, 
 			function (err, update) {
 				if(err) {
@@ -248,7 +252,8 @@ exports.save = function (data, callback) {
 			},
 			title : {
 				type : check.TYPE.VALUE,
-				class : "String"
+				class : "String",
+				mod: "$firstCap"
 			},
 			descrition : {
 				type : check.TYPE.VALUE,

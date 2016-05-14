@@ -1,4 +1,4 @@
-var db 			= require("../db"),
+firstCapvar db 			= require("../db"),
 	ObjectID 	= require('mongodb').ObjectID,
 	check 		= require('./validate'),
 	paypal 		= require('paypal-rest-sdk');

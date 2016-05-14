@@ -1662,6 +1662,7 @@
                 input       = !window.admin || !data ? null : document.createElement("input"),
                 del         = !window.admin || !data ? null : document.createElement("div"),
                 changed     = false,
+                isnew       = !data || data._id == null,
                 deleted     = false;
 
             container.manager = self;
@@ -1693,6 +1694,7 @@
                         e.stopPropagation();
                         container.parentNode.removeChild(container);
                         deleted = true;
+                        changed = false;
                     }
 
                     self.forceEditStart = function () {
@@ -1700,7 +1702,9 @@
                         container.appendChild(del);
                         input.value = title.innerHTML;
                         input.onchange = function () {
-                            changed = true;
+                            if(!deleted) {
+                                changed = true;
+                            }
                         }
                     }
 
@@ -1714,6 +1718,30 @@
                     window.events.listen("shop-category-edit-start", self.forceEditStart);
 
                     window.events.listen("shop-category-edit-end", self.forceEditEnd);
+
+
+                    self.save = function (callback) {
+                        if(deleted && self.id()) {
+                            console.log("execute delete");
+                            window.ajax({
+                                type: "POST",
+                                data: { id : self.id() },
+                                url: '/async/category/delete',
+                            }).done(callback);
+
+                        } else if (changed) {
+                            console.log("execute save");
+                            window.ajax({
+                                type: "POST",
+                                data: { id : self.id(), title: title.innerHTML },
+                                url: '/async/category/save',
+                            }).done(callback);
+                        } else {
+                            console.log("execute none");
+                            callback();
+                        }
+                    }
+
                 }
             } else {
                 controller.setValue("All items");  
@@ -1757,7 +1785,36 @@
             tmp.controller.setValue("Hight Price");
         }
 
+        function load_items (parent, callback) {
+            
+            if(window.admin) {
+                parent.el.insertBefore(edit, parent.el.firstChild);
+            }
+
+            new CategoryDropDownItem(parent.addItem(0));
+            
+            window.ajax({
+                type: "POST",
+                data: null,
+                url: '/async/category/list',
+            }).done(function (result) {
+                var items   = [];
+                if(result.status) {
+                    for(var i = 0; i < result.categories.length; ++i) {
+                        var tmp     = parent.addItem(result.categories[i]._id),
+                            item    = new CategoryDropDownItem(tmp, result.categories[i]);
+                        if(window.admin) {
+                            items[items.length] = item;
+                        }
+                    }
+                }
+                callback(items);
+            });
+        } 
+
         if(window.admin) {
+
+            var items = [];
 
             function generateId () {
                 return String("000000000000000000000000" + (inc++)).slice(-24);
@@ -1766,8 +1823,6 @@
             edit = document.createElement("div"),
             edit.className = "shop-category-edit";
 
-            categories.el.insertBefore(edit, categories.el.firstChild);
-
             edit.onclick = function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1775,12 +1830,34 @@
                     edit.removeAttribute("open");
                     categories.el.removeAttribute("edit-mode");
                     categories.close();
-                    categories.auto();
-
-                    categories.removeVirtual(cat_add.el);
+                    categories.el.removeChild(edit);
                     cat_add = null;
-
-                    window.events.emit("shop-category-edit-end");
+                    (function (values, callback) {
+                        var current     = 0,
+                            total       = values.length,
+                            complete    = function (tmp) {
+                                console.log("complete",tmp);
+                                if(++current == total) {
+                                    callback();
+                                } 
+                            }
+                        for(var i = 0; i < total; ++i) {
+                            console.log("calling save");
+                            values[i].forceEditEnd();
+                            values[i].save(complete);
+                        }
+                    })(items, function () {
+                        var tmp = new DropDown({ className : "category-nav", src : "../images/list.png"});
+                        load_items(tmp, function (res) {
+                            items = res;
+                            container.replaceChild(tmp.el, categories.el);
+                            categories = tmp;
+                            categories.changed = function () {
+                                window.events.emit("shop-reload");
+                            }
+                            categories.setValue(0);
+                        });
+                    });
                 } else {
                     edit.setAttribute("open",true);
                     categories.el.setAttribute("edit-mode", true);
@@ -1789,8 +1866,12 @@
                     cat_add.create = function () {
                         var parent = cat_add.el.parentNode;
                         parent.removeChild(cat_add.el);
-                        var tmp = categories.addItem(generateId());
-                        (new CategoryDropDownItem(tmp, { title : "" })).forceEditStart();
+                        var tmp     = categories.addItem(generateId()),
+                            item    = new CategoryDropDownItem(tmp, { title : "" });
+
+                        item.forceEditStart();
+                        items[items.length] = item;
+
                         parent.appendChild(cat_add.el);
                     }
 
@@ -1824,24 +1905,11 @@
 
         self.el = container;
 
-
-        {
-            new CategoryDropDownItem(categories.addItem(0));
-            
-            window.ajax({
-                type: "POST",
-                data: null,
-                url: '/async/category/list',
-            }).done(function (result) {
-                if(result.status) {
-                    for(var i = 0; i < result.categories.length; ++i) {
-                        var tmp = categories.addItem(result.categories[i]._id);
-                        new CategoryDropDownItem(tmp, result.categories[i]);
-                    }
-                }
-            });
-
-        }
+        load_items(categories, function (res) {
+            if(window.admin) {
+                items = res;
+            }
+        });
 
     }
 
