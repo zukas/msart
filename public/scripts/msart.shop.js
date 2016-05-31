@@ -2054,10 +2054,14 @@
                                     callback();
                                 } 
                             }
-                        for(var i = 0; i < total; ++i) {
-                            
-                            values[i].forceEditEnd();
-                            values[i].save(complete);
+                        if(total > 0) {
+                            for(var i = 0; i < total; ++i) {
+                                
+                                values[i].forceEditEnd();
+                                values[i].save(complete);
+                            }
+                        } else {
+                            callback();
                         }
                     })(items, function () {
                         
