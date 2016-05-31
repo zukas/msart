@@ -58,24 +58,20 @@ exports.delete_category = function (data, callback) {
 	});
 
 	if(res.status) {
-		data.id = data.id.toObjectID();
-		db.db.category.findOne({ _id : data.id }, { items: 1 }, function (err, category) {
+		db.db.shop.update({ categories : { $in : [data.id] }}, { $pull: { categories: data.id }}, { multi: true }, function (err) {
 			if(err) {
-				callback({status : false, error : err});
+				callback({status : false, error : err });
 			} else {
-				if(category.items && category.items.length > 0) {
-					callback({status : false, error : "Category is not empty" });
-				} else {
-					db.db.category.remove({ _id : data.id }, function (err2) {
-						if(err2) {
-							callback({status : false, error : err2});
-						} else {
-							callback({status : true});
-						}
-					})
-				}
+				db.db.category.remove({ _id : data.id.toObjectID() }, function (err2) {
+					if(err2) {
+						callback({status : false, error : err2 });
+					} else {
+						callback({status : true});
+					}
+				})
 			}
 		});
+		
 	} else {
 		callback(res);
 	}
@@ -90,79 +86,6 @@ exports.categories = function (data, callback) {
 		}
 	});
 }
-
-exports.category_add_item = function (data, callback) {
-	var res = check.run(data,
-	{
-		type: check.TYPE.OBJECT,
-		properties: {
-			item: {
-				type: check.TYPE.VALUE,
-				class: "String",
-				regex : "$ObjectID"
-			},
-			category: {
-				type: check.TYPE.VALUE,
-				class: "String",
-				regex : "$ObjectID"
-			}
-		}
-	});
-
-	if(res.status) {
-		data.item = data.item.toObjectID();
-		data.category = data.category.toObjectID();
-		db.db.shop.findOne({_id : data.item }, { _id : 1}, function (err, item) {
-			if(err || !item) {
-				callback({status : false, error : err || "No such item"});
-			} else {
-				db.db.category.update({_id : data.category }, { $addToSet: { items: data.item }}, function (err2) {
-					if(err2) {
-						callback({status : false, error : err2});
-					} else {
-						callback({status: true});
-					}
-				})
-			}
-		});
-	} else {
-		callback(res);
-	}
-}
-
-exports.category_remove_item = function (data, callback) {
-	var res = check.run(data,
-	{
-		type: check.TYPE.OBJECT,
-		properties: {
-			item: {
-				type: check.TYPE.VALUE,
-				class: "String",
-				regex : "$ObjectID"
-			},
-			category: {
-				type: check.TYPE.VALUE,
-				class: "String",
-				regex : "$ObjectID"
-			}
-		}
-	});
-
-	if(res.status) {
-		data.item = data.item.toObjectID();
-		data.category = data.category.toObjectID();
-		db.db.category.update({_id : data.category }, { $pull: { items: data.item }}, function (err) {
-			if(err2) {
-				callback({status : false, error : err});
-			} else {
-				callback({status: true});
-			}
-		});
-	} else {
-		callback(res);
-	}	
-}
-
 
 exports.list = function (data, callback) {
 	var res = check.run(data,
@@ -202,40 +125,22 @@ exports.list = function (data, callback) {
 		}
 
 		if(data.filter) {
-			filter = { _id : data.filter.toObjectID() };
+			filter = { categories: { $in : [data.filter] } };
 		}
 	}
 
-	if(!sort) {
-		sort = { norm : 1 };
-	}
+	log(filter, sort);
 
-	if(!filter) {
-		filter = { _id : 0 };
-	}
-
-	log(sort, filter);
-
-	db.db.category.findOne(filter, { items : 1 }, function (err, cat_items) {
-		if(cat_items) {
-			filter = { _id : { $in: cat_items.items || [] } };
-		} else if(filter._id != 0) {
-			filter = { _id : { $in: [] } };
-		} else {
-			filter = {};
-		}
-		db.db.shop.find(filter, {_id : 1, title: 1, norm: 1, price: 1, preview: 1})
-		.sort(sort)
+	db.db.shop.find(filter || {})
+		.sort(sort || { norm : 1 })
 		.toArray(function (err, items) {
 			if(err) {
 				callback({status : false, error: err});
 			} else {
+				log(items);
 				callback({status:true, items: items});
 			}
 		});
-	});
-
-
 }
 
 exports.save = function (data, callback) {
@@ -283,6 +188,14 @@ exports.save = function (data, callback) {
 				class : "Number",
 				convert : true,
 				value: "0|1"
+			},
+			categories : {
+				type: check.TYPE.ARRAY,
+				members: {
+					type: check.TYPE.VALUE,
+					class : "String",
+					regex : "$ObjectID"
+				}
 			},
 			images : {
 				type : check.TYPE.ARRAY,
@@ -357,10 +270,6 @@ exports.save = function (data, callback) {
 		for(var i = 0; i < data.images.length; ++i) {
 			if(data.images[i].label) {
 				data.images[i].label = data.images[i].label.normalize();
-				var idx = data.labels.indexOf(data.images[i].label);
-				if(idx < 0) {
-					data.labels[i] = data.images[i].label;
-				}
 			}
 		}
 		data.norm = data.title.toLowerCase();
@@ -406,6 +315,7 @@ exports.load = function (data, callback) {
 			availability: 1, 
 			action: 1, 
 			components: 1, 
+			categories: 1,
 			price: 1, 
 			descrition: 1, 
 			images: 1, 

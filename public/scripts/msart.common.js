@@ -310,25 +310,26 @@
 
     root.DropDown = function (options, element) {
 
+
+        function applyValue(control, value) {
+            if(control.manager) {
+                control.manager.setValue(value);
+            } else if(control.firstChild && control.firstChild.nodeType == 3) {
+                control.firstChild.nodeValue = value;
+            } else {
+                var txt = document.createTextNode(value);
+                if(control.firstChild) {
+                    control.insertBefore(txt, control.firstChild)
+                } else {
+                    control.appendChild(txt);
+                }
+            }
+        }
+
         function DropDownValue () {
             var self    = this,
                 val     = null,
                 ctl     = [];
-
-            function applyValue(control, value) {
-                if(control.manager) {
-                    control.manager.setValue(value);
-                } else if(control.firstChild && control.firstChild.nodeType == 3) {
-                    control.firstChild.nodeValue = value;
-                } else {
-                    var txt = document.createTextNode(value);
-                    if(control.firstChild) {
-                        control.insertBefore(txt, control.firstChild)
-                    } else {
-                        control.appendChild(txt);
-                    }
-                }
-            }
 
             self.bind = function (control) {
                 ctl[ctl.length] = control;
@@ -352,7 +353,6 @@
                     } 
                 }
             }
-
         }
 
         var self        = this,
@@ -375,10 +375,7 @@
                     current = cont;
                     current.bind(container);
                     if(can_show && visible) {
-                        list.style.right = "-200%";
-                        async(function () {
-                            list.removeAttribute("style");
-                        });
+                        self.close();
                     }
                     if(self.changed) {
                         async(self.changed,[idx]);
@@ -449,6 +446,9 @@
             container.onclick = function () {
                 if(!man) {
                     if(!locked) {
+                        if(self.beforeOpen) {
+                            self.beforeOpen();
+                        }
                         visible = true;
                         list.style.display = "block";
                     }
@@ -457,8 +457,7 @@
 
             container.onmouseleave = function () {
                 if(!man) {
-                    visible = false;
-                    list.removeAttribute("style");
+                    self.close();
                 }
             }
         }
@@ -481,9 +480,26 @@
         }
 
         self.close = function () {
-            if(man) {
-                visible = false;
-                list.removeAttribute("style");
+            if(visible) {
+                if(self.beforeClose) {
+                    self.beforeClose();
+                }
+                list.style.right = "-200%";
+                async(function () {
+                    list.removeAttribute("style");
+                });
+            }
+        }
+
+        self.setText = function (text) {
+            applyValue(container, text);
+        }
+
+        self.text = function () {
+            if(container.firstChild && container.firstChild.nodeType == 3) {
+                return container.firstChild.nodeValue;
+            } else {
+                return "";
             }
         }
 
@@ -555,6 +571,7 @@
                     callback(null);
                 }
             }
+            req = null;
         }
         if(options.files) {
             req.send(options.data);

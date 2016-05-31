@@ -25,7 +25,7 @@
     "nodemailer": "^2.3.2",
     "npm": "^3.8.6",
     "password-hash": "^1.2.2",
-    "paypal-rest-sdk": "^1.6.8",
+    "paypal-rest-sdk": "*",
     "serve-favicon": "^2.3.0",
     "swig": "^1.4.2"
   },

@@ -1,12 +1,12 @@
-firstCapvar db 			= require("../db"),
+var db 			= require("../db"),
 	ObjectID 	= require('mongodb').ObjectID,
 	check 		= require('./validate'),
 	paypal 		= require('paypal-rest-sdk');
 
 paypal.configure({
 	'mode': 'sandbox',
-	'client_id': "ARtHghnQoxh5PT7fNjPSNBtJ3fN2JqcNTfJT4Xe3kvHO9Fo_Poz8am6OGUXIj83i_mW8_MIF0k-BOYPM",
-	'client_secret': "EH4tc7QSPx_vN3KYLlTEmzQ4RKziQgcjPGTbBuoR-nkdxq1TQhA7OMBrhbS_D9PVkzKltNDsbSRcWz4N"
+	'client_id': "AbUkFrYopZUERRkJxkzHOcXkvl4aclfJriYp7s7tju8L62aod7AdariYkYvfFQvcFB7ml6L3jedOcFpt",
+	'client_secret': "ENKmWBIij-5EUFcszvw7srcih6vk2ULi2EDRf1e09sBcZnUtgpkCzIrnVNLmM8iS2nJykiUMqdWbKA2M"
 });
 
 
@@ -20,6 +20,8 @@ function load_order_totals(sessionID, callback) {
 			for(var i = 0; i < res.length; ++i) {
 				var id 			= res[i]._id,
 					item 		= res[i].item,
+					preview 	= res[i].preview,
+					component 	= res[i].component,
 					price 		= res[i].price,
 					quantity	= res[i].quantity,
 					shipping 	= res[i].shipping,
@@ -31,7 +33,9 @@ function load_order_totals(sessionID, callback) {
 					quantity : quantity, 
 					price : price,
 					shipping : shipping,
-					discount : discount
+					discount : discount,
+					preview : preview,
+					component : component
 				});
 			}
 			callback({ status : true, total : total, items: result });
@@ -78,6 +82,17 @@ exports.session_order_add = function (data, callback) {
 				class: "Number",
 				convert: true
 			},
+			preview: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex: "$ObjectID"
+			},
+			component: {
+				type: check.TYPE.VALUE,
+				class : "String",
+				regex : "$Name",
+				optional : true	
+			}
 		}
 	});
 
@@ -109,7 +124,9 @@ exports.session_order_add = function (data, callback) {
 					sessionID: data.sessionID, 
 					quantity: data.quantity, 
 					price: data.price, 
-					shipping: data.shipping
+					shipping: data.shipping,
+					preview : data.preview,
+					component : data.component
 				}, 
 				{ 
 					upsert : true 
@@ -203,7 +220,6 @@ exports.session_order_load = function (sessionID, callback) {
 									log(totals.items[j].item.equals(result[i]._id));	
 									if(totals.items[j].item.equals(result[i]._id)) {
 										totals.items[j].title = result[i].title;
-										totals.items[j].preview = result[i].preview;
 										totals.items[j].availability = result[i].availability;
 										break;
 									}
@@ -495,7 +511,7 @@ exports.payment_card = function (data, callback) {
 
 }
 
-exports.pay = function (data, callback) {
+exports.approve = function (data, callback) {
 	var res = check.run(data,
 	{
 		type: check.TYPE.OBJECT,
@@ -549,7 +565,9 @@ exports.pay = function (data, callback) {
  								
  								var payment 		= {
 	 									"intent": "sale",
-	 									"payer": { "payment_method": "paypal" },
+	 									"payer": { 
+	 										"payment_method": "paypal"
+	 									},
 	 									"redirect_urls": {
 									        "return_url": data.accept,
 									        "cancel_url": data.cancel
@@ -559,18 +577,19 @@ exports.pay = function (data, callback) {
  									transaction 	= {
 	 									"item_list": { "items" : [] },
 	 									"amount": { "currency" : "PLN", "total": Number(total).toFixed(2) },
-	 									"description": "Order at MS Craftshop."
+	 									"description": "Order @ MS Craftshop."
 	 								};
 
  								for(var i = 0; i <orders.length; ++i) {
  									transaction.item_list.items[transaction.item_list.items.length] = 
  									{
  										"name" : orders[i].title,
- 										"price": Number(orders[i].price + orders[i].shipping * (1 - orders[i].discount)).toFixed(2),
+ 										"price": Number((orders[i].price + orders[i].shipping * (1 - orders[i].discount)) / orders[i].quantity).toFixed(2),
  										"currency": "PLN",
  										"quantity": orders[i].quantity
  									};
  								}
+
  								payment.transactions[0] = transaction;
  								if(details.billing.paymentType == 1) {
  									var funding 	= {
@@ -599,12 +618,26 @@ exports.pay = function (data, callback) {
 								paypal.payment.create(payment, function (err3, payment) {
 								    if (err3) {
 								        log(err3);
+								        callback({status: false});
 								    } else {
+
 								        log("Create Payment Response", payment);
+								        var link = null;
+								    	for(var i = 0; i < payment.links.length; ++i) {
+								    		if(payment.links[i].rel == "approval_url") {
+								    			link = payment.links[i].href;
+								    		}
+								    	}
+
+								    	if(link) {
+								    		callback({status: true, link: link});
+								    	} else {
+								    		callback({status: false});
+								    	}
 								    }
 								});
 
- 								callback({status: false});
+ 								
 							} else {
 								callback({status : false, error: "Invalid shipping and billling information"});
 							}
@@ -617,6 +650,38 @@ exports.pay = function (data, callback) {
 			}
 		});
 
+	} else {
+		callback(res);
+	}
+}
+
+exports.execute = function (data, callback) {
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			paymentId: {
+				type: check.TYPE.VALUE,
+				class: "String",
+			},
+			PayerID: {
+				type: check.TYPE.VALUE,
+				class: "String"
+			}
+		}
+	});
+
+	if(res.status) {
+		data = res.data;
+		paypal.payment.execute(data.paymentId, { payer_id : data.PayerID }, function (err, payment) {
+		    if (err) {
+		    	log(err);
+		        callback({status : false, error: err});
+		    } else {
+		    	log(payment)
+		        callback({status : true, payment: payment});
+		    }
+		});
 	} else {
 		callback(res);
 	}

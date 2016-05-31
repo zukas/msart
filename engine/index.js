@@ -6,6 +6,7 @@ var check 	= require("./validate"),
 	orders 	= require("./orders"),
 	gallery = require("./gallery"),
 	contact = require("./contact"),
+	url 	= require('url'),
 	gm		= require("gm"),
 	store 	= [];
 
@@ -401,25 +402,30 @@ exports.order_process = function (req, res) {
 		accept: req.protocol + '://' + req.get('host') + "/async/paypal/accept",
 		cancel: req.protocol + '://' + req.get('host') + "/async/paypal/cancel"
 	};
-	orders.pay(data, function (result) {
-		res.send(result);
+	orders.approve(data, function (result) {
 		if(result.status) {
-			req.session.destroy();
+			res.redirect(result.link);
+		} else {
+			res.send(result);
 		}
 	});
 }
 
 exports.paypal_return = function (req, res) {
 	log("paypal_return");
-	log(req.params);
+	log(req.query);
 	log(req.body);
-	res.redirect("/");
+	orders.execute(req.query, function (result) {
+		req.session.destroy();
+		res.redirect("/");
+	});
 }
 
 exports.paypal_cancel = function (req, res) {
 	log("paypal_cancel");
-	log(req.params);
+	log(req.query);
 	log(req.body);
+	req.session.destroy();
 	res.redirect("/");
 }
 

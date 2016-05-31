@@ -1,22 +1,23 @@
 process.env.NODE_ENV = "production";
 process.env.EXPRESS_ENV = "production";
 
-var express = require('express'),
-	favicon = require('serve-favicon'),
-	logger = require('morgan'),
-	path = require('path'),
-	methodOverride = require('method-override'),
-	session = require('express-session'),
-	session_store_manager = require('connect-mongodb-session')(session), 
-	bodyParser = require('body-parser'),
-	multer = require('multer'),
-	swig = require('swig'),
-	device = require('express-device'),
-	errorHandler = require('errorhandler'),
-	db = require("./db"),
-	app = express(),
-	engine = require('./engine'),
-	session_store = new session_store_manager(
+var express 		= require('express'),
+	favicon 		= require('serve-favicon'),
+	logger 			= require('morgan'),
+	path 			= require('path'),
+	methodOverride 	= require('method-override'),
+	session 		= require('express-session'),
+	ssm 			= require('connect-mongodb-session')(session), 
+	bodyParser 		= require('body-parser'),
+	multer 			= require('multer'),
+	swig 			= require('swig'),
+	device 			= require('express-device'),
+	errorHandler 	= require('errorhandler'),
+	db 				= require("./db"),
+	app 			= express(),
+	engine 			= require('./engine'),
+	cors 			= require('cors'),
+	session_store 	= new ssm(			
 	{ 
     	uri: 'mongodb://localhost:27017/msart',
     	collection: 'sessions'
@@ -90,7 +91,7 @@ app.post("/async/payment/types", engine.payment_types);
 app.post("/async/orders/shipping", engine.order_shipping);
 app.post("/async/orders/pay_paypal", engine.order_pay_paypal);
 app.post("/async/orders/pay_card", engine.order_pay_card);
-app.post("/async/orders/process", engine.order_process);
+app.get("/async/orders/process", cors(), engine.order_process);
 
 app.all("/async/paypal/accept", engine.paypal_return);
 app.all("/async/paypal/cancel", engine.paypal_cancel);

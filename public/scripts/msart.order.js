@@ -490,26 +490,33 @@
         totals.setAttribute("currency", "zł");
 
         function shop_item_ordered(id) {
-            var timer_id = setInterval(function () {
-                var shop_item = document.getElementById(id);
-                if(shop_item) {
-                    clearInterval(timer_id);
-                    timer_id = null;
-                    shop_item.setAttribute("ordered", true);
-                }
-            }, 50);
+            var shop_item = document.getElementById(id);
+            if(!shop_item) {
+                async(shop_item_ordered, [id]);
+            } else {
+                shop_item.setAttribute("ordered", true);
+            }
         }
 
         function shop_item_order_removed (id) {
-            var timer_id = setInterval(function () {
-                var shop_item = document.getElementById(id);
-                if(shop_item) {
-                    clearInterval(timer_id);
-                    timer_id = null;
-                    shop_item.removeAttribute("ordered");
-                }
-            }, 50);
+            var shop_item = document.getElementById(id);
+            if(!shop_item) {
+                async(shop_item_order_removed, [id]);
+            } else {
+                shop_item.removeAttribute("ordered");
+            }
         }
+
+        window.events.listen("update-ordered", function () {
+            for(var order in orders) {
+                if(orders.hasOwnProperty(order)) {
+                    var shop_item = document.getElementById(orders[order].item());
+                    if(shop_item) {
+                        shop_item.setAttribute("ordered", true);
+                    }
+                }
+            }
+        });
 
         function removeOrder (item) {
 
@@ -607,6 +614,7 @@
                 url: '/async/orders/session'    
             }).done(function(result) {
                 if(result.status && result.items) {
+                    console.log(result.items);
                     total_price = result.total;
                     totals.innerHTML = total_price;
                     var fragment = document.createDocumentFragment();
@@ -875,14 +883,23 @@
         }
 
         advance.onclick = function () {
-            window.ajax({
-                type: "POST",
-                data: null,
-                url: '/async/orders/process'
-            }).done(function (result) {
-                self.advance(self);
-            });
+            window.location = "/async/orders/process";
         }
+
+        // advance.onclick = function () {
+        //     window.ajax({
+        //         type: "POST",
+        //         data: null,
+        //         url: '/async/orders/process'
+        //     }).done(function (result) {
+        //         console.log(result);
+        //         if(result.status) {
+        //             window.location.href = result.link;
+        //         } else {
+
+        //         }
+        //     });
+        // }
 
         back.onclick = function () {
             self.back(self);
@@ -1126,10 +1143,10 @@
         order_list.show = show_panel;
         order_list.hide = hide_panel;
 
-
-        self.addOrder = function (data) {
+        window.events.listen("order", function (data) {
             order_list.addOrder(data);
-        }
+        });
+
 
         progress.done = function () {
             progress.clear();

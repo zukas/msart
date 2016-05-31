@@ -255,7 +255,7 @@
 
         self_.onload = function (callback) {
             if(loaded_ && callback) {
-                callback(self_);
+                async(callback, [self_]);
             } else {
                 load_cb_ = callback;
             }
@@ -309,7 +309,7 @@
                 container_.el.style.backgroundImage = "url(" + data_ + ")";
                 loaded_ = true;
                 if(load_cb_) {
-                    load_cb_(self_);
+                    async(load_cb_, [self_]);
                     load_cb_ = null;
                 }
             }
@@ -327,7 +327,7 @@
             });
             loaded_ = true;
             if(load_cb_) {
-                load_cb_(self_);
+                async(load_cb_, [self_]);
                 load_cb_ = null;
             }
         }
@@ -380,6 +380,13 @@
                 ordered_[idx2] = picture_id_1;
                 
             },
+            lblChanged  = function () {
+                var id      = preview_.el.getAttribute("current"),
+                    thumb   = thumbs_[id];
+                if(thumb) {
+                    thumb.setLabel(label_.value());
+                }
+            },
             present_    = function (thumb) {
                 if(thumb.isTemp()) {
                     preview_.el.style.backgroundImage = "url(" + thumb.data() + ")";
@@ -399,9 +406,7 @@
                 if(label_) {
                     label_.onchange = null;
                     label_.setValue(thumb.label());
-                    label_.onchange = function () {
-                        thumb.setLabel(label_.value());
-                    }
+                    label_.onchange = lblChanged;
                 }
             },
             enableLabel    = function (text) {
@@ -409,6 +414,8 @@
                     label_ = new MSInputObject({className : "picture-preview-label text"});
                     preview_.el.appendChild(label_.el);
                 }
+
+                label_.onchange = null;
 
                 if(!text) {
                     var id      = preview_.el.getAttribute("current"),
@@ -425,6 +432,8 @@
                         thumbs_[key].enableLabel();
                     }
                 }  
+
+                label_.onchange = lblChanged;
             },
             disableLabel    = function () {
                 if(label_) {
@@ -512,6 +521,13 @@
                 if(ordered_.length > 0) {
                     thumbs_[ordered_[0]].onload(present_);
                 }
+            }
+        }
+
+        self_.present = function (idx) {
+            var thumb = thumbs_[idx];
+            if(thumb) {
+                async(present_,[thumb]);
             }
         }
 
@@ -833,26 +849,48 @@
 
     function ProjectView () {
         var self        = this,
+            enabled     = true,
             head        = document.createElement("div"),
             select      = new DropDown({ className : "component-ctl" });
 
         head.className = "text-header header-text";
         language.bind("projects", head);
 
+
+        select.changed = function (idx) {
+            if(self.changed) {
+                self.changed(idx);
+            }
+        }
+
         self.setValue = function (data) {
             if(data) {
                 for(var i = 0; i < data.length; ++i) {
-                    select.addItem(data[i], true);
+                    select.addItem(data[i].id).controller.setValue(data[i].label);
                 }
             }
         }
 
+        self.value = function () {
+            return select.value();
+        }
+
+        self.text = function () {
+            return select.text();
+        }
+
+        self.enabled = function () {
+            return enabled;
+        }
+
         self.enable = function () {
+            enabled = true;
             head.removeAttribute("style");
             select.el.removeAttribute("style");
         }
 
         self.disable = function () {
+            enabled = false;
             head.style.display = "none";
             select.el.style.display = "none";
         }
@@ -862,6 +900,153 @@
         doc.appendChild(head);
         doc.appendChild(select.el);
         self.el = doc;
+    }
+
+    function CategoryView() {
+
+        var self        = this,
+            list        = document.createElement("div"),
+            add_li      = document.createElement("div"),
+            add         = document.createElement("div"),
+            categories  = [],
+            present     = null,
+            current     = [],
+            used        = {},
+            loaded      = false;
+
+        list.className = "category-list";
+        add_li.className = "category-item-view add-category-item";
+        add_li.appendChild(add);
+        list.appendChild(add_li);
+
+        function create_category_select(category_id) {
+            if(current.length < categories.length) {
+                var c   = document.createElement("div"),
+                    w   = document.createElement("div"),
+                    d   = new DropDown({ className : "category-ctl" }, w),
+                    r   = document.createElement("div");
+
+                c.className = "category-item-view";
+                r.className = "remove-category-item";
+
+                c.appendChild(w);
+                c.appendChild(r);
+
+                r.onclick = function () {
+                    var idx = current.indexOf(d);
+                    if(idx >= 0) {
+                        current.splice(idx, 1);
+                        delete used[d.id];
+                        list.removeChild(c);
+                        c = null;
+                    }
+                    
+                    if(current.length < categories.length) {
+                        add_li.style.display = null;
+                    }
+                }
+
+                current[current.length] = d;
+
+                d.beforeOpen = function () {
+                    if(present) {
+                        for(var i = 0; i < present.length; ++i) {
+                            d.removeVirtual(present[i]);
+                        }
+                    }
+                    present = [];
+                    for(var i = 0; i < categories.length; ++i) {
+                        if(!used[categories[i]._id] || used[categories[i]._id] == d) {
+                            (function(item, data){
+                                item.onclick = function (e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    d.setText(data.title);
+                                    delete used[d.id];
+                                    d.id = data._id;
+                                    used[data._id] = d;
+
+                                    d.close();
+                                }
+                                item.className = "dropdown-item text-invert";
+                                item.innerHTML = data.title;
+                                present[present.length] = item;
+
+                            })(d.addVirtual(), categories[i]);
+                        }
+                    }
+                }
+
+                d.beforeClose = function () {
+                    if(present) {
+                        for(var i = 0; i < present.length; ++i) {
+                            d.removeVirtual(present[i]);
+                        }
+                        present = null;
+                    }
+                }
+
+                if(category_id) {
+                    for(var i = 0; i < categories.length; ++i) {
+                        if(categories[i]._id == category_id) {
+                            used[category_id] = d;
+                            d.id = category_id;
+                            d.setText(categories[i].title);
+                            break;
+                        }
+                    }
+                } else {
+                    for(var i = 0; i < categories.length; ++i) {
+                        if(!used[categories[i]._id]) {
+                            used[categories[i]._id] = d;
+                            d.id = categories[i]._id;
+                            d.setText(categories[i].title);
+                            break;
+                        }
+                    }
+                }
+                
+                list.insertBefore(c, add_li);
+                
+                if(current.length == categories.length) {
+                    add_li.style.display = "none";
+                }
+            }
+        }
+
+        add_li.onclick = function () { create_category_select(); };
+
+        self.el = list;
+
+        self.setValue = function (value) {
+            if(value) {
+                function set_on_load () {
+                    if(!loaded) {
+                        async(set_on_load);
+                    } else {
+                        for(var i = 0; i < value.length; ++i) {
+                            create_category_select(value[i]);
+                        }
+                    }
+                }
+                set_on_load();
+            }
+        }
+
+        self.value = function () {
+            return Object.keys(used);
+        }
+
+        window.ajax({
+            type : "POST",
+            data : null,
+            url : "/async/category/list"
+        }).done(function (result) {
+            loaded = true;
+            if(result.status) {
+                categories = result.categories || [];
+            }
+        });
     }
 
     function DetailsView(item) {
@@ -890,6 +1075,8 @@
                 }
             },
             proj        = window.admin ? null : new ProjectView(),
+            hcateg      = window.admin ? document.createElement("div") : null,
+            categ       = window.admin ? new CategoryView() : null,
             hprice      = document.createElement("div"),
             price       = new PriceControl({ type : 0 }),
             hpayment    = document.createElement("div"),
@@ -908,7 +1095,8 @@
                 availability: avail,
                 action: action,
                 components : component,
-                labels: proj,
+                images: proj,
+                categories: categ,
                 price: price,
                 descrition: desc
             };
@@ -950,6 +1138,12 @@
                     avail.unlock();
                     action.unlock();
                     component.lock();
+                }
+            }
+        } else {
+            proj.changed = function (idx) {
+                if(self.selectImage) {
+                    self.selectImage(idx);
                 }
             }
         }
@@ -1002,6 +1196,14 @@
 
         } else {
             view.appendChild(proj.el);
+        }
+
+        if(window.admin) {
+            hcateg.className = "text-header header-text";
+            hcateg.innerHTML = "Categoy";
+
+            view.appendChild(hcateg);
+            view.appendChild(categ.el);
         }
 
         hprice.className = "text-header header-text";
@@ -1061,9 +1263,10 @@
             } else {
                 var data = price.value();
                 data.id = item.id();
-                data.preview = item.preview();
+                data.preview = proj.enabled() ? proj.value() : item.preview();
                 data.title = title.value();
                 data.availability = avail.value();
+                data.component = proj.enabled() ? proj.text() : null;
                 self.order(data);
             }
         }
@@ -1118,8 +1321,10 @@
             }
 
             details.order = function (data) {
-                self.close();
-                window.events.emit("order", data);
+                self.close(function() {
+                    
+                    window.events.emit("order", [data]);
+                }, { force : true });
             }
 
             details.enableLabel = function () {
@@ -1152,6 +1357,10 @@
                 } else if(callback) {
                     callback();
                 }
+            }
+
+            details.selectImage = function (idx) {
+                viewer.present(idx);
             }
 
             self.create = function () {
@@ -1223,8 +1432,8 @@
             view_       = document.createElement("div"),
             controller  = new Controller(item, category, view_);
 
-        function closePanel() {
-            async(self_.close);
+        function closePanel(callback, opt) {
+            async(self_.close, callback ? [callback, opt] : null);
         }
 
         controller.close = closePanel;
@@ -1504,7 +1713,6 @@
         }
 
         self.el = item;
-
     }
 
 
@@ -1547,7 +1755,7 @@
             });
         }
 
-        function close (callback) {
+        function close (callback, opt) {
             if(preview) {
                 window.removeEventListener("resize", update);
                 var el = preview.el;
@@ -1557,7 +1765,7 @@
                     if(callback) {
                         callback();
                     }
-                });
+                }, opt);
                 preview = null;
             } else if (callback) {
                 callback();      
@@ -1566,7 +1774,6 @@
 
         function open (item) {
             if(preview) {
-
                 var inline  = preview.item().position() == item.position();
                 preview.hide(function () {
                     preview.replace(item, self, function () {
@@ -1611,13 +1818,13 @@
 
 
         function load_shop_items () {
-            console.log(navigator.value());
+            
             window.ajax({
                 type: "POST",
                 data: navigator.value(),
                 url: '/async/shop/list',
             }).done(function (result) {
-                console.log(result);
+                
                 if(result && result.status) { 
                     var frag    = document.createElement("div"),
                         select  = null;
@@ -1644,12 +1851,11 @@
                         preview = null;
                     }
                 }
+                window.events.emit("update-ordered");
             });
         }
 
-        window.events.listen("shop-reload", load_shop_items);
-
-        load_shop_items();
+        self.reload = load_shop_items;
     }
 
     function ShopNavigator() {
@@ -1685,44 +1891,50 @@
                  
             if(data) {
                 controller.setValue(data.title);   
-                input.className = "categoty-title header-text";
-                del.className = "category-remove";
+                
 
                 if(window.admin) {
-                    del.onclick = function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        container.parentNode.removeChild(container);
-                        deleted = true;
-                        changed = false;
+                    if(del) {
+                        del.className = "category-remove";
+                        del.onclick = function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            container.parentNode.removeChild(container);
+                            deleted = true;
+                            changed = false;
+                        }
+                    }
+
+                    if(input) {
+                        input.className = "categoty-title header-text";
                     }
 
                     self.forceEditStart = function () {
-                        container.replaceChild(input, title);
-                        container.appendChild(del);
-                        input.value = title.innerHTML;
-                        input.onchange = function () {
-                            if(!deleted) {
-                                changed = true;
+                        if(input) {
+                            container.replaceChild(input, title);
+                            container.appendChild(del);
+                            input.value = title.innerHTML;
+                            input.onchange = function () {
+                                if(!deleted) {
+                                    changed = true;
+                                }
                             }
                         }
                     }
 
                     self.forceEditEnd = function () {
-                        input.onchange = null;
-                        container.replaceChild(title, input);
-                        container.removeChild(del);
-                        title.innerHTML = input.value;
+                        if(input) {
+                            input.onchange = null;
+                            container.replaceChild(title, input);
+                            container.removeChild(del);
+                            title.innerHTML = input.value;
+                        }
                     }
-
-                    window.events.listen("shop-category-edit-start", self.forceEditStart);
-
-                    window.events.listen("shop-category-edit-end", self.forceEditEnd);
 
 
                     self.save = function (callback) {
                         if(deleted && self.id()) {
-                            console.log("execute delete");
+                            
                             window.ajax({
                                 type: "POST",
                                 data: { id : self.id() },
@@ -1730,14 +1942,14 @@
                             }).done(callback);
 
                         } else if (changed) {
-                            console.log("execute save");
+                            
                             window.ajax({
                                 type: "POST",
                                 data: { id : self.id(), title: title.innerHTML },
                                 url: '/async/category/save',
                             }).done(callback);
                         } else {
-                            console.log("execute none");
+                            
                             callback();
                         }
                     }
@@ -1767,6 +1979,7 @@
         };
 
         var self        = this,
+            ctl_view    = null,
             container   = document.getElementById("shop_navigator"),
             categories  = new DropDown({ className : "category-nav", src : "../images/list.png"}),
             cat_add     = null,
@@ -1836,24 +2049,27 @@
                         var current     = 0,
                             total       = values.length,
                             complete    = function (tmp) {
-                                console.log("complete",tmp);
+                                
                                 if(++current == total) {
                                     callback();
                                 } 
                             }
                         for(var i = 0; i < total; ++i) {
-                            console.log("calling save");
+                            
                             values[i].forceEditEnd();
                             values[i].save(complete);
                         }
                     })(items, function () {
+                        
                         var tmp = new DropDown({ className : "category-nav", src : "../images/list.png"});
                         load_items(tmp, function (res) {
                             items = res;
                             container.replaceChild(tmp.el, categories.el);
                             categories = tmp;
                             categories.changed = function () {
-                                window.events.emit("shop-reload");
+                                if(ctl_view) {
+                                    ctl_view.reload();
+                                }
                             }
                             categories.setValue(0);
                         });
@@ -1877,7 +2093,9 @@
 
                     categories.manual();
                     categories.open();
-                    window.events.emit("shop-category-edit-start");
+                    for(var i = 0; i < items.length; ++i) {
+                        items[i].forceEditStart();
+                    }
 
                 }
             }
@@ -1888,12 +2106,20 @@
 
 
         categories.changed = function () {
-            window.events.emit("shop-reload");
+            if(ctl_view) {
+                ctl_view.reload();
+            }
         }
 
         sorter.changed = function () {
-            window.events.emit("shop-reload");
+            if(ctl_view) {
+                ctl_view.reload();
+            }
         }
+
+        self.setView = function (view) {
+            ctl_view = view;
+        }   
         
         self.value = function () {
             var filter = categories.value();
@@ -1919,6 +2145,8 @@
             panel       = document.getElementById("shop_panel"),
             nav         = new ShopNavigator(),
             items       = new ShopItemList(nav);
+
+        nav.setView(items);
 
         self.el = panel;
 
