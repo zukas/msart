@@ -1045,6 +1045,9 @@
             loaded = true;
             if(result.status) {
                 categories = result.categories || [];
+                if(categories.length == 0) {
+                    add_li.style.display = "none";
+                }
             }
         });
     }
@@ -1391,21 +1394,19 @@
                             url: '/async/shop/save'
                         }).done(function (result) {
                             if(result.status) {
-                                if(c_item.id() == result.id) {
+                                var callback = null;
+                                if(c_item.id() == result._id) {
                                     c_item.update({
                                         title: data["title"],
                                         price: data["price"], 
                                         preview: pictures[0]
                                     });
                                 } else {
-                                    c_category.createItem(new ShopItem({
-                                        id : result.id, 
-                                        title: data["title"], 
-                                        price: data["price"],
-                                        preview: pictures[0]
-                                    }), true);
+                                    callback = function() {
+                                        category.reload();
+                                    }
                                 }
-                                self.close();
+                                self.close(callback);
                             }
                         });
                     });
@@ -1668,7 +1669,7 @@
                 view_5         = document.createElement("div"),
                 count_5        = document.createElement("span");
 
-            views.className = "visit-counter-container text-invert";
+            views.className = "visit-counter-container text";
             view_1.className = "visit-counter";
             view_2.className = "visit-counter";
             view_3.className = "visit-counter";

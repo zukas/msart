@@ -283,7 +283,7 @@ exports.save = function (data, callback) {
 			if(err) {
 				callback({status: false, error: err});
 			} else {
-				callback({status : true, id : data._id});
+				callback({status : true, _id : data._id});
 			}
 		});
 	} else {

@@ -650,21 +650,20 @@ body[mobile] #content-wrapper {
 	display: inline-block;
 	position: relative;
 	margin: 14px 14px 0px 0px;
-	width: 184px;
+	width: auto;
 	height: 40px;
 	padding: 4px;
 	box-shadow: 1px 1px 3px #7e7e7e;
-	}
+	vertical-align: top;
+}
 
 #shop_panel .category-item-view .category-ctl {
 	display: inline-block;
-	position: absolute;
 	top: 4px;
 	left: 4px;
 	height: 40px;
 	line-height: 40px;
 	font-size: 18px;
-	width: 180px !important;
 	text-align: center;
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -1051,8 +1050,8 @@ body[mobile] #content-wrapper {
 	position: absolute;
 	top:0px;
 	left:0px;
-	height: 160px;
-	width: 120px;
+	height: 100%;
+	width: 100%;
 	opacity: 0;
 	overflow: hidden;
 	cursor: pointer;
@@ -1280,7 +1279,6 @@ body[mobile] #content-wrapper {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     box-shadow: 1px 3px 2px #7e7e7e;
-        overflow: hidden;
 }
 
 #shop_panel .edit .price table.multi-item td:last-child,
@@ -1872,7 +1870,6 @@ body[mobile] #content-wrapper {
 	position: relative;
 	width: 370px;
 	height: 330px;
-	/*border-bottom: 4px solid #336699;*/
 	background-color: #f2f2f2;
 	box-shadow: 0px 0px 2px #292929;
 	margin-right: 5px;
@@ -1883,6 +1880,10 @@ body[mobile] #content-wrapper {
     box-sizing: border-box;
 	clear: both;
     overflow: hidden;
+}
+
+[admin] #shop_panel .shop-item, [admin] #shop_panel .shop-item-new {
+	height: 390px;
 }
 
 #shop_panel .shop-item-internal {
@@ -1907,7 +1908,7 @@ body[mobile] #content-wrapper {
 	position: absolute;
 	width: 80px;
 	height: 80px;
-		border: 4px solid #336699;
+	border: 4px solid #336699;
 	left:50%;
 	top:50%;
 	margin-left: -40px;
@@ -1926,11 +1927,8 @@ body[mobile] #content-wrapper {
 }
 
 #shop_panel .shop-item:hover, #shop_panel .shop-item-new:hover {
-	border-bottom-color: #4080bf;
 	box-shadow: 0px 0px 10px #292929;
 	z-index: 2;
-	opacity: 1;
-    filter: alpha(opacity=100);
 }
 
 #shop_panel .shop-item:first-child, #shop_panel .shop-item-new:first-child {
@@ -1954,7 +1952,7 @@ body[mobile] #content-wrapper {
 #shop_panel .shop-item-new .shop-item-image {
 	background-size: auto;
 	background-image: url("../images/add.png");
-	height: 330px;
+	height: 390px;
 }
 
 #shop_panel .shop-item-title {
@@ -1994,13 +1992,8 @@ body[mobile] #content-wrapper {
     box-sizing: border-box;
 }
 
-#shop_panel .edit .shop-item-price {
-	top: 270px;
-}
-
-#shop_panel .edit .shop-item-price {
-	height: 30px;
-	line-height: 30px;
+[admin] #shop_panel .shop-item-title, [admin] #shop_panel .shop-item-price {
+	bottom: 60px;
 }
 
 #shop_panel .shop-item-price span {
@@ -2010,28 +2003,23 @@ body[mobile] #content-wrapper {
 #shop_panel .shop-item .visit-counter-container {
 	position: absolute;
 	display: block;
-	width: 300px;
-	height: 65px;
-	top: 300px;
-	left: 0px;
-	padding-left: 10px;
-	background: #292929;
+	width: 350px;
+	height: 60px;
+	bottom: 5px;
+	left: 10px;
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    opacity: 0.8;
-	filter: alpha(opacity=80);
 }
 
 #shop_panel .shop-item .visit-counter {
-	width: 120px;
+	width: 165px;
 	margin-right: 20px;
 	height: 20px;
 	position: relative;
-	font-size: 16px;
+	font-size: 14px;
 	line-height: 20px;
 	text-align: left;
-	color: #f2f2f2;
 	display: inline-block;
 }
 
