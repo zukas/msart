@@ -1603,10 +1603,10 @@
             item_img.el.className = "shop-item-image";
             item_int.appendChild(item_img.el);
 
-            title_.className = "shop-item-title text-invert";
+            title_.className = "shop-item-title text";
             item_int.appendChild(title_);
             
-            price_.className = "shop-item-price text-invert";
+            price_.className = "shop-item-price text";
             item_int.appendChild(price_);
         }
         item_img.loadImage({ 

@@ -175,14 +175,18 @@
 
     MSDivObject.prototype.scrollable = function () {
         var self = this;
-        self.track_change = true;
-        Ps.initialize(self.el, {
-            suppressScrollX: true
-        });
-
-        self.el.addEventListener("text-changed", function () {
+        if(self.track_change) {
             Ps.update(self.el);
-        });
+        } else {
+            self.track_change = true;
+            Ps.initialize(self.el, {
+                suppressScrollX: true
+            });
+
+            self.el.addEventListener("text-changed", function () {
+                Ps.update(self.el);
+            });
+        }
     }
 
     MSDivObject.prototype.setText = function (text) { 

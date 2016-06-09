@@ -1,5 +1,6 @@
-var db = require("../db"),
-	ObjectID = require('mongodb').ObjectID;
+var db 			= require("../db"),
+	ObjectID 	= require('mongodb').ObjectID,
+	check 		= require('./validate');
 
 
 exports.load = function (callback) {
@@ -62,4 +63,52 @@ exports.delete = function (data, callback) {
 			callback({status : true});
 		}
 	});
+}
+
+exports.swap_gallery = function (data, callback) {
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			one: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			},
+			two: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			}
+		}
+	});
+
+	if(res.status) {
+
+		data = {
+			one: res.data.one.toObjectID(),
+			two: res.data.two.toObjectID()
+		};
+
+		db.db.gallery.find({ _id : { $in : [ data.one, data.two ] }}, { created : 1 }).toArray(function (err, res) {
+			if(err) {
+				callback({status: false, error : err});
+			} else {
+
+				var bulk = db.db.gallery.initializeUnorderedBulkOp();
+				bulk.find({ _id : res[0]._id}).updateOne({ $set: { created : res[1].created }});
+				bulk.find({ _id : res[1]._id}).updateOne({ $set: { created : res[0].created }});
+				bulk.execute(function (err2, res2) {
+					if(err2) {
+						callback({status: false, error : err2});
+					} else {
+						callback({status : true});
+					}
+				})
+			}
+		});
+		
+	} else {
+		callback(res);
+	}
 }

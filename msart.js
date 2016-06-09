@@ -93,7 +93,7 @@ app.post("/async/orders/pay_paypal", engine.order_pay_paypal);
 app.post("/async/orders/pay_card", engine.order_pay_card);
 app.get("/async/orders/process", cors(), engine.order_process);
 
-app.all("/async/paypal/accept", engine.paypal_return);
+app.all("/async/paypal/accept?paymentId", engine.paypal_return);
 app.all("/async/paypal/cancel", engine.paypal_cancel);
 
 // app.post("/async/shop/order", engine.create_order);
@@ -101,6 +101,7 @@ app.all("/async/paypal/cancel", engine.paypal_cancel);
 app.post('/async/gallery/load', engine.load_gallery);
 app.post('/async/gallery/save', engine.save_gallery_item);
 app.post('/async/gallery/delete', engine.delete_gallery_item);
+app.post('/async/gallery/swap', engine.swap_gallery);
 
 app.post('/async/contact', engine.contact);
 

@@ -296,6 +296,16 @@ exports.delete_gallery_item = function (req, res) {
 	}
 }
 
+exports.swap_gallery = function (req, res) {
+	if(req.session.admin) {
+		gallery.swap_gallery(req.body, function (response) {
+			res.send(response);
+		});
+	} else {
+		res.send({ status: false, error: "Not allowed"});
+	}	
+}
+
 exports.track_sessions = function (session_store) {
 	setInterval(function () {
 		for(var i = 0; i < store.length; ++i) {
