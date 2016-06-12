@@ -84,10 +84,19 @@
             create      = window.admin ? new FileUpload({id : "gallery_thumb_new", className : "gallery-thumb", multiple: true}) : null,
             gallery     = new MSDivObject(document.getElementById("thumbs_container")),
             viewport    = new MSDivObject(document.getElementById("gallery_view").firstElementChild),
+            controls    = {
+                prev : document.getElementById("gallery_prev_page"),
+                data : document.getElementById("gallery_page_info"),
+                next : document.getElementById("gallery_next_page")
+            },
+            pages       = {
+                current: 1,
+                total : 1,
+                thumbs : 0
+            },
             thumbs      = {},
             init        = function (thumb) {
                 if(thumb) {
-                    // gallery.scrollable();
                     set(thumb);
                 }
             },
@@ -126,29 +135,110 @@
                     data: { one : i, two : j },
                     url: '/async/gallery/swap'
                 });
+            };
+        
+        function fit() {
+            var nodes   = gallery.el.childNodes,
+                count   = nodes.length;
+            pages.current = 1;
+            pages.total = 1;
+
+            if(count > 0) {
+                var iw      = nodes[0].offsetWidth + 6,
+                    ih      = nodes[0].offsetHeight + 6,
+                    cw      = gallery.el.offsetWidth - 2,
+                    ch      = gallery.el.offsetHeight - 2;
+
+                var wf  = Math.floor(cw / iw);
+                var hf  = Math.floor(ch / ih);
+                pages.thumbs = wf * hf;
+                pages.total = Math.ceil(count / pages.thumbs);
+                
+                for(var i = pages.thumbs - 1; i >= 0; --i) {
+                    if(nodes[i].style.display.length == 0) {
+                        break;
+                    }
+                    async(function(item) {
+                        item.style.display = null;
+                    }, [nodes[i]]);
+                    
+                } 
+
+                for(var i = pages.thumbs; i < count; ++i) {
+
+                    if(nodes[i].style.display.length > 0) {
+                        break;
+                    }
+                    async(function(item) {
+                        item.style.display = "none";
+                    }, [nodes[i]]);
+                } 
+            }
+            controls.prev.setAttribute("disabled", true);
+            if(pages.total == 1) {
+                controls.next.setAttribute("disabled", true);
+            } else {
+                controls.next.removeAttribute("disabled");
+            }
+            controls.data.innerHTML = pages.current + " / " + pages.total;
+        } 
+        if(!window.admin) {
+            window.addEventListener("resize", fit); 
+            controls.prev.onclick = function () {
+                if(controls.prev.hasAttribute("disabled")) {
+                    return;
+                }
+                var nodes   = gallery.el.childNodes,
+                    count   = nodes.length;
+
+                for(var i = Math.min(pages.thumbs * pages.current, count); i >= pages.thumbs * (pages.current - 1); --i) {
+                    async(function(item) {
+                        item.style.display = "none";
+                    }, [nodes[i]]);
+                } 
+
+                pages.current -= 1;
+                if(pages.current == 1) {
+                    controls.prev.setAttribute("disabled", true);
+                }
+                controls.next.removeAttribute("disabled");
+                controls.data.innerHTML = pages.current + " / " + pages.total;
+
+                for(var i = Math.min(pages.thumbs * pages.current, count); i >= pages.thumbs * (pages.current - 1); --i) {
+                    async(function(item) {
+                        item.style.display = null;
+                    }, [nodes[i]]);
+                } 
+
             }
 
-        function position () {
-            var st = content.scrollTop;
-            var gt = panel.offsetTop;
-            if(st > gt || viewport.el.offsetTop > 0) {
-                var gh = gallery.el.offsetHeight;
-                var h  = viewport.el.offsetHeight;
-                var s  = st - gt;
-                var l  = gh - h;
-                s = s < 0 ? 0 : s;
-                s = s > l ? l : s;
-                // viewport.el.style.top = s + "px";
-                morpheus(viewport.el,
-                {
-                    top: s + "px",
-                    duration: 150
-                });  
-            } 
-        }
+            controls.next.onclick = function () {
+                if(controls.next.hasAttribute("disabled")) {
+                    return;
+                }
+                var nodes   = gallery.el.childNodes,
+                    count   = nodes.length;
 
-        content.addEventListener("scroll", position);
-        window.addEventListener("resize", position);
+                for(var i = pages.thumbs * (pages.current - 1); i < pages.thumbs * pages.current &&  i < count; ++i) {
+                    async(function(item) {
+                        item.style.display = "none";
+                    }, [nodes[i]]);
+                } 
+
+                pages.current += 1;
+                if(pages.current == pages.total) {
+                    controls.next.setAttribute("disabled", true);
+                }
+                controls.prev.removeAttribute("disabled");
+                controls.data.innerHTML = pages.current + " / " + pages.total;
+
+                for(var i = pages.thumbs * (pages.current - 1); i < pages.thumbs * pages.current &&  i < count; ++i) {
+                    async(function(item) {
+                        item.style.display = null;
+                    }, [nodes[i]]);
+                } 
+            }
+        } 
 
 
         if(create) {
@@ -177,7 +267,6 @@
                                 gallery.el.appendChild(item.el);
                             }
                             set(item);
-                            // gallery.scrollable();
                         }
                     }); 
                 }
@@ -205,7 +294,9 @@
                 }
                 gallery.el.appendChild(frag); 
                 init(thumb);
-
+                if(!window.admin) {
+                    fit();
+                }
 
             }
         });
