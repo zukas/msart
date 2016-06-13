@@ -25,6 +25,7 @@ window.addEventListener("load", function () {
 
 {% block content %}
 	<div id="content-wrapper">
+		<div id="content_scroll_top" draggable=true></div>
 		<div id="content">
 			<div id="about_panel" navigator="about" class="content-panel text">
 				<div class="layout">
@@ -145,7 +146,7 @@ window.addEventListener("load", function () {
 						<div class="checkout-control">
 							<div id="payment_type">
 								<div class="text seperator" lang="payment_type">Payment type</div>
-<!-- 								<div class="payment-option paypal" option=0 checked>
+								<!-- <div class="payment-option paypal" option=0 checked>
 									<div class="checkbox"></div>
 									<div class="banner paypal"></div>
 								</div>
@@ -365,12 +366,6 @@ window.addEventListener("load", function () {
 			<div id="contact_panel" navigator="contact" class="content-panel">
 			<div class="layout">
 				<div id="company_data">
-					
-<!-- 					<div class="header-data header-text" lang="about_us">About Us</div>
-					<div id="company_description" class="text" lang="about_us_value">
-					A new interior design company based in Warsaw, 
-					commited to providing fresh and unique design to your home or office.
-					</div> -->
 					<div class="header-data text-invert-light" lang="office">Our office</div>
 					<div id="office" class="text-invert-light">
 					ul. Puszczyka 15 lok. 18<br/>
@@ -389,5 +384,6 @@ window.addEventListener("load", function () {
 			</div>
 			</div>
 		</div>
+		<div id="content_scroll_bottom" draggable=true></div>
 	</div>
 {% endblock %}

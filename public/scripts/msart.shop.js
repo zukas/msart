@@ -1122,25 +1122,33 @@
         if(window.admin) {
             language.bind("individual",type.addItem(0));
             language.bind("common",type.addItem(1));
+            language.bind("advert",type.addItem(2));
             htype.className = "text-header header-text";
             language.bind("type", htype);
             view.appendChild(htype);
             view.appendChild(type.el);
             type.changed = function (val) {
-                if(val == 1) {
+                if(val == 0) {
                     price.change(1);
                     avail.setValue(1);
                     action.setValue(0);
                     avail.lock(); 
                     action.lock();
                     component.unlock();
-                } else {
+                } else if(val == 1){
                     price.change(0);
                     avail.setValue(0);
                     component.setValue(0);
                     avail.unlock();
                     action.unlock();
                     component.lock();
+
+                    price.change(1);
+                    avail.setValue(1);
+                    action.setValue(0);
+                    avail.lock(); 
+                    action.lock();
+                    component.unlock();
                 }
             }
         } else {

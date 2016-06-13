@@ -94,6 +94,7 @@
 			message: "Wiadomość",
 			individual : "Pojedynczy",
 			common : "Zbiorowy",
+			advert : "Ogłoszenie",
 			available : "Dostępny",
 			demand : "Na zamówienie",
 			keep : "Sklep",
@@ -111,6 +112,7 @@
 			labeled: "Oznaczonych",
 			projects: "Projekt",
 			category: "Kategoria"
+
 		}
 	}
 

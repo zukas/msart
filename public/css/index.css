@@ -141,6 +141,31 @@ form:hover input[type="radio"]:checked + label span {
     outline: none;
 }
 
+#content_scroll_top, #content_scroll_bottom {
+	display: none;
+}
+
+[admin] #content_scroll_top[enabled] {
+	display: block;
+	position: fixed;
+	height: 100px;
+	width: 100%;
+	left: 0px;
+	top: 0px;
+	z-index: 100;
+	opacity: 0;
+}
+
+[admin] #content_scroll_bottom[enabled] {
+	display: block;
+	position: fixed;
+	height: 100px;
+	width: 100%;
+	left: 0px;
+	bottom: 0px;
+	z-index: 100;
+	opacity: 0;
+}
 
 [contenteditable]:focus 
 { outline: 0px solid transparent; } 

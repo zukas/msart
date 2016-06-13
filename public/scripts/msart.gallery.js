@@ -26,10 +26,62 @@
         }
 
         if(window.admin) {
+
             item.el.setAttribute("draggable", true);
+            var top     = document.getElementById("content_scroll_top"),
+                bottom  = document.getElementById("content_scroll_bottom"),
+                content = document.getElementById("content-wrapper"),
+                anim    = false,
+                run     = function (val) {
+                    if(anim) {
+                        var top = content.scrollTop;                        
+                        morpheus.tween(5,
+                        function (ratio) {
+                            if(ratio == 1) {
+                                 async(run, [val]);
+                            }
+                            var value = top + val * ratio;
+                            if(value >= 0 && value <= content.scrollHeight) {
+                                content.scrollTop = value;
+                            }  
+                        });
+                    }
+                }
+
+            top.ondragenter = function (e) {
+                e.preventDefault();
+                anim = true;
+                run(-10);
+            }
+
+            top.ondragleave = function (e) {
+                e.preventDefault();
+                anim = false;
+            }
+
+            bottom.ondragenter = function (e) {
+                e.preventDefault();
+                anim = true;
+                run(10);
+            }
+
+            bottom.ondragleave = function (e) {
+                e.preventDefault();
+                anim = false;
+            }
+
+
             item.el.ondragstart = function (e) {
                 e.dataTransfer.setData("target", id_);
+                top.setAttribute("enabled",true);
+                bottom.setAttribute("enabled",true);
             };
+
+            item.el.ondragend = function (e) {
+                e.preventDefault();
+                top.removeAttribute("enabled");
+                bottom.removeAttribute("enabled");
+            }
 
             item.el.ondragover = function (e) {
                 e.preventDefault();
@@ -125,16 +177,18 @@
                 });
             },
             swap        = function (i, j) {
-                var thumb = thumbs[i];
-                thumb.change(j);
-                thumbs[i] = thumbs[j];
-                thumbs[j] = thumb;
-                thumbs[i].change(i);
-                window.ajax({
-                    type: "POST",
-                    data: { one : i, two : j },
-                    url: '/async/gallery/swap'
-                });
+                if(i != j) {
+                    var thumb = thumbs[i];
+                    thumb.change(j);
+                    thumbs[i] = thumbs[j];
+                    thumbs[j] = thumb;
+                    thumbs[i].change(i);
+                    window.ajax({
+                        type: "POST",
+                        data: { one : i, two : j },
+                        url: '/async/gallery/swap'
+                    }); 
+                }
             };
         
         function fit() {
