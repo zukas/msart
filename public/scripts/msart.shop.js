@@ -796,6 +796,7 @@
         var self        = this,
             container   = document.createElement("div"),
             controls    = null,
+            isnull      = false,
             index       = 0;
 
         if(window.admin) {
@@ -811,7 +812,7 @@
             container.appendChild(controls.el);
         }
 
-        container.className = "price text";
+        container.className = "price text advert-hide";
 
         self.el = container;
         if(window.admin) {
@@ -823,11 +824,15 @@
                     self.changed(idx);
                 }
             }
+
+            self.nullValue = function (is_null) {
+                isnull = is_null;
+            }
         }
 
         self.value = function () {
             if(window.admin) {
-                return {
+                return isnull ? null : {
                     type : index,
                     values : controls[index].value()
                 }
@@ -837,11 +842,13 @@
         }
 
         self.setValue = function (data) {
-            if(window.admin) {
-                self.change(data.type);
-                controls[index].setValue(data.values);
-            } else {
-                controls.setValue(data.values);
+            if(data) {
+                if(window.admin) {
+                    self.change(data.type);
+                    controls[index].setValue(data.values);
+                } else {
+                    controls.setValue(data.values);
+                }
             }
         }
 
@@ -1052,15 +1059,80 @@
         });
     }
 
+    function DetailsContact() {
+        var self        = this,
+            container   = document.createElement("div"),
+            title       = document.createElement("div"),
+            name        = document.createElement("input"),
+            email       = document.createElement("input"),
+            message     = new MSInputObject({ className: "message text", multiline : true, user: true });
+
+        container.className = "shop-item-contact-panel";
+        title.className = "text-header header-text";
+        name.className = "name text";
+        email.className = "email text";
+
+        language.bind("contact", title);
+        language.bindInput("full_name", name);
+        language.bindInput("email", email);
+        language.bindInput("message", message.el);
+
+        container.appendChild(title);
+        container.appendChild(name);
+        container.appendChild(email);
+        container.appendChild(message.el);
+
+        self.el = container;
+
+        self.value = function () {
+            return {
+                name: name.innerHTML,
+                email: email.innerHTML,
+                message: message.value()
+            }
+        }
+
+        function focus () {
+            this.removeAttribute("error");
+            this.onfocus = null;
+        }
+
+        self.error = function (err) {
+            for(var key in err) {
+                if(key == "name") {
+                    name.setAttribute("error", true);
+                    name.onfocus = focus;
+                } else if(key == "email") {
+                    email.setAttribute("error", true);
+                    email.onfocus = focus;
+                } else if(key == "message") {
+                    message.el.setAttribute("error", true);
+                    message.el.onfocus = focus;
+                }
+            }
+        }
+    }
+
     function DetailsView(item) {
         var self        = this,
             container   = document.createElement("div"),
             view        = document.createElement("div"),
             ctl         = document.createElement("div"),
+            contact     = null,
             htitle      = document.createElement("div"),
             title       = new MSInputObject({ className: "title text", placeholder: "Title", multiline : true }),
             htype       = window.admin ? document.createElement("div") : null,
-            type        = window.admin ? new DropDown({ className : "type-ctl" }) : null,
+            type        = window.admin ? new DropDown({ className : "type-ctl" }) : {
+                setValue: function (data) {
+                    if(data == 2) {
+                        container.setAttribute("advert",true);
+                        contact = new DetailsContact();
+                        view.appendChild(contact.el);
+                        language.unbind("order", act_btn);
+                        language.bind("send", act_btn);
+                    }
+                }
+            },
             havail      = document.createElement("div"),
             avail       = new DropDown({ className : "avail-ctl", adminOnly : true }),
             haction     = window.admin ? document.createElement("div") : null,
@@ -1128,27 +1200,30 @@
             view.appendChild(htype);
             view.appendChild(type.el);
             type.changed = function (val) {
+                price.nullValue(false);
+                container.removeAttribute("advert");
                 if(val == 0) {
-                    price.change(1);
-                    avail.setValue(1);
-                    action.setValue(0);
-                    avail.lock(); 
-                    action.lock();
-                    component.unlock();
-                } else if(val == 1){
                     price.change(0);
                     avail.setValue(0);
                     component.setValue(0);
                     avail.unlock();
                     action.unlock();
                     component.lock();
-
+                } else if(val == 1){
                     price.change(1);
                     avail.setValue(1);
                     action.setValue(0);
                     avail.lock(); 
                     action.lock();
                     component.unlock();
+                } else if(val == 2) {
+                    price.nullValue(true);
+                    avail.setValue(1);
+                    avail.lock(); 
+                    action.setValue(0);
+                    action.lock();
+                    component.unlock();
+                    container.setAttribute("advert",true);
                 }
             }
         } else {
@@ -1217,14 +1292,14 @@
             view.appendChild(categ.el);
         }
 
-        hprice.className = "text-header header-text";
+        hprice.className = "text-header header-text advert-hide";
         language.bind("price", hprice);
         view.appendChild(hprice);
         view.appendChild(price.el);
 
-        hpayment.className = "text-header header-text";
+        hpayment.className = "text-header header-text advert-hide";
         language.bind("payment_opt", hpayment);
-        payment.className = "payments";
+        payment.className = "payments advert-hide";
 
         window.ajax({
             type : "POST",
@@ -1245,10 +1320,10 @@
         view.appendChild(hpayment);
         view.appendChild(payment);
 
-        hlead.className = "text-header header-text";
+        hlead.className = "text-header header-text advert-hide";
         language.bind("lead", hlead);
 
-        lead.className = "lead-time text";
+        lead.className = "lead-time text advert-hide";
 
         view.appendChild(hlead);
         view.appendChild(lead);
@@ -1271,6 +1346,18 @@
                     }
                 }
                 self.save(data);
+            } else if(contact) {
+                var data = contact.value();
+                data.id = item.id();
+                data.preview = proj.enabled() ? proj.value() : item.preview();
+                data.title = title.value();
+                data.availability = avail.value();
+                data.component = proj.enabled() ? proj.text() : null;
+                self.contact(data, function (result) {
+                    if(!result.status) {
+
+                    }
+                });
             } else {
                 var data = price.value();
                 data.id = item.id();
@@ -1338,6 +1425,21 @@
                 }, { force : true });
             }
 
+            details.contact = function (data, error) {
+                window.ajax({
+                    type: "POST",
+                    data: data,
+                    url: '/async/contact',
+                }).done(function (result) {
+                     if(result.status) {
+                        self.close();
+                    } else {
+                        error(result);
+                    }
+                });
+                
+            }
+
             details.enableLabel = function () {
                 viewer.enableLabel();
             }
@@ -1353,6 +1455,7 @@
                         data: { id : item.id() },
                         url: '/async/shop/load',
                     }).done(function (result) {
+                        console.log(result);
                         if(result.item) {
                             details.setValue(result.item);
                             viewer.beginAdd();
@@ -1395,7 +1498,7 @@
 
                         data.id = item.id();
                         data.images = pictures;
-                        
+                        console.log(data);
                         window.ajax({
                             type: "POST",
                             data: data,
@@ -1597,9 +1700,6 @@
             preview_id  = data.preview.id,
             price_      = document.createElement("div");
 
-        
-        price_.setAttribute("currency", "zł");
-
         item.id = data._id;
         if(window.admin) {
             item.className = "shop-item edit no-select";   
@@ -1625,7 +1725,13 @@
             width: 3 
         });
         title_.innerHTML = data.title;  
-        price_.innerHTML = Math.round(data.price.values[0].price / data.price.values[0].quantity);
+        if(data.price) {
+            price_.innerHTML = Math.round(data.price.values[0].price / data.price.values[0].quantity);
+            price_.setAttribute("currency", "zł");
+        } else {
+            price_.innerHTML = null;
+            price_.removeAttribute("currency");
+        }
 
         self.id = function () {
             return item.id;
@@ -1652,7 +1758,13 @@
                 width: 3 
             });
             title_.innerHTML = new_data.title;
-            price_.innerHTML = Math.round(new_data.price.values[0].price / new_data.price.values[0].quantity);
+            if(new_data.price) {
+                price_.innerHTML = Math.round(new_data.price.values[0].price / new_data.price.values[0].quantity);
+                price_.setAttribute("currency", "zł");
+            } else {
+                price_.innerHTML = null;
+                price_.removeAttribute("currency");
+            }
         }
 
         item.onclick = function () {

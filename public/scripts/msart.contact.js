@@ -7,18 +7,18 @@
     		message	= document.getElementById("contact_message"),
     		send 	= document.getElementById("contact_send");
 
-    	    	function focus () {
+    	function focus () {
     		this.removeAttribute("error");
     		this.onfocus = null;
     	}
 
     	send.onclick = function () {
-    		    		window.ajax({
+    		window.ajax({
     			type: "POST",
     			data: { name : name.value, email: email.value, message: message.value },
     			url: '/async/contact',
     		}).done(function (result) {
-    			    			if(result.status) {
+    			 if(result.status) {
     				name.value = "";
     				email.value = "";
     				message.value = "";
@@ -36,7 +36,7 @@
     					}
     				}
     			}
-    		})
+    		});
     	}
     }
 

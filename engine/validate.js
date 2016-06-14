@@ -74,6 +74,8 @@ function val_array(data, schema) {
 			} else {
 				return { status: false, error : errors };
 			}
+		} else if(data == null && schema.optional) {
+			return { status : true };
 		}
 	}
 	return { status: false };
@@ -103,6 +105,8 @@ function val_object(data, schema) {
 			} else {
 				return { status: false , error: errors };
 			}
+		} else if(data == null && schema.optional) {
+			return { status : true };
 		}
 	}
 	return { status: false };	

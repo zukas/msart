@@ -19,7 +19,9 @@
         self.__get_value = null;
         self.__set_value = null;
 
-        if(window.admin){
+        options = options || {};
+
+        if(window.admin || options.user){
             if(options.multiline) {
                 self.el = document.createElement("textarea");
                 var offset  = self.el.offsetHeight - self.el.clientHeight,
@@ -32,7 +34,9 @@
                                 self.el.style.height = "auto";
                             }
                             var hi = self.el.scrollHeight + offset;
-                            self.el.style.height = hi + "px";
+                            if(hi > 0) {
+                                self.el.style.height = hi + "px"; 
+                            }
                             length = tmp;
                             if(hi != height) {
                                 height = hi;
@@ -600,12 +604,12 @@
         if(curr_top != next_top) {
             var ajust = next_top - curr_top + offset;
             morpheus.tween(500,
-                function (ratio) {
-                    var value = curr_top + ajust * ratio;
-                    if(value >= 0 && value <= content.scrollHeight) {
-                        content.scrollTop = value;
-                    }  
-                });
+            function (ratio) {
+                var value = curr_top + ajust * ratio;
+                if(value >= 0 && value <= content.scrollHeight) {
+                    content.scrollTop = value;
+                }  
+            });
         }
     }
 

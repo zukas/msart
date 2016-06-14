@@ -181,7 +181,7 @@ exports.save = function (data, callback) {
 				type : check.TYPE.VALUE,
 				class : "Number",
 				convert : true,
-				value: "0|1"
+				value: "0|1|2"
 			},
 			components : {
 				type : check.TYPE.VALUE,
@@ -250,7 +250,8 @@ exports.save = function (data, callback) {
 						},
 						minLength : 1
 					}
-				}
+				},
+				optional : true
 			}
 
 		}
