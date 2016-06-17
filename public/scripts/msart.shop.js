@@ -1286,7 +1286,8 @@
 
         if(window.admin) {
             hcateg.className = "text-header header-text";
-            hcateg.innerHTML = "Categoy";
+	    language.bind ("category",hcateg);
+            
 
             view.appendChild(hcateg);
             view.appendChild(categ.el);
