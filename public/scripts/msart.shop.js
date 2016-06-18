@@ -1086,8 +1086,8 @@
 
         self.value = function () {
             return {
-                name: name.innerHTML,
-                email: email.innerHTML,
+                name: name.value,
+                email: email.value,
                 message: message.value()
             }
         }
@@ -1348,14 +1348,15 @@
                 self.save(data);
             } else if(contact) {
                 var data = contact.value();
-                data.id = item.id();
-                data.preview = proj.enabled() ? proj.value() : item.preview();
-                data.title = title.value();
-                data.availability = avail.value();
-                data.component = proj.enabled() ? proj.text() : null;
+                data.data = {
+                    id : item.id(),
+                    preview : proj.enabled() ? proj.value() : item.preview(),
+                    title : title.value(),
+                    component : proj.enabled() ? proj.text() : null
+                }
                 self.contact(data, function (result) {
                     if(!result.status) {
-
+                        contact.error(result.error);
                     }
                 });
             } else {
@@ -1426,6 +1427,7 @@
             }
 
             details.contact = function (data, error) {
+                console.log(data);
                 window.ajax({
                     type: "POST",
                     data: data,
@@ -1434,6 +1436,7 @@
                      if(result.status) {
                         self.close();
                     } else {
+                        console.log(result);
                         error(result);
                     }
                 });

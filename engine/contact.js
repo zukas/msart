@@ -22,8 +22,34 @@ exports.send = function (data, callback) {
 			message: {
 				type: check.TYPE.VALUE,
 				class: "String",
-				regex: /^.{1,1000}$/
+				regex: /^(.|[\n\r]){5,1000}$/
+			},
+			data: {
+				type: check.TYPE.OBJECT,
+				optional: true,
+				properties: {
+					id : {
+						type: check.TYPE.VALUE,
+						class: "String",
+						regex: "$ObjectID"
+					},
+					preview : {
+						type: check.TYPE.VALUE,
+						class: "String",
+						regex: "$ObjectID"
+					},
+					title : {
+						type: check.TYPE.VALUE,
+						class: "String"
+					},
+					component : {
+						type: check.TYPE.VALUE,
+						class: "String",
+						optional: true
+					}
+				}
 			}
+
 		}
 	});
 
