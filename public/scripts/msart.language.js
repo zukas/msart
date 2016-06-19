@@ -111,7 +111,11 @@
 			none: "Bez nazwy",
 			labeled: "Oznaczona",
 			projects: "Projekt",
-			category: "Kategoria"
+			category: "Kategoria",
+                        allitems: "Wszystkie",
+                        lowprice: "Cena malejąco",
+                        hightprice: "Cena rosnąco",
+
 
 		}
 	}
