@@ -12,15 +12,13 @@ window.addEventListener("load", function () {
 </script>
 {% endif %}
 <!-- <script type="text/javascript" src="compiled/msart.min.js"></script> -->
-<script type="text/javascript" src="scripts/perfect-scrollbar.js"></script>
-<script type="text/javascript" src="scripts/morpheus.js"></script>
-<script type="text/javascript" src="scripts/spin.js"></script>
-<script type="text/javascript" src="scripts/msart.header.js"></script>
-<script type="text/javascript" src="scripts/msart.home.js"></script>
-<script type="text/javascript" src="scripts/msart.shop.js"></script>
-<script type="text/javascript" src="scripts/msart.order.js"></script>
-<script type="text/javascript" src="scripts/msart.gallery.js"></script>
-<script type="text/javascript" src="scripts/msart.contact.js"></script>
+<script type="text/javascript" src="scripts/morpheus.js" defer="defer"></script>
+<script type="text/javascript" src="scripts/msart.header.js" defer="defer"></script>
+<script type="text/javascript" src="scripts/msart.home.js" defer="defer"></script>
+<script type="text/javascript" src="scripts/msart.shop.js" defer="defer"></script>
+<script type="text/javascript" src="scripts/msart.order.js" defer="defer"></script>
+<script type="text/javascript" src="scripts/msart.gallery.js" defer="defer"></script>
+<script type="text/javascript" src="scripts/msart.contact.js" defer="defer"></script>
 {% endblock %}
 
 {% block content %}
@@ -368,12 +366,12 @@ window.addEventListener("load", function () {
 				<div id="company_data">
 					<div class="header-data text-invert-light" lang="office">Our office</div>
 					<div id="office" class="text-invert-light">
-                                        Małgorzata Schirok Craftshop<br/>					
-                                        ul. Puszczyka 15 lok. 18<br/>
-					02-785 Warszawa<br/><br/>         
-					NIP: 9511855457<br/>
-                                        REGON: 363960049<br/> 					
-                                        </div>
+                        Małgorzata Schirok Craftshop<br/>					
+                        ul. Puszczyka 15 lok. 18<br/>
+						02-785 Warszawa<br/><br/>         
+						NIP: 9511855457<br/>
+						REGON: 363960049<br/> 					
+					</div>
 					<div id="logo"></div>
 				</div>
 				<div id="contact_form">
@@ -381,7 +379,7 @@ window.addEventListener("load", function () {
 					<input id="contact_name" type="text-invert-light" class="text" placeholder-lang="full_name"/>
 					<input id="contact_email" type="text" class="text" placeholder-lang="email"/>
 					<textarea id="contact_message" class="text" placeholder-lang="message"></textarea>
-					<div id="contact_send" class="text-invert" lang="send">Send</div>
+					<div id="contact_send" class="text-invert noselect" lang="send">Send</div>
 				</div>
 			</div>
 			</div>

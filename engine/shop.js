@@ -133,6 +133,7 @@ exports.list = function (data, callback) {
 
 	db.db.shop.find(filter || {})
 		.sort(sort || { norm : 1 })
+		.sort({ advert: -1 })
 		.toArray(function (err, items) {
 			if(err) {
 				callback({status : false, error: err});
@@ -272,6 +273,9 @@ exports.save = function (data, callback) {
 			if(data.images[i].label) {
 				data.images[i].label = data.images[i].label.normalize();
 			}
+		}
+		if(data.type == 2) {
+			data.advert = true;
 		}
 		data.norm = data.title.toLowerCase();
 		data.updated = new Date();

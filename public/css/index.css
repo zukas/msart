@@ -58,22 +58,19 @@ html
 {
 	font-family: LobsterTwo;
 	min-width: 720px;
-    min-height: 800px;
     width: 100%;
-    height: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
     background-color: #f2f2f2;
     scroll-behavior: smooth;
 }
 
 body {
+	font-family: LobsterTwo;
 	min-width: 720px;
-    min-height: 800px;
     width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    cursor: default;
+    overflow: visible;
     background-color: #f2f2f2;
+    scroll-behavior: smooth;
 }
 
 input {
@@ -176,8 +173,8 @@ form:hover input[type="radio"]:checked + label span {
 
 
 .header-text {
-	color: #4d4d4d;
-	text-shadow: 0px 2px 1px #f2f2f2;
+	color: #262626;
+	text-shadow: 0px 2px 1px #fafafa;
 }
 
 .text {
@@ -192,7 +189,7 @@ form:hover input[type="radio"]:checked + label span {
 }
 
 .text-invert-light {
-	color: #f2f2f2;
+	color: #fafafa;
 	text-shadow: 0px 2px 1px #000000;
 }
 
@@ -1424,7 +1421,8 @@ body[mobile] #content-wrapper {
 	width: 360px;
 	height: auto;
 	margin-top: 10px;
-	line-height: 30px;
+	line-height: 22px;
+	min-height: 90px;
 	border: none;
 	box-shadow: inset 0px 0px 2px #000000;
 	background: #fafafa;	
@@ -2230,7 +2228,7 @@ body[mobile] #content-wrapper {
 }
 
 #order_panel .text.seperator {
-	font-size: 18px;
+	font-size: 20px;
 	line-height: 25px;
 	height: 25px;
 	margin-bottom: 20px;
@@ -2637,7 +2635,7 @@ body[mobile] #content-wrapper {
 }
 
 #order_panel .preview-label.text {
-	font-size: 16px;
+	font-size: 17px;
 	line-height: 20px;
 	height: 20px;
 }
@@ -2687,6 +2685,15 @@ body[mobile] #content-wrapper {
 	width: 770px;
 	max-width: 770px;
 }
+
+#order_panel #done_view .checkout-control #done_advance {
+	right: 10px;
+}
+
+#order_panel #done_view .checkout-control #done_back {
+	right: 195px;
+}
+
 
 #order_panel #payment_type {
 	display: block;
@@ -2770,8 +2777,10 @@ body[mobile] #content-wrapper {
 
 #order_panel #data_preview {
 	display: table;
-	border-collapse: collapse;
+	border-collapse: separate;
+	border-spacing: 10px;
 	table-layout: fixed;
+	margin: 0px auto;	
 }
 
 #order_panel .preview-group {
@@ -2782,6 +2791,14 @@ body[mobile] #content-wrapper {
 	display: table-cell;
 	width: 50%;
 	min-height: 300px;
+	padding: 10px;
+	background-color: #f2f2f2;
+	box-shadow: 0px 0px 2px #292929;
+}
+
+#order_panel .preview-block:empty{
+	background-color: transparent;
+	box-shadow: none;
 }
 
 #order_panel .preview-layout-control span:empty {
@@ -2824,6 +2841,7 @@ body[mobile] #content-wrapper {
 	min-height: auto;
 	min-width: auto;
 	table-layout: auto;
+	margin-bottom: 20px;
 }
 
 #order_panel #order_summary tr {
@@ -2857,8 +2875,9 @@ body[mobile] #content-wrapper {
 #order_panel #order_summary .total-price-summary {
 	width: 100%;
 	height: 80px;
-	margin: 30px auto 10px auto;
-	box-shadow: 0px 0px 2px #7e7e7e;
+	margin: 0px auto;
+	background-color: #336699;
+	box-shadow: 0px 0px 2px #292929;
 	
 	font-size: 24px;
 	line-height: 80px;
@@ -3152,7 +3171,7 @@ body[mobile] #content-wrapper {
 	width: 360px;
 	height: 150px;
 	margin-top: 10px;
-	line-height: 30px;
+	line-height: 22px;
 	border: none;
 	box-shadow: 0px 2px 2px #000000;
 	background: #fafafa;	

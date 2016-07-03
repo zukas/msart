@@ -1846,8 +1846,13 @@
             container   = document.getElementById("shop_item_view"),
             view        = document.createElement("div"),
             creator     = window.admin ? new NewShopItem() : null,
+            hash        = window.location.hash ? window.location.hash.substring(1) : null,
             preview     = null,
             marker      = null;
+
+        if(window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, "/");
+        }
 
         function update (callback) {
             async(function(){
@@ -1960,8 +1965,9 @@
                     if(result.items) {
                         for(var i = 0; i < result.items.length; ++i) {
                             var item = new ShopItem(result.items[i]);
-                            if(preview && preview.item().id() == item.id()) {
+                            if(preview && preview.item().id() == item.id() || item.id() == hash) {
                                 select = item;
+                                hash = null;
                             }
                             item.open = open;
                             frag.appendChild(item.el);
@@ -1970,7 +1976,7 @@
 
                     container.replaceChild(frag, view);
                     view = frag;
-                    if(preview && select) {
+                    if(select) {
                         open(select);
                     } else {
                         preview = null;
@@ -1979,6 +1985,8 @@
                 window.events.emit("update-ordered");
             });
         }
+
+
 
         self.reload = load_shop_items;
     }

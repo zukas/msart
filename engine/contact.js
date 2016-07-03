@@ -1,4 +1,5 @@
-var check 		= require('./validate');
+var check 		= require('./validate'),
+	mailer		= require('../email/email');
 
 exports.send = function (data, callback) {
 	var res = check.run(data, {
@@ -53,5 +54,14 @@ exports.send = function (data, callback) {
 		}
 	});
 
-	callback(res);
+	if(res.status) {
+		if(res.data.data) {
+			mailer.sendMail("info", res.data, "julius.zukauskas@gmx.com", callback);
+		} else {
+			mailer.sendMail("contact", res.data, "julius.zukauskas@gmx.com", callback);
+		}
+	} else {
+		callback(res);
+	}
+
 }

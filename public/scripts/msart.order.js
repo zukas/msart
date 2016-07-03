@@ -307,7 +307,7 @@
         function country_fn (control) {
             var ctl = new DropDown({}, control);
 
-            ctl.addItem("Poland", true);
+            ctl.addItem("Polska", true);
         }
 
         function expiry_year_fn (control) {
@@ -916,10 +916,15 @@
             }
             summary.innerHTML = null;
             summary.appendChild(Generate(data.items));
-            var tot   = document.createElement("div");
-            tot.className = "total-price-summary text";
+            var htot    = document.createElement("div"),
+                tot     = document.createElement("div");
+
+            htot.className = "seperator text";
+            language.bind("total", htot);
+            tot.className = "total-price-summary text-invert-light";
             tot.innerHTML = data.total;
             tot.setAttribute("currency", "zł");
+            summary.appendChild(htot);
             summary.appendChild(tot);
         }
 

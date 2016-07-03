@@ -208,7 +208,7 @@
                 pages.thumbs = wf * hf;
                 pages.total = Math.ceil(count / pages.thumbs);
                 
-                for(var i = pages.thumbs - 1; i >= 0; --i) {
+                for(var i = Math.min(pages.thumbs - 1, count); i >= 0; --i) {
                     if(nodes[i].style.display.length == 0) {
                         break;
                     }
@@ -218,7 +218,7 @@
                     
                 } 
 
-                for(var i = pages.thumbs; i < count; ++i) {
+                for(var i = Math.min(pages.thumbs, count); i < count; ++i) {
 
                     if(nodes[i].style.display.length > 0) {
                         break;
