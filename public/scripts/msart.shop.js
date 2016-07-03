@@ -392,7 +392,7 @@
                     preview_.el.style.backgroundImage = "url(" + thumb.data() + ")";
                 } else {
                     preview_.loadImage({
-                        url :  "/async/images/load/" + thumb.id() + "?height=600",
+                        url :  "/async/images/load/" + thumb.id(),
                         color: "#e0e0e0", 
                         shadow: true, 
                         radius: 22, 
@@ -1428,7 +1428,6 @@
             }
 
             details.contact = function (data, error) {
-                console.log(data);
                 window.ajax({
                     type: "POST",
                     data: data,
@@ -1437,7 +1436,6 @@
                      if(result.status) {
                         self.close();
                     } else {
-                        console.log(result);
                         error(result);
                     }
                 });
@@ -1459,7 +1457,6 @@
                         data: { id : item.id() },
                         url: '/async/shop/load',
                     }).done(function (result) {
-                        console.log(result);
                         if(result.item) {
                             details.setValue(result.item);
                             viewer.beginAdd();
@@ -1502,7 +1499,6 @@
 
                         data.id = item.id();
                         data.images = pictures;
-                        console.log(data);
                         window.ajax({
                             type: "POST",
                             data: data,
@@ -1723,7 +1719,7 @@
             item_int.appendChild(price_);
         }
         item_img.loadImage({ 
-            url : "/async/images/load/" + preview_id + "?height=400", 
+            url : "/async/preview/load/" + preview_id, 
             color: "#e0e0e0", 
             shadow: true, 
             width: 3 
@@ -1948,7 +1944,6 @@
 
 
         function load_shop_items () {
-            
             window.ajax({
                 type: "POST",
                 data: navigator.value(),
@@ -2089,7 +2084,7 @@
 
                 }
             } else {
-                controller.setValue("All items");  
+                language.bind("allitems", ctl);
             }
         }
 
@@ -2126,9 +2121,9 @@
             tmp = sorter.addItem(1);
             tmp.controller.setValue("Z  -  A");
             tmp = sorter.addItem(2);
-            tmp.controller.setValue("Low Price");
+            language.bind("lowprice", tmp);
             tmp = sorter.addItem(3);
-            tmp.controller.setValue("Hight Price");
+            language.bind("hightprice", tmp);
         }
 
         function load_items (parent, callback) {

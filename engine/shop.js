@@ -129,19 +129,37 @@ exports.list = function (data, callback) {
 		}
 	}
 
-	log(filter, sort);
+	filter 	= filter || {};
 
-	db.db.shop.find(filter || {})
-		.sort(sort || { norm : 1 })
-		.sort({ advert: -1 })
-		.toArray(function (err, items) {
-			if(err) {
-				callback({status : false, error: err});
+	(function (filter_, sorter_) {
+		var idx = 0;
+		var collect = [];
+		function collect_results(idx, err, res) {
+			idx++;
+			if(idx == 0) {
+				collect = res.concat(collect);
 			} else {
-				log(items);
-				callback({status:true, items: items});
+				collect = collect.concat(res);
 			}
-		});
+			if(idx == 2) {
+				callback({status:true, items: collect});
+			}
+		}
+		filter_.price = null;
+		db.db.shop.find(filter_)
+			.sort(sorter_)
+			.toArray(function (err, items) {
+				collect_results(0, err, items);
+			});
+
+		filter_.price = { $ne : null };
+		db.db.shop.find(filter_)
+			.sort(sorter_)
+			.toArray(function (err, items) {
+				collect_results(1, err, items);
+			});
+	})(filter || {}, sort || { norm : 1 });
+
 }
 
 exports.save = function (data, callback) {

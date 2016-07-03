@@ -405,7 +405,8 @@ body[mobile] #content-wrapper {
 	height: auto;
 	min-height: 150px;
 	vertical-align: center;
-	padding-top: 50px; 
+	/*padding-top: 50px; */
+	/*padding-bottom: 50px; */
 	padding-left: 50px; 
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -417,10 +418,22 @@ body[mobile] #content-wrapper {
 	display: block;
 	position: relative;
 	width: 80%;
-	margin-bottom: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 	padding: 10px;
 	background: #f2f2f2;
 	box-shadow: 0px 0px 2px #292929;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#about_panel .about-column:first-child{
+	margin-top: 50px;
+}
+
+#about_panel .about-column:last-child{
+	margin-bottom: 50px;
 }
 
 #about_panel .about-column-text {
@@ -523,13 +536,13 @@ body[mobile] #content-wrapper {
    0%{
       opacity: 0;
    }
-   5% {
+   4% {
    	opacity: 1;
    }
-   25% {
+   16% {
       opacity: 1;
    }
-   30%{
+   18%{
       opacity: 0;
    }
    100% {
@@ -538,10 +551,10 @@ body[mobile] #content-wrapper {
 }
 
 #about_panel .demo-image {
-	height: 100%;
-	width: 49%;
-	top:0px;
-	left:51%;
+	height: 80%;
+	width: 45%;
+	top:10%;
+	left:54%;
 	opacity: 0;
 	position: absolute;
 	background-color: transparent;
@@ -550,29 +563,39 @@ body[mobile] #content-wrapper {
 	background-size: contain;
 	animation-name: demo_animation;
 	animation-iteration-count: infinite;
-	animation-duration: 24s;
+	animation-duration: 30s;
 }
 
 
 #about_panel .demo-1 {
-	background-image: url("../images/demo/clock.png");
+	background-image: url("../images/demo/projekt I bomboniera.png");
 	animation-delay: 0s;
 	opacity: 1;
 }
 
 #about_panel .demo-2 {
-	background-image: url("../images/demo/box.png");
-	animation-delay: 6s;
+	background-image: url("../images/demo/projekt I Iwonka.png");
+	animation-delay: 5s;
 }
 
 #about_panel .demo-3 {
-	background-image: url("../images/demo/goblet.png");
-	animation-delay: 12s;
+	background-image: url("../images/demo/projekt I Kasia.png");
+	animation-delay: 10s;
 }
 
 #about_panel .demo-4 {
-	background-image: url("../images/demo/furn.png");
-	animation-delay: 18s;
+	background-image: url("../images/demo/projekt I manekin.png");
+	animation-delay: 15s;
+}
+
+#about_panel .demo-5 {
+	background-image: url("../images/demo/projekt I Tola.png");
+	animation-delay: 20s;
+}
+
+#about_panel .demo-6 {
+	background-image: url("../images/demo/projekt I zegar.png");
+	animation-delay: 25s;
 }
 
 #shop_panel {
@@ -985,7 +1008,7 @@ body[mobile] #content-wrapper {
 	font-size: 26px;
 	line-height: 26px;
 	height: 30px;
-	width: 200px;
+	width: 300px;
 	right: 0px;
 	top: 50px;
 	background-color: #f2f2f2;
@@ -1041,7 +1064,7 @@ body[mobile] #content-wrapper {
 	font-size: 12px;
 	line-height: 12px;
 	height: 12px;
-	width: 65px;
+	width: 100px;
 	right: 0px;
 	bottom: 10px;
 	background-color: #f2f2f2;

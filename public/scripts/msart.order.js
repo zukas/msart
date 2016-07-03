@@ -614,7 +614,6 @@
                 url: '/async/orders/session'    
             }).done(function(result) {
                 if(result.status && result.items) {
-                    console.log(result.items);
                     total_price = result.total;
                     totals.innerHTML = total_price;
                     var fragment = document.createDocumentFragment();

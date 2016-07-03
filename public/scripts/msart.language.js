@@ -112,11 +112,9 @@
 			labeled: "Oznaczona",
 			projects: "Projekt",
 			category: "Kategoria",
-                        allitems: "Wszystkie",
-                        lowprice: "Cena malejąco",
-                        hightprice: "Cena rosnąco",
-
-
+            allitems: "Wszystkie",
+            lowprice: "Cena malejąco",
+            hightprice: "Cena rosnąco"
 		}
 	}
 
