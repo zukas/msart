@@ -229,7 +229,7 @@ exports.save = function (data, callback) {
 						label : {
 							type: check.TYPE.VALUE,
 							class : "String",
-							regex : "$Name",
+							regex : "$Other	",
 							optional : true
 						}
 					}

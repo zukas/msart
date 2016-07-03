@@ -16,8 +16,6 @@ var mailer 		= require('nodemailer'),
 	},
 	sender		= "julius.zukauskas@gmx.com";
 
-console.log(base);
-	
 var transport = mailer.createTransport(ses({
     accessKeyId: "AKIAIL7SHXCBZ3W4PEMA",
     secretAccessKey: "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",
@@ -38,12 +36,10 @@ function renderTemplate(template, locals, callback) {
 exports.createFile = function(template, locals, callback) {
 	renderTemplate(template, locals, function (err, out) {
 		if(err) {
-			console.log(err);
 			callback({status: false, error: err});
 		} else {
 			fs.writeFile(path.join(__dirname, 'tmp.html'), out, function (err2) {
 				if(err2) {
-					console.log(err2);
 					callback({status: false, error: err2});
 				} else {
 					callback({status:true});
@@ -66,14 +62,11 @@ exports.sendMail = function (template, locals, to, callback) {
 			    subject: subject[template],
 			    html: res
 			};
-			log(locals)
-			log(mailOptions);
 			transport.sendMail(mailOptions, function(err2, info){
 			    if(err2){
 			        log(err2);
 			        callback({status: false});
 			    } else {
-				    log(info.response);
 				    callback({status: true});
 			    }
 			});

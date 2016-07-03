@@ -1,7 +1,8 @@
 process.env.NODE_ENV = "production";
 process.env.EXPRESS_ENV = "production";
 
-var express 		= require('express'),
+var config 			= require('./config')(),
+	express 		= require('express'),
 	favicon 		= require('serve-favicon'),
 	logger 			= require('morgan'),
 	path 			= require('path'),
@@ -15,8 +16,14 @@ var express 		= require('express'),
 	errorHandler 	= require('errorhandler'),
 	db 				= require("./db"),
 	app 			= express(),
+	http 			= require('http'),
+	https 			= require('https'),
+	fs 				= require('fs'),
+	forceSSL 		= require('express-force-ssl'),
 	engine 			= require('./engine'),
 	cors 			= require('cors'),
+	server 			= null,
+	secureServer 	= null,
 	session_store 	= new ssm(			
 	{ 
     	uri: 'mongodb://localhost:27017/msart',
@@ -25,9 +32,23 @@ var express 		= require('express'),
 
 require("./utils");
 
-global.isDev = function () {
-	return 'development' === app.get('env');
+
+if(config.logging) {
+	enableLog();
 }
+
+server = http.createServer(app);
+if(config.ssl) {
+	var ssl_opt = {
+		key: fs.readFileSync(config.privateKey),
+  		cert: fs.readFileSync(config.publicKey),
+  		ca: fs.readFileSync(config.chainKey)
+	}
+	secureServer = https.createServer(ssl_opt, app);
+	app.use(forceSSL);
+	app.use(app.router);
+}
+
 // all environments
 app.engine('html', swig.renderFile);
 app.set('port', process.env.PORT || 80);
@@ -51,9 +72,6 @@ app.use(engine.session_update);
 // swig.setDefaults({ cache: 'memory' });
 swig.setDefaults({ cache: false });
 // development only
-if (isDev()) {
-  app.use(errorHandler());
-}
 
 engine.track_sessions(session_store);
 
@@ -112,12 +130,6 @@ app.get('*', function (req, res) {
 	res.redirect('/');
 });
 
-process.argv.forEach(function (val) {
-	if(val == "-v") {
-		enableLog();
-	}
-});
-
 db.start({
 	name: "msart",
 	collections: [
@@ -134,7 +146,8 @@ db.start({
 		"internal"
 	]
 }, function () {
-	app.listen(app.get('port'), function() {
-	  	log('Express server listening on port ' + app.get('port'));
-	});
+	if(secureServer) {
+		secureServer.listen(443)
+	}
+	server.listen(app.get('port'));
 });

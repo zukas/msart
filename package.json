@@ -11,6 +11,7 @@
     "errorhandler": "^1.4.3",
     "express": "^4.13.4",
     "express-device": "^0.4.2",
+    "express-force-ssl": "^0.3.2",
     "express-generator": "^4.13.1",
     "express-session": "^1.13.0",
     "gm": "^1.22.0",
