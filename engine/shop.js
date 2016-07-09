@@ -285,6 +285,7 @@ exports.save = function (data, callback) {
 			delete data.id;
 		} else {
 			_id = new ObjectID();
+			data._id = _id;
 		}
 		data.preview = data.images[0];
 		data.labels = [];
@@ -301,7 +302,7 @@ exports.save = function (data, callback) {
 		db.db.shop.update({ _id : _id }, 
 			{ 
 				$set : data,
-				$setOnInsert : { _id : _id, created : data.updated }
+				$setOnInsert : { created : data.updated }
 			}, 
 			{ upsert : true }, function (err, res) {
 			if(err) {
