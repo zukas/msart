@@ -48,7 +48,9 @@
     }
 
      window.addEventListener("load", function () {
-        window.login = new Login();
+        if(window.location.pathname == "/admin") {
+            window.login = new Login();
+        }
     })
  
 }());

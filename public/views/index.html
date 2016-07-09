@@ -11,7 +11,8 @@ window.addEventListener("load", function () {
 });
 </script>
 {% endif %}
-<!-- <script type="text/javascript" src="compiled/msart.min.js"></script> -->
+
+{% if debug %}
 <script type="text/javascript" src="scripts/morpheus.js" defer="defer"></script>
 <script type="text/javascript" src="scripts/msart.header.js" defer="defer"></script>
 <script type="text/javascript" src="scripts/msart.home.js" defer="defer"></script>
@@ -19,6 +20,7 @@ window.addEventListener("load", function () {
 <script type="text/javascript" src="scripts/msart.order.js" defer="defer"></script>
 <script type="text/javascript" src="scripts/msart.gallery.js" defer="defer"></script>
 <script type="text/javascript" src="scripts/msart.contact.js" defer="defer"></script>
+{% endif %}
 {% endblock %}
 
 {% block content %}

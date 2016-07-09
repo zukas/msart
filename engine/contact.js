@@ -59,7 +59,7 @@ exports.send = function (data, callback) {
 		if(res.data.data) {
 			mailer.sendMail("info", res.data, config.master, callback);
 		} else {
-			mailer.sendMail("contact", res.data, config.master, callback);
+			mailer.sendMail("contact", res.data, config.master	, callback);
 		}
 	} else {
 		callback(res);
