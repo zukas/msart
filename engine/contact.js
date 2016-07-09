@@ -1,4 +1,5 @@
 var check 		= require('./validate'),
+	config 		= require("../config"),
 	mailer		= require('../email/email');
 
 exports.send = function (data, callback) {
@@ -56,9 +57,9 @@ exports.send = function (data, callback) {
 
 	if(res.status) {
 		if(res.data.data) {
-			mailer.sendMail("info", res.data, "julius.zukauskas@gmx.com", callback);
+			mailer.sendMail("info", res.data, config.master, callback);
 		} else {
-			mailer.sendMail("contact", res.data, "julius.zukauskas@gmx.com", callback);
+			mailer.sendMail("contact", res.data, config.master, callback);
 		}
 	} else {
 		callback(res);
