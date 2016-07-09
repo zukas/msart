@@ -61,7 +61,10 @@ app.use(session({
 				store: session_store,
 				resave: true,
                 saveUninitialized: true,
-                secret: '4f6faqwec8g5x3v4v4sm1' }));
+                domain: config.domain,
+                secure: config.session.secure,
+                secret: config.session.secret,
+                sameSite: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(multer({ inMemory : true }));

@@ -422,19 +422,15 @@ exports.order_process = function (req, res) {
 }
 
 exports.paypal_return = function (req, res) {
-	log("paypal_return");
-	log(req.query);
-	log(req.body);
-	orders.execute(req.query, function (result) {
+	var data = req.query;
+	data.sessionID = req.sessionID;
+	orders.execute(data, function (result) {
 		req.session.destroy();
 		res.redirect("/");
 	});
 }
 
 exports.paypal_cancel = function (req, res) {
-	log("paypal_cancel");
-	log(req.query);
-	log(req.body);
 	req.session.destroy();
 	res.redirect("/");
 }

@@ -88,6 +88,10 @@ window.addEventListener("load", function () {
 							</table>
 						</div>
 						<div class="checkout-control">
+							<div id="terms" class="text"><span class="box" id="terms_box"></span>
+								<span lang="iagree">I agree to</span> 
+								<a lang="terms" href="../terms.pdf" target="_blank">terms and conditions</a>
+							</div> 
 							<div id="order_list_advance" class="text-invert checkout-step-advance" lang="checkout">Checkout</div>
 						</div>
 					</div>
@@ -329,11 +333,11 @@ window.addEventListener("load", function () {
 								</div>
 							</div>
 							<div class="preview-group">
-								<div class="preview-block"></div>
 								<div class="preview-block">
-								<div class="text seperator" lang="price_summary">Price summary</div>	
-								<div id="order_summary"></div>
+									<div class="text seperator" lang="price_summary">Price summary</div>	
+									<div id="order_summary"></div>
 								</div>
+								<div id="termsAgree" class="preview-block"></div>
 							</div>
 						</div>
 						<div class="checkout-control">

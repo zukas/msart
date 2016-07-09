@@ -1,13 +1,10 @@
 var db 			= require("../db"),
 	ObjectID 	= require('mongodb').ObjectID,
+	config 		= require('../config')(),
 	check 		= require('./validate'),
 	paypal 		= require('paypal-rest-sdk');
 
-paypal.configure({
-	'mode': 'sandbox',
-	'client_id': "AbUkFrYopZUERRkJxkzHOcXkvl4aclfJriYp7s7tju8L62aod7AdariYkYvfFQvcFB7ml6L3jedOcFpt",
-	'client_secret': "ENKmWBIij-5EUFcszvw7srcih6vk2ULi2EDRf1e09sBcZnUtgpkCzIrnVNLmM8iS2nJykiUMqdWbKA2M"
-});
+paypal.configure(config.paypal);
 
 
 function load_order_totals(sessionID, callback) {
@@ -667,6 +664,11 @@ exports.execute = function (data, callback) {
 			PayerID: {
 				type: check.TYPE.VALUE,
 				class: "String"
+			},
+			sessionID: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex: "$sessionID"
 			}
 		}
 	});
@@ -680,6 +682,21 @@ exports.execute = function (data, callback) {
 		    } else {
 		    	log(payment)
 		        callback({status : true, payment: payment});
+		        db.db.orders.find({sessionID : sessionID}).toArray(function (err2, res) {
+		        	if(err2) {
+		        		log(err2);
+		        	} else if(res) {
+		        		for(var i = 0; i < res.length; ++i) {
+		        			db.db.shop.findOne({ _id : res[i].item }, function (err3, itm) {
+		        				if(err3) {
+		        					log(err3);
+		        				} else if(itm) {
+
+		        				}
+		        			});
+		        		}
+		        	}
+		        });
 		    }
 		});
 	} else {

@@ -484,10 +484,22 @@
             table       = document.getElementById("order_list_table"),
             totals      = document.getElementById("order_list_totals"),
             advance     = document.getElementById("order_list_advance"),
+            terms       = document.getElementById("terms"),
+            terms_box   = document.getElementById("terms_box"),
             total_price = 0,
             orders      = {};
 
         totals.setAttribute("currency", "zł");
+
+        terms_box.onclick = function () {
+            var has = terms.hasAttribute("checked");
+            if(has) {
+                terms.removeAttribute("checked");
+            } else {
+                terms.setAttribute("checked", true);
+                terms.removeAttribute("error");
+            }
+        }
 
         function shop_item_ordered(id) {
             var shop_item = document.getElementById(id);
@@ -635,13 +647,17 @@
 
 
         advance.onclick = function () {
-            var items = [];
-            for(var key in orders) {
-                if(orders.hasOwnProperty(key)) {
-                    items[items.length] = orders[key].info();
+            if(terms.hasAttribute("checked")) {
+                var items = [];
+                for(var key in orders) {
+                    if(orders.hasOwnProperty(key)) {
+                        items[items.length] = orders[key].info();
+                    }
                 }
+                self.advance(self, { items: items, total : total_price });
+            } else {
+                terms.setAttribute("error", true);
             }
-            self.advance(self, { items: items, total : total_price });
         }
 
         self.el = view;

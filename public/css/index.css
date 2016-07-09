@@ -2812,11 +2812,13 @@ body[mobile] #content-wrapper {
 
 #order_panel .preview-block {
 	display: table-cell;
+	position: relative;
 	width: 50%;
 	min-height: 300px;
 	padding: 10px;
 	background-color: #f2f2f2;
 	box-shadow: 0px 0px 2px #292929;
+	overflow: hidden;
 }
 
 #order_panel .preview-block:empty{
@@ -2855,6 +2857,51 @@ body[mobile] #content-wrapper {
 
 #order_panel .payment-type[option="amex"] {
 	background-image: url("../images/pay/amex.png");
+}
+
+#order_panel #terms {
+	line-height: 50px;
+	height: 50px;
+	font-size: 16px;
+	position: absolute;
+	right: 185px;
+	bottom: 0px;
+	background: #f2f2f2;
+	box-shadow: 0px 0px 2px #292929;
+	padding: 0px 5px;
+}
+
+#order_panel #terms:hover {
+	background: white;
+}
+
+
+#order_panel #terms:not([checked])[error] {
+	box-shadow: 0px 0px 5px #993333;
+} 
+
+#order_panel #terms a:link, #order_panel #terms a:visited {
+	color: #336699;
+}
+
+#order_panel #terms a:link:active, #order_panel #terms a:visited:active {
+	color: #336699;
+}
+
+#order_panel #terms .box{
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+	margin-right: 5px;
+	background-image: url("../images/check.png");
+	background-size: 44px 22px;
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	vertical-align: middle;
+}
+
+#order_panel #terms[checked] .box{
+	background-position: -22px 0px;
 }
 
 #order_panel #order_summary table {

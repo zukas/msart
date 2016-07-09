@@ -1,4 +1,5 @@
 var mailer 		= require('nodemailer'),
+	config 		= require('../config')(),
 	ses 		= require('nodemailer-ses-transport'),
 	path 		= require('path'),
 	fs 			= require('fs'),
@@ -14,14 +15,7 @@ var mailer 		= require('nodemailer'),
 		info : "Item inquiry",
 		purchase : "Order details"
 	},
-	sender		= "julius.zukauskas@gmx.com";
-
-var transport = mailer.createTransport(ses({
-    accessKeyId: "AKIAIL7SHXCBZ3W4PEMA",
-    secretAccessKey: "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",
-    region: "eu-west-1",	
-    rateLimit: 1 // do not send more than 5 messages in a second
-}));
+	transport = mailer.createTransport(ses(config.ses));
 
 function renderTemplate(template, locals, callback) {
 	var file = templates[template];
@@ -57,7 +51,7 @@ exports.sendMail = function (template, locals, to, callback) {
 			callback({status:false});
 		} else {
 			var mailOptions = {
-			    from: sender,
+			    from: config.mailSender,
 			    to: to,
 			    subject: subject[template],
 			    html: res
