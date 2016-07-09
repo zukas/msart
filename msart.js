@@ -46,7 +46,6 @@ if(config.ssl) {
 	}
 	secureServer = https.createServer(ssl_opt, app);
 	app.use(forceSSL);
-	app.use(app.router);
 }
 
 // all environments
