@@ -279,11 +279,12 @@ exports.save = function (data, callback) {
 	log(res);
 	if(res.status) {
 		data = res.data;
+		var _id = null;
 		if(data.id) {
-			data._id = data.id.toObjectID();
+			_id = data.id.toObjectID();
 			delete data.id;
 		} else {
-			data._id = new ObjectID();
+			_id = new ObjectID();
 		}
 		data.preview = data.images[0];
 		data.labels = [];
@@ -297,16 +298,16 @@ exports.save = function (data, callback) {
 		}
 		data.norm = data.title.toLowerCase();
 		data.updated = new Date();
-		db.db.shop.update({ _id : data._id }, 
+		db.db.shop.update({ _id : _id }, 
 			{ 
 				$set : data,
-				$setOnInsert : { created : data.updated }
+				$setOnInsert : { _id : _id, created : data.updated }
 			}, 
 			{ upsert : true }, function (err, res) {
 			if(err) {
 				callback({status: false, error: err});
 			} else {
-				callback({status : true, _id : data._id});
+				callback({status : true, _id : _id });
 			}
 		});
 	} else {
