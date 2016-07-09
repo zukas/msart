@@ -13,7 +13,11 @@
       {% endif %}
   		{% block script %}
   		{% endblock script %}
+      {% if debug %}
   		<link rel="stylesheet" href="css/index.css" />
+      {% else %}
+      <link rel="stylesheet" href="css/index.min.css" />
+      {% endif %}
       <link rel="icon shortcut" type="image/ico" href='favicon.ico' />
   		<title>MS Craftshop</title>
 	</head>
