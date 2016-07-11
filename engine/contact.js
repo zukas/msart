@@ -1,5 +1,5 @@
 var check 		= require('./validate'),
-	config 		= require("../config"),
+	config 		= require("../config")(),
 	mailer		= require('../email/email');
 
 exports.send = function (data, callback) {
