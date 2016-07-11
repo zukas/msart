@@ -115,8 +115,8 @@
             allitems: "Wszystkie",
             lowprice: "Cena malejąco",
             hightprice: "Cena rosnąco",
-            iagree: "Zgadzam się na",
-            terms: "warunki użytkowania"
+            iagree: "Akceptuję", 
+            terms: "Regulamin sklepu"
 		}
 	}
 
