@@ -1,7 +1,9 @@
+"use strict";
+
 var db 			= require("../db"),
 	ObjectID 	= require('mongodb').ObjectID,
 	config 		= require('../config')(),
-	mailer 		= require('../email/email')
+	mailer 		= require('../email/email'),
 	check 		= require('./validate'),
 	paypal 		= require('paypal-rest-sdk');
 
@@ -36,7 +38,7 @@ function load_order_totals(sessionID, callback) {
 					component : component
 				});
 			}
-			callback({ status : true, total : total, items: result });
+			callback({ status : true, total : total.toFixed(2), items: result });
 
 		}
 	})
@@ -732,10 +734,50 @@ exports.execute = function (data, callback) {
 										log("Send order mail to payee: " + status.status);
 									});
 
-									
-
-									//Do shop transform
-
+									if (config.paypal.mode == "live") {
+										for(var i = 0; i < shop_items.length; ++i) {
+											if(shop_items[i].action == 0) {
+												db.db.shop.update({ _id : shop_items[i]._id }, { $set: { availability : 1 } }, function (er4) { 
+													if(er4) { 
+														log("action 0 - 1", er4)
+													} 
+												});
+											} else if(shop_items[i].action == 1) {
+												db.db.shop.findAndModify({ _id : shop_items[i]._id }, [['_id','asc']], {}, { remove : true }, function (er4, move_item) {
+													if (er4) {
+														log("action 1 - 1",er4);
+													} else if (move_item) {
+														move_item = move_item.value;
+														log("action 1", move_item)
+														db.db.archive.insert(move_item, function (er5) {
+															if(er5) {
+																log("action 1 - 2",er5);
+															}
+														});
+														db.db.gallery.insert({ _id : move_item.preview.id.toObjectID(), created : new Date() }, function (er5) {
+															if(er5) {
+																log("action 1 - 3",er5);
+															}
+														});
+													}
+												});
+											} else if(shop_items[i].action == 2) {
+												db.db.shop.findAndModify({ _id : shop_items[i]._id }, [['_id','asc']], {}, { remove : true }, function (er4, move_item) {
+													if (er4) {
+														log("action 2 - 1", er4);
+													} else if (move_item) {
+														move_item = move_item.value;
+														log("action 2",move_item)
+														db.db.archive.insert(move_item, function (er5) {
+															if(er5) {
+																log("action 2 - 2",er5);
+															}
+														});
+													}
+												});
+											}
+										}
+									}
 								});
 						    }
 						});

@@ -1,10 +1,10 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div style="margin: 5px; text-align: left; font-size: 20px; color: #262626; text-shadow: 0px 2px 1px #fafafa;">Item inquiry</div>
+<div style="margin: 5px; text-align: left; font-size: 20px; color: #262626; text-shadow: 0px 2px 1px #fafafa;">Zapytanie ofertowe</div>
 <table style="border-collapse: collapse; border: none; font-size: 16px; padding: 5px; width:100%;">
 <tr style="height: 50px;">
-	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Name</td>
+	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Imię i nazwisko</td>
 	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ name }}</td>
 </tr>
 <tr style="height: 50px;">
@@ -12,16 +12,16 @@
 	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ email }}</td>
 </tr>
 <tr style="height: 50px;">
-	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Message</td>
+	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Wiadomość</td>
 	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ message }}</td>
 </tr>
 <tr style="height: auto;">
-	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Item</td>
+	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Produkt</td>
 	<td style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">
 		<table width="100%">
 			<tr style="height: 50px;">
 				<td style="text-align: right; padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">
-					Title
+					Nazwa
 				</td>
 				<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">
 					{{ data.title }}
@@ -29,7 +29,7 @@
 			</tr style="height: 50px;">
 			<tr>
 				<td style="text-align: right; padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">
-					Project
+					Projekt
 				</td>
 				<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">
 					{{ data.component|default('N/A') }}
@@ -45,7 +45,7 @@
 					      <table border="0" cellspacing="0" cellpadding="0" width="150px">
 					        <tr>
 					          <td bgcolor="#336699" style="padding: 12px 18px 12px 18px; box-shadow: 1px 3px 2px #292929;" align="center">
-					          <a href="http://localhost:8080/#{{ data.id }}" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #f2f2f2;text-shadow: 0px 2px 1px #000000; text-decoration: none; display: inline-block;">Open Item</a>
+					          <a href="http://localhost:8080/#{{ data.id }}" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #f2f2f2;text-shadow: 0px 2px 1px #000000; text-decoration: none; display: inline-block;">Projekt</a>
 					          </td>
 					        </tr>
 					      </table>

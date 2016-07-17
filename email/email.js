@@ -1,3 +1,5 @@
+"use strict";
+
 var mailer 		= require('nodemailer'),
 	config 		= require('../config')(),
 	ses 		= require('nodemailer-ses-transport'),

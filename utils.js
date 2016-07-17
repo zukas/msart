@@ -1,3 +1,5 @@
+"use strict";
+
 var util 		= require('util'),
 	path 		= require('path'),
 	ObjectID 	= require('mongodb').ObjectID,

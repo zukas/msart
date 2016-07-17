@@ -1,3 +1,5 @@
+"use strict";
+
 
 var schema_type = {
 	VALUE : 0,

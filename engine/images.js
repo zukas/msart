@@ -1,3 +1,5 @@
+"use strict";
+
 var db 			= require("../db"),
 	ObjectID 	= require('mongodb').ObjectID,
     GridStore 	= require('mongodb').GridStore,

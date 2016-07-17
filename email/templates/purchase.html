@@ -4,20 +4,20 @@
 <div style="display: table;border-collapse: separate;border-spacing: 10px;table-layout: fixed;margin: 0px auto; width: 100%">
 	<div  style="display: table-row;">
 	<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
-	<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Order number</div>
+	<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Nr zamówienia</div>
 	<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ _id|upper }}</div>
 	</div>
 	<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;"></div>
 	</div>
 	<div  style="display: table-row;">
 		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
-			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Personal details</div>
+			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Dane osobowe</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">First name</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Imię</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.forename }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Last name</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Nazwisko</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.surname }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
@@ -25,12 +25,12 @@
 			<div style="font-size: 16px;height: 18px;line-height: 18px; color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.email }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Phone number</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Nr telefonu</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.phone }}</div>
 			</div>
 		</div>
 		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
-			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Payment type</div>
+			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Rodzaj płatności</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
 			{% if payment.type == 'paypal' %}
 			<div style="background: #ffffff; width: 120px; height: 60px; border-radius: 4px; border: 1px solid #292929;">
@@ -44,15 +44,15 @@
 			</div>
 			{% if payment.type != 'paypal' %}
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Name on the card</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Imię i nazwisko</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ payment.forename }} {{ payment.surname }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Card number</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Nr karty</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;"></div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Expiry</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Data ważności</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ payment.expiryMonth }}/{{ payment.expiryYear }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
@@ -64,68 +64,68 @@
 	</div>
 	<div style="display: table-row;">
 		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
-			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Shipping address</div>
+			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Adres dostawy</div>
 			{% if shipping.company %}
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Company</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Nazwa firmy</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.company }}</div>
 			</div>
 			{% endif %}
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Street address</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Ulica</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.address }}</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; display:inline;">{{ shipping.address2 }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">City</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Miasto</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.city }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">County</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Województwo</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.county}}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Post code</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Kod pocztowy</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.postCode }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Country</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Kraj</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.country }}</div>
 			</div>
 		</div>
 		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
-			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Billing details</div>
+			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Adres fakturowania</div>
 			{% if billing.company %}
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Company</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Nazwa firmy</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ billing.company }}</div>
 			</div>
 			{% endif %}
 			{% if billing.vat %}
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">VAT Number</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">NIP</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ billing.vat }}</div>
 			</div>
 			{% endif %}
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Street address</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Ulica</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ billing.address }}</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; display:inline;">{{ billing.address2 }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">City</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Miasto</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ billing.city }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">County</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Województwo</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ billing.county }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Post code</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Kod pocztowy</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ billing.postCode }}</div>
 			</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
-			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Country</div>
+			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Kraj</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ billing.country }}</div>
 			</div>
 		</div>
@@ -133,13 +133,13 @@
 	<div style="display: table-row;">
 		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;"></div>
 		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
-		<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Price summary</div>	
+		<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Podsumowanie</div>	
 		<table width="100%" style="margin-bottom: 20px;">
 		<tr>
-			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: left;">Title</th>
-			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Quantity</th>
-			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Price</th>
-			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Shipping</th>
+			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: left;">Nazwa</th>
+			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Ilość</th>
+			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Cena</th>
+			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Transport</th>
 		</tr>
 		{% for key,val in items %}
 		<tr>
@@ -150,7 +150,7 @@
 		</tr>
 		{% endfor %}
 		</table>
-		<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Total</div>
+		<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Koszt całkowity</div>
 		<div style="width: 100%;height: 80px;margin: 0px auto;background-color: #336699;box-shadow: 0px 0px 2px #292929;font-size: 24px;line-height: 80px;text-align: center;color: #fafafa;text-shadow: 0px 2px 1px #000000;">{{ price }}z&#x0142;</div>
 		</div>
 	</div>

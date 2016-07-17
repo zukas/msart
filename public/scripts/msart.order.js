@@ -716,10 +716,6 @@
             base        = null,
             current     = 0;
 
-        // <div class="payment-option paypal" option=0 checked>
-        //     <div class="checkbox"></div>
-        //     <div class="banner paypal"></div>
-        // </div>
         window.ajax({
             type : "POST",
             data : null,
@@ -900,21 +896,6 @@
         advance.onclick = function () {
             window.location = "/async/orders/process";
         }
-
-        // advance.onclick = function () {
-        //     window.ajax({
-        //         type: "POST",
-        //         data: null,
-        //         url: '/async/orders/process'
-        //     }).done(function (result) {
-        //         console.log(result);
-        //         if(result.status) {
-        //             window.location.href = result.link;
-        //         } else {
-
-        //         }
-        //     });
-        // }
 
         back.onclick = function () {
             self.back(self);

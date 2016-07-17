@@ -1,3 +1,5 @@
+"use strict";
+
 process.env.NODE_ENV = "production";
 process.env.EXPRESS_ENV = "production";
 
@@ -103,7 +105,6 @@ app.post('/async/category/list', engine.categories);
 app.post("/async/orders/add", engine.order_add);
 app.post("/async/orders/remove", engine.order_remove);
 app.post("/async/orders/session", engine.order_session);
-// app.post("/async/orders/checkout", engine.order_checkout);
 
 app.post("/async/payment/types", engine.payment_types);
 
@@ -115,17 +116,12 @@ app.get("/async/orders/process", cors(), engine.order_process);
 app.all("/async/paypal/accept", engine.paypal_return);
 app.all("/async/paypal/cancel", engine.paypal_cancel);
 
-// app.post("/async/shop/order", engine.create_order);
-
 app.post('/async/gallery/load', engine.load_gallery);
 app.post('/async/gallery/save', engine.save_gallery_item);
 app.post('/async/gallery/delete', engine.delete_gallery_item);
 app.post('/async/gallery/swap', engine.swap_gallery);
 
 app.post('/async/contact', engine.contact);
-
-app.get('/test', engine.run_test);
-
 
 app.post('/async/user/logout', engine.do_logout);
 app.get('/logout', engine.do_logout);
@@ -147,7 +143,8 @@ db.start({
 		"gallery",
 		"history",
 		"access",
-		"internal"
+		"internal",
+		"archive"
 	]
 }, function () {
 	if(secureServer) {

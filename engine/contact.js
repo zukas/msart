@@ -1,3 +1,5 @@
+"use strict";
+
 var check 		= require('./validate'),
 	config 		= require("../config")(),
 	mailer		= require('../email/email');

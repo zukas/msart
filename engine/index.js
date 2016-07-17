@@ -1,3 +1,5 @@
+"use strict";
+
 var check 	= require("./validate"),
 	images 	= require("./images"),
 	users 	= require("./users"),
@@ -61,6 +63,10 @@ exports.index = function(req, res){
 	var renderData = req.session.renderData || { admin: req.session.admin };
 	req.session.render = null;
 	req.session.renderData = null;
+
+	if(renderData && config.debug) {
+		renderData.debug = true;
+	} 
 	res.render(renderFile, renderData);
 	if (req.session.end) {
 		req.session.end = null;
@@ -72,7 +78,7 @@ exports.login = function (req, res) {
 	if(req.session.admin) {
 		res.redirect('/');
 	} else {
-		res.render("login.html");
+		res.render("login.html", config.debug ? { debug : true } : null);
 	}
 }
 
@@ -450,9 +456,4 @@ exports.contact = function (req, res) {
 	contact.send(data, function (result) {
 		res.send(result);
 	});
-}
-
-exports.run_test = function (req, res) {
-	req.query.payment = { id : "dsa56d4as6d4as6d4as6das4".toUpperCase() };
-	res.render("purchase.html", req.query);
 }

@@ -4,21 +4,21 @@
 <div id="purchase">
 	{% if status == true %}
 	<div id="purchase_success">
-		<div class="order-message-head text">Thank you</div>
-		<div class="order-id text">Order number <span>{{ payment.id }}</span></div>
-		<div class="order-message text">Your purchase have been sucesfully comleted and order confirmation will be sent to you shortly. We hope you will be satisfied with your purchase and invite you to visit our shop in the near future.
+		<div class="order-message-head text">Dziękuję</div>
+		<div class="order-id text">Nr zamówienia <span>{{ payment.id }}</span></div>
+		<div class="order-message text">Państwa zamówienie zostało pomyślnie zakończone i wkrótce otrzymacie potwierdzenie zamówienia. Mamy nadzieję, że będą Państwo zadowoleni z zakupów i zapraszamy do sklepu ponownie.
 		<br/><br/>
-		Kind Regards
+		Pozdrawiamy serdecznie.
 		</div> 
-		<div class="order-to-store text-invert" onclick="window.location.href='/'">Back to Shop</div>
+		<div class="order-to-store text-invert" onclick="window.location.href='/'">Powrót do sklepu</div>
 	</div>
 	{% else %} 
 	<div id="purchase_error">
-		<div class="order-message-head header-text">Sorry</div>
-		<div class="order-message text">A problem has occurred while processing your payment. We are very sorry for the inconvenience coused. Please make sure that the payment details you have provided are correct and please try again. If the problem persists please report this issue using the contact form.
+		<div class="order-message-head header-text">Przepraszamy</div>
+		<div class="order-message text">Wystąpił problem podczas przetwarzania płatności. Przykro nam za powstałe niedogodności. Proszę upewnić się czy dane do płatności zostały poprawnie podane i spróbuj jeszcze raz. Jeśli sytuacja będzie się powtarzała, proszę zgłosić problem za pomocą formularza kontaktowego.
 		<br/><br/>
-		Thank you</div>
-		<div class="order-to-store text-invert" onclick="window.location.href='/'">Back to Shop</div> 
+		Dziękuję</div>
+		<div class="order-to-store text-invert" onclick="window.location.href='/'">Powrót do sklepu</div> 
 	</div>
 </div>
 {% endif %}

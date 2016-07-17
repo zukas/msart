@@ -1199,33 +1199,6 @@
             language.bind("type", htype);
             view.appendChild(htype);
             view.appendChild(type.el);
-            type.changed = function (val) {
-                price.nullValue(false);
-                container.removeAttribute("advert");
-                if(val == 0) {
-                    price.change(0);
-                    avail.setValue(0);
-                    component.setValue(0);
-                    avail.unlock();
-                    action.unlock();
-                    component.lock();
-                } else if(val == 1){
-                    price.change(1);
-                    avail.setValue(1);
-                    action.setValue(0);
-                    avail.lock(); 
-                    action.lock();
-                    component.unlock();
-                } else if(val == 2) {
-                    price.nullValue(true);
-                    avail.setValue(1);
-                    avail.lock(); 
-                    action.setValue(0);
-                    action.lock();
-                    component.unlock();
-                    container.setAttribute("advert",true);
-                }
-            }
         } else {
             proj.changed = function (idx) {
                 if(self.selectImage) {
@@ -1398,10 +1371,41 @@
         self.show = function () {
         };
 
+        self.init = function () {
+            type.changed = function (val) {
+                price.nullValue(false);
+                container.removeAttribute("advert");
+                if(val == 0) {
+                    price.change(0);
+                    avail.setValue(0);
+                    component.setValue(0);
+                    avail.unlock();
+                    action.unlock();
+                    component.lock();
+                } else if(val == 1){
+                    price.change(1);
+                    avail.setValue(1);
+                    action.setValue(0);
+                    avail.lock(); 
+                    action.lock();
+                    component.unlock();
+                } else if(val == 2) {
+                    price.nullValue(true);
+                    avail.setValue(1);
+                    avail.lock(); 
+                    action.setValue(0);
+                    action.lock();
+                    component.unlock();
+                    container.setAttribute("advert",true);
+                }
+            }
+        }
+
 
         self.setValue = function (data) {
             for(var key in collective) {
                 if(collective.hasOwnProperty(key) && collective[key]) {
+                    console.log("setting " + key, data[key]);
                     collective[key].setValue(data[key]);
                 }
             }
@@ -1464,6 +1468,7 @@
                                 viewer.add(new PictureThumb(result.item.images[i]));
                             }
                             viewer.endAdd();
+                            details.init();
                         }
                         if(callback) {
                             callback();
