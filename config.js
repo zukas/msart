@@ -21,7 +21,7 @@ var cfg = {
 	},
 	session: {
 		secure: false	,
-		secret: ''
+		secret: 'ds56asd564qe56bh6swqa'
 	}
 }
 

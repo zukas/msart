@@ -56,7 +56,7 @@ app.set('port', process.env.PORT || 80);
 app.set('views', path.join(__dirname, 'public/views'));
 app.set('view engine', 'html');
 app.set('view cache', true);
-app.use(favicon(__dirname + '/public/images/ms_logo.ico'));
+app.use(favicon(__dirname + '/public/favicons/favicon.ico'));
 app.use(methodOverride());
 app.use(session({ 
 				store: session_store,
