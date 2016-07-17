@@ -6,6 +6,7 @@ var check 	= require("./validate"),
 	orders 	= require("./orders"),
 	gallery = require("./gallery"),
 	contact = require("./contact"),
+	config 	= require("../config")(),
 	url 	= require('url'),
 	gm		= require("gm"),
 	store 	= [];
@@ -56,9 +57,15 @@ check.installMod("firstCap", function (data) {
 
 exports.index = function(req, res){
 	log(req.device);
-
-	res.render(req.device.type == "desktop" ? "desktop.html" : "mobile.html", { admin: req.session.admin, username : req.session.username });
-	log("sessionID: " + req.sessionID);
+	var renderFile = req.session.render || (req.device.type == "desktop" ? "desktop.html" : "mobile.html");
+	var renderData = req.session.renderData || { admin: req.session.admin };
+	req.session.render = null;
+	req.session.renderData = null;
+	res.render(renderFile, renderData);
+	if (req.session.end) {
+		req.session.end = null;
+		req.session.destroy();
+	}
 };
 
 exports.login = function (req, res) {
@@ -409,8 +416,8 @@ exports.order_pay_card = function (req, res) {
 exports.order_process = function (req, res) {
 	var data = {
 		sessionID : req.sessionID,
-		accept: req.protocol + '://' + req.get('host') + "/async/paypal/accept",
-		cancel: req.protocol + '://' + req.get('host') + "/async/paypal/cancel"
+		accept: config.domain + "/async/paypal/accept",
+		cancel: config.domain + "/async/paypal/cancel"
 	};
 	orders.approve(data, function (result) {
 		if(result.status) {
@@ -425,16 +432,17 @@ exports.paypal_return = function (req, res) {
 	var data = req.query;
 	data.sessionID = req.sessionID;
 	orders.execute(data, function (result) {
-		req.session.destroy();
+		req.session.render = "purchase.html";
+		req.session.renderData = result;
+		req.session.end = true;
 		res.redirect("/");
 	});
 }
 
 exports.paypal_cancel = function (req, res) {
-	req.session.destroy();
+	req.session.render = "purchase.html";
 	res.redirect("/");
 }
-
 
 exports.contact = function (req, res) {
 	var data = req.body;
@@ -442,4 +450,9 @@ exports.contact = function (req, res) {
 	contact.send(data, function (result) {
 		res.send(result);
 	});
+}
+
+exports.run_test = function (req, res) {
+	req.query.payment = { id : "dsa56d4as6d4as6d4as6das4".toUpperCase() };
+	res.render("purchase.html", req.query);
 }

@@ -9,15 +9,17 @@
       <script type="text/javascript" src="scripts/msart.common.js" defer="defer"></script>
       <script type="text/javascript" src="scripts/msart.language.js" defer="defer"></script>
       {% else %}
-      <script type="text/javascript" src="compiled/msart.min.js"></script>
+      <script type="text/javascript" src="compiled/msart.min.js" defer="defer"></script>
       {% endif %}
   		{% block script %}
   		{% endblock script %}
       {% if debug %}
   		<link rel="stylesheet" href="css/index.css" />
       {% else %}
-      <link rel="stylesheet" href="css/index.min.css" />
+      <link rel="stylesheet" href="css/index.css" />
       {% endif %}
+      {% block style %}
+      {% endblock style %}
       <link rel="icon shortcut" type="image/ico" href='favicon.ico' />
   		<title>MS Craftshop</title>
 	</head>

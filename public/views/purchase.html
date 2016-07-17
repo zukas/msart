@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div id="purchase">
+	{% if status == true %}
+	<div id="purchase_success">
+		<div class="order-message-head text">Thank you</div>
+		<div class="order-id text">Order number <span>{{ payment.id }}</span></div>
+		<div class="order-message text">Your purchase have been sucesfully comleted and order confirmation will be sent to you shortly. We hope you will be satisfied with your purchase and invite you to visit our shop in the near future.
+		<br/><br/>
+		Kind Regards
+		</div> 
+		<div class="order-to-store text-invert" onclick="window.location.href='/'">Back to Shop</div>
+	</div>
+	{% else %} 
+	<div id="purchase_error">
+		<div class="order-message-head header-text">Sorry</div>
+		<div class="order-message text">A problem has occurred while processing your payment. We are very sorry for the inconvenience coused. Please make sure that the payment details you have provided are correct and please try again. If the problem persists please report this issue using the contact form.
+		<br/><br/>
+		Thank you</div>
+		<div class="order-to-store text-invert" onclick="window.location.href='/'">Back to Shop</div> 
+	</div>
+</div>
+{% endif %}
+{% endblock %}

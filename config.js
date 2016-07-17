@@ -5,22 +5,23 @@ var cfg = {
 	publicKey: "",
 	chainKey: "",
 	logging: false,
-	domain: "https://example.com",
+	domain: "",
+	master: "",
 	ses : {
 		accessKeyId : "",
 		secretAccessKey: "",
-		region: "eu-west-1",
+		region: "",
 		rateLimit: 1
 	},
 	mailSender : "",
 	paypal: {
-		mode: "sandbox", //sandbox or live
+		mode: "", //sandbox or live
 		client_id: "",
 		client_secret: ""
 	},
 	session: {
-		secure: false,
-		secret: '4f6faqwec8g5x3v4v4sm1'
+		secure: false	,
+		secret: ''
 	}
 }
 

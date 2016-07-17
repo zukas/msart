@@ -1,6 +1,7 @@
 var db 			= require("../db"),
 	ObjectID 	= require('mongodb').ObjectID,
 	config 		= require('../config')(),
+	mailer 		= require('../email/email')
 	check 		= require('./validate'),
 	paypal 		= require('paypal-rest-sdk');
 
@@ -672,31 +673,74 @@ exports.execute = function (data, callback) {
 			}
 		}
 	});
-
+	log("execute", res);
 	if(res.status) {
 		data = res.data;
+		log("execute", data);
 		paypal.payment.execute(data.paymentId, { payer_id : data.PayerID }, function (err, payment) {
 		    if (err) {
 		    	log(err);
 		        callback({status : false, error: err});
 		    } else {
-		    	log(payment)
-		        callback({status : true, payment: payment});
-		        db.db.orders.find({sessionID : sessionID}).toArray(function (err2, res) {
-		        	if(err2) {
-		        		log(err2);
-		        	} else if(res) {
-		        		for(var i = 0; i < res.length; ++i) {
-		        			db.db.shop.findOne({ _id : res[i].item }, function (err3, itm) {
-		        				if(err3) {
-		        					log(err3);
-		        				} else if(itm) {
+		    	log("paypal paytment data", payment)
+		        db.db.order_details.findOne({sessionID : data.sessionID}, function(err3, details) {
+					if(err3) {
+						log(err3)
+					} else if(details) {
+						payment.id = details._id.toString();
+				        callback({status : true, payment: payment});
+				        load_order_totals(data.sessionID, function (orders) {
+							if(orders.status) {
+								var total = orders.total,
+									items = [];
 
-		        				}
-		        			});
-		        		}
-		        	}
-		        });
+								orders = orders.items;
+								for(var i = 0; i < orders.length; ++i) {
+									items[items.length] = orders[i].item;
+								}
+
+								db.db.shop.find({ _id : { $in : items }}, { title: 1, action : 1 }).toArray(function (err2, shop_items) {
+									if(err2) {
+										log(err2);
+									} else {
+										for(var i = 0; i < orders.length; ++i) {
+											for(var j = 0; j < shop_items.length; ++j) {
+												if(shop_items[j]._id.equals(orders[i].item)) {
+													orders[i].title = shop_items[j].title;
+													break;
+												}
+											}
+										}
+									}
+
+									var termplate_locals = {
+										price: total,
+										items: orders,
+										_id: details._id.toString(),
+										shipping: details.shipping,
+										billing: details.billing,
+										payment: {
+											type: "paypal"
+										}
+									}
+									log("sending confirm",termplate_locals);
+									mailer.sendMail("purchase", termplate_locals, config.master, function (status) {
+										log("Send order mail to master: " + status.status);
+									});
+
+									mailer.sendMail("purchase", termplate_locals, details.shipping.email, function (status) {
+										log("Send order mail to payee: " + status.status);
+									});
+
+									
+
+									//Do shop transform
+
+								});
+						    }
+						});
+					}
+				});
 		    }
 		});
 	} else {
