@@ -1334,7 +1334,7 @@
                     }
                 });
             } else {
-                var data = price.value();
+                var data = price.value() || {};
                 data.id = item.id();
                 data.preview = proj.enabled() ? proj.value() : item.preview();
                 data.title = title.value();

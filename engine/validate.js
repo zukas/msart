@@ -53,7 +53,7 @@ function check_validate (data, schema) {
 function val_array(data, schema) {
 	if(schema && schema.type == schema_type.ARRAY) {
 		if(classOf(data) == "Array") {
-			var pass 	= true;
+			var pass 	= true,
 				parsed 	= [],
 				errors 	= [];
 
