@@ -20,7 +20,7 @@ var cfg = {
 		client_secret: ""
 	},
 	session: {
-		secure: false	,
+		secure: false,
 		secret: 'ds56asd564qe56bh6swqa'
 	}
 }

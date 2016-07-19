@@ -1,16 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div style="display: table;border-collapse: separate;border-spacing: 10px;table-layout: fixed;margin: 0px auto; width: 100%">
-	<div  style="display: table-row;">
-	<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
-	<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Nr zamówienia</div>
-	<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ _id|upper }}</div>
-	</div>
-	<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;"></div>
-	</div>
-	<div  style="display: table-row;">
-		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
+<table style="display: table;border-collapse: separate;border-spacing: 10px;table-layout: fixed;margin: 0px auto; width: 100%">
+	<tr>
+		<td style="width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;vertical-align: top;">
+			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Nr zamówienia</div>
+			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ _id|upper }}</div>
+		</td>
+		<td style="width: 50%;min-height: 300px;padding: 10px;vertical-align: top;"></td>
+	</tr>
+	<tr>
+		<td style="width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;vertical-align: top;">
 			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Dane osobowe</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
 			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Imię</div>
@@ -28,8 +28,8 @@
 			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Nr telefonu</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.phone }}</div>
 			</div>
-		</div>
-		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
+		</td>
+		<td style="width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;vertical-align: top;">
 			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Rodzaj płatności</div>
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
 			{% if payment.type == 'paypal' %}
@@ -60,10 +60,10 @@
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;"></div>
 			</div>
 			{% endif %}
-		</div>
-	</div>
-	<div style="display: table-row;">
-		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;vertical-align: top;">
 			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Adres dostawy</div>
 			{% if shipping.company %}
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
@@ -92,8 +92,8 @@
 			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Kraj</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ shipping.country }}</div>
 			</div>
-		</div>
-		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
+		</td>
+		<td style="width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;vertical-align: top;">
 			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Adres fakturowania</div>
 			{% if billing.company %}
 			<div style="margin-bottom: 10px;overflow: hidden; display: block;">
@@ -128,32 +128,32 @@
 			<div style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px;">Kraj</div>
 			<div style="font-size: 16px;height: 18px;line-height: 18px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2;">{{ billing.country }}</div>
 			</div>
-		</div>
-	</div>
-	<div style="display: table-row;">
-		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;"></div>
-		<div style="display: table-cell;width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;">
-		<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Podsumowanie</div>	
-		<table width="100%" style="margin-bottom: 20px;">
-		<tr>
-			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: left;">Nazwa</th>
-			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Ilość</th>
-			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Cena</th>
-			<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Transport</th>
-		</tr>
-		{% for key,val in items %}
-		<tr>
-			<td style="font-size: 14px;height: 16px;line-height: 16px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; text-align: left;">{{ val.title }}</td>
-			<td style="font-size: 14px;height: 16px;line-height: 16px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; text-align: right;">{{ val.quantity }}</td>
-			<td style="font-size: 14px;height: 16px;line-height: 16px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; text-align: right;">{{ val.price }}z&#x0142;</td>
-			<td style="font-size: 14px;height: 16px;line-height: 16px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; text-align: right;">{{ val.shipping }}z&#x0142;</td>
-		</tr>
-		{% endfor %}
-		</table>
-		<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Koszt całkowity</div>
-		<div style="width: 100%;height: 80px;margin: 0px auto;background-color: #336699;box-shadow: 0px 0px 2px #292929;font-size: 24px;line-height: 80px;text-align: center;color: #fafafa;text-shadow: 0px 2px 1px #000000;">{{ price }}z&#x0142;</div>
-		</div>
-	</div>
-</div>
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 50%;min-height: 300px;padding: 10px;vertical-align: top;"></td>
+		<td style="width: 50%;min-height: 300px;padding: 10px;background-color: #fafafa;box-shadow: 0px 0px 2px #292929;vertical-align: top;">
+			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Podsumowanie</div>	
+			<table width="100%" style="margin-bottom: 20px;">
+			<tr>
+				<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: left;">Nazwa</th>
+				<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Ilość</th>
+				<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Cena</th>
+				<th style="color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2; font-size: 15px;line-height: 18px;height: 18px; font-weight: normal; text-align: right;">Transport</th>
+			</tr>
+			{% for key,val in items %}
+			<tr>
+				<td style="font-size: 14px;height: 16px;line-height: 16px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; text-align: left;">{{ val.title }}</td>
+				<td style="font-size: 14px;height: 16px;line-height: 16px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; text-align: right;">{{ val.quantity }}</td>
+				<td style="font-size: 14px;height: 16px;line-height: 16px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; text-align: right;">{{ val.price }}z&#x0142;</td>
+				<td style="font-size: 14px;height: 16px;line-height: 16px;	color: #292929; text-shadow: 0px 2px 1px #f2f2f2; text-align: right;">{{ val.shipping }}z&#x0142;</td>
+			</tr>
+			{% endfor %}
+			</table>
+			<div style="font-size: 18px;line-height: 25px;height: 25px;	margin-bottom: 10px;border-bottom: 1px solid #f2f2f2; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">Koszt całkowity</div>
+			<div style="width: 100%;height: 80px;margin: 0px auto;background-color: #336699;box-shadow: 0px 0px 2px #292929;font-size: 24px;line-height: 80px;text-align: center;color: #fafafa;text-shadow: 0px 2px 1px #000000;">{{ price }}z&#x0142;</div>
+		</td>
+	</tr>
+</table>
 
 {% endblock %}

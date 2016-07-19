@@ -1372,6 +1372,7 @@
         };
 
         self.init = function () {
+            
             type.changed = function (val) {
                 price.nullValue(false);
                 container.removeAttribute("advert");
@@ -1405,7 +1406,7 @@
         self.setValue = function (data) {
             for(var key in collective) {
                 if(collective.hasOwnProperty(key) && collective[key]) {
-                    console.log("setting " + key, data[key]);
+                    
                     collective[key].setValue(data[key]);
                 }
             }
@@ -1474,8 +1475,11 @@
                             callback();
                         }
                     });
-                } else if(callback) {
-                    callback();
+                } else {
+                    details.init();
+                    if(callback) {
+                        callback();
+                    }
                 }
             }
 
