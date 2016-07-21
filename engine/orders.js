@@ -99,7 +99,7 @@ exports.session_order_add = function (data, callback) {
 	if(res.status) {
 		data = res.data;
 		data.id = data.id.toObjectID();
-		log(data);
+		
 		db.db.shop.findOne({ 
 			_id : data.id, 
 			"price.values" : { 
@@ -135,7 +135,7 @@ exports.session_order_add = function (data, callback) {
 					if(err2) {
 						callback({ status : false, error: err2 });
 					} else {
-						log(update.result);
+						
 						load_order_totals(data.sessionID, function (result) {
 							if(update.result.upserted) {
 								result.added = update.result.upserted[0]._id;
@@ -214,10 +214,10 @@ exports.session_order_load = function (sessionID, callback) {
 						if(err) {
 							callback({status : false, error: err});
 						} else {
-							log(result);
+							
 							for(var i = 0; i < result.length; ++i) {
 								for(var j = 0; j < totals.items.length; ++j) {
-									log(totals.items[j].item.equals(result[i]._id));	
+									
 									if(totals.items[j].item.equals(result[i]._id)) {
 										totals.items[j].title = result[i].title;
 										totals.items[j].availability = result[i].availability;
@@ -534,7 +534,7 @@ exports.approve = function (data, callback) {
 
 	if(res.status) {
 		data = res.data;
-		log(data);
+		
 		load_order_totals(data.sessionID, function (orders) {
 			if(orders.status) {
 				var total = orders.total,
@@ -614,14 +614,14 @@ exports.approve = function (data, callback) {
  									payment.payer.funding_instruments = [ funding ];
  								} 
  	
- 								log(payment);
+ 								
 								paypal.payment.create(payment, function (err3, payment) {
 								    if (err3) {
-								        log(err3);
+								        
 								        callback({status: false});
 								    } else {
 
-								        log("Create Payment Response", payment);
+								        
 								        var link = null;
 								    	for(var i = 0; i < payment.links.length; ++i) {
 								    		if(payment.links[i].rel == "approval_url") {
@@ -675,19 +675,19 @@ exports.execute = function (data, callback) {
 			}
 		}
 	});
-	log("execute", res);
+	
 	if(res.status) {
 		data = res.data;
-		log("execute", data);
+		
 		paypal.payment.execute(data.paymentId, { payer_id : data.PayerID }, function (err, payment) {
 		    if (err) {
-		    	log(err);
+		    	
 		        callback({status : false, error: err});
 		    } else {
-		    	log("paypal paytment data", payment)
+		    	
 		        db.db.order_details.findOne({sessionID : data.sessionID}, function(err3, details) {
 					if(err3) {
-						log(err3)
+						
 					} else if(details) {
 						payment.id = details._id.toString();
 				        callback({status : true, payment: payment});
@@ -703,7 +703,7 @@ exports.execute = function (data, callback) {
 
 								db.db.shop.find({ _id : { $in : items }}, { title: 1, action : 1 }).toArray(function (err2, shop_items) {
 									if(err2) {
-										log(err2);
+										
 									} else {
 										for(var i = 0; i < orders.length; ++i) {
 											for(var j = 0; j < shop_items.length; ++j) {
@@ -725,13 +725,13 @@ exports.execute = function (data, callback) {
 											type: "paypal"
 										}
 									}
-									log("sending confirm",termplate_locals);
+									
 									mailer.sendMail("purchase", termplate_locals, config.master, function (status) {
-										log("Send order mail to master: " + status.status);
+										
 									});
 
 									mailer.sendMail("purchase", termplate_locals, details.shipping.email, function (status) {
-										log("Send order mail to payee: " + status.status);
+										
 									});
 
 									if (config.paypal.mode == "live") {
@@ -739,24 +739,24 @@ exports.execute = function (data, callback) {
 											if(shop_items[i].action == 0) {
 												db.db.shop.update({ _id : shop_items[i]._id }, { $set: { availability : 1 } }, function (er4) { 
 													if(er4) { 
-														log("action 0 - 1", er4)
+														
 													} 
 												});
 											} else if(shop_items[i].action == 1) {
 												db.db.shop.findAndModify({ _id : shop_items[i]._id }, [['_id','asc']], {}, { remove : true }, function (er4, move_item) {
 													if (er4) {
-														log("action 1 - 1",er4);
+														
 													} else if (move_item) {
 														move_item = move_item.value;
-														log("action 1", move_item)
+														
 														db.db.archive.insert(move_item, function (er5) {
 															if(er5) {
-																log("action 1 - 2",er5);
+																
 															}
 														});
 														db.db.gallery.insert({ _id : move_item.preview.id.toObjectID(), created : new Date() }, function (er5) {
 															if(er5) {
-																log("action 1 - 3",er5);
+																
 															}
 														});
 													}
@@ -764,13 +764,13 @@ exports.execute = function (data, callback) {
 											} else if(shop_items[i].action == 2) {
 												db.db.shop.findAndModify({ _id : shop_items[i]._id }, [['_id','asc']], {}, { remove : true }, function (er4, move_item) {
 													if (er4) {
-														log("action 2 - 1", er4);
+														
 													} else if (move_item) {
 														move_item = move_item.value;
-														log("action 2",move_item)
+														
 														db.db.archive.insert(move_item, function (er5) {
 															if(er5) {
-																log("action 2 - 2",er5);
+																
 															}
 														});
 													}

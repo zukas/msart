@@ -79,7 +79,7 @@ exports.delete_image = function (data, callback) {
 }
 
 exports.load_image = function (data, callback) {
-	log(data);
+	
 	var id = ObjectID(data.id);
 	var gridStore = new GridStore(db.db, id, "r");
 	gridStore.open(function (open_err, open_store) {

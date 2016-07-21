@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.15.0",
+    "compression": "^1.6.2",
     "connect": "^3.4.1",
     "connect-mongodb-session": "^1.1.1",
     "cors": "^2.7.1",
@@ -30,7 +31,8 @@
     "password-hash": "^1.2.2",
     "paypal-rest-sdk": "*",
     "serve-favicon": "^2.3.0",
-    "swig": "^1.4.2"
+    "swig": "^1.4.2",
+    "winston": "^2.2.0"
   },
   "devDependencies": {},
   "scripts": {

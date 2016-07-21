@@ -3,7 +3,14 @@
 var util 		= require('util'),
 	path 		= require('path'),
 	ObjectID 	= require('mongodb').ObjectID,
-	logging 	= false;
+	winston 	= require('winston'),
+	logger 		= new (winston.Logger)({
+				    transports: [
+						new (winston.transports.File)({ filename: __dirname + '/msart.log', level: 'error' })
+					    ]
+					});
+
+
 
 global.async = function () {
 	if(arguments.length === 0 && typeof arguments[0] !== "function") throw "Bad argument to async";
@@ -25,14 +32,21 @@ global.makePath = function () {
 };
 
 global.enableLog = function () {
-	logging = true;
+	logger.transports.file.level = 'info';
 }
 
-global.log = function () {
-	if(logging) {
-		util.log(util.inspect(arguments, { showHidden: false, depth: null, colors : true }));
-	}
-};
+global.logger = {
+	log: logger.info,
+	error: logger.error
+}
+
+global.prof = function (name, func) {
+	var start = process.hrtime();
+	func(function(){
+		var diff = process.hrtime(start);
+		logger.info("Task profile: %s spent %d(ms)", name, (diff[0] * 1e3 + diff[1] / 1e6));
+	});
+}
 
 String.prototype.normalize = function () {
 	var str = this.valueOf().toLowerCase();

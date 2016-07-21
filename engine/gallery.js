@@ -20,7 +20,7 @@ exports.load = function (callback) {
 }
 
 exports.save = function (data, callback) {
-	log("save", data);
+	
 	var _id = null;
 	if(typeof data.id === 'string' || data.id instanceof String) {
 		_id = ObjectID(data.id);
@@ -30,12 +30,12 @@ exports.save = function (data, callback) {
 		callback({status: false, error: "Unknown image id"});
 		return;
 	}
-	log(_id);
+	
 	db.db.gallery.insert({ _id : _id, created : new Date() }, function (err, res) {
 		if(err) {
 			callback({status: false, error: err});
 		} else {	
-			log(res);
+			
 			if(res.insertedIds && res.insertedIds.length == 1) {
 				callback({status : true, id: res.insertedIds[0]});
 			} else if(res.ops && res.ops.length == 1) {
@@ -48,7 +48,7 @@ exports.save = function (data, callback) {
 }
 
 exports.delete = function (data, callback) {
-	log(data);
+	
 	var _id = null;
 	if(typeof data.id === 'string' || data.id instanceof String) {
 		_id = ObjectID(data.id);

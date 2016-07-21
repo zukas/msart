@@ -25,8 +25,8 @@ exports.create_category = function (data, callback) {
 			}
 		}
 	});
-	log(data);
-	log(res);
+	
+	
 	if(res.status) {
 		data = res.data;
 		data.id = data.id ? data.id.toObjectID() : new ObjectID();
@@ -110,7 +110,7 @@ exports.list = function (data, callback) {
 		}
 	});
 
-	log(res);
+	
 
 	var filter 	= null,
 		sort 	= null;
@@ -277,8 +277,8 @@ exports.save = function (data, callback) {
 
 		}
 	});
-	log(data);
-	log(res);
+	
+	
 	if(res.status) {
 		data = res.data;
 		var _id = null;
@@ -320,7 +320,7 @@ exports.save = function (data, callback) {
 
 exports.load = function (data, callback) {
 
-	log(data);
+	
 	var res = check.run(data,
 	{
 		type: check.TYPE.OBJECT,
@@ -333,7 +333,7 @@ exports.load = function (data, callback) {
 		}
 	});
 
-	log(res);
+	
 
 	if(res.status) {
 		db.db.shop.findOne({ _id : data.id.toObjectID() }, { 
@@ -506,7 +506,7 @@ exports.create_order = function (data, callback) {
 			status: 0
 		}, 
 		function (err, result) {
-			log(result);
+			
 			if(err) {
 				callback({status: false, error: err});
 			} else {
