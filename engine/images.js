@@ -3,7 +3,7 @@
 var db 			= require("../db"),
 	ObjectID 	= require('mongodb').ObjectID,
     GridStore 	= require('mongodb').GridStore,
-    gm			= require("gm");
+    sharp 		= require('sharp');
 
 
 exports.list_images = function (callback) {
@@ -24,12 +24,12 @@ exports.save_image = function (data, callback) {
 			callback({ status : false, error: open_err });
 			return;
 		}
-		gm(data.file.buffer, data.file.originalname)
-		.autoOrient()
+		sharp(data.file.buffer)
 		.resize(1200, null)
 		.quality(100)
-		.compress("LZMA")
-		.toBuffer("JPEG", function (err, buffer) {
+		.withMetadata()
+		.toFormat(sharp.format.jpeg)
+		.toBuffer(function (err, buffer) {
 			open_store.write(buffer, function (write_err, write_store) {
 				if(write_err) {
 					callback({ status : false, error: write_err });
@@ -79,36 +79,41 @@ exports.delete_image = function (data, callback) {
 }
 
 exports.load_image = function (data, callback) {
-	
-	var id = ObjectID(data.id);
-	var gridStore = new GridStore(db.db, id, "r");
-	gridStore.open(function (open_err, open_store) {
-		if(open_err) {
-			callback({ status : false, error: open_err });
-			return;
-		}
-		open_store.seek(0, function (seek_err, seek_store) {
-
-			if(seek_err) {
-				callback({ status : false, error: seek_err });
+	prof("load_raw_image", function (end) {
+		var id = ObjectID(data.id);
+		var gridStore = new GridStore(db.db, id, "r");
+		gridStore.open(function (open_err, open_store) {
+			if(open_err) {
+				callback({ status : false, error: open_err });
+				end();
 				return;
 			}
+			open_store.seek(0, function (seek_err, seek_store) {
 
-			seek_store.read(function (read_err, read_data) {
-				seek_store.close();
-
-				if(read_err) {
-					callback({ status : false, error: read_err });
-				} else {
-
-					db.db.images.findOne({_id : id }, { name: 1, type : 1 }, function (find_err, find_data) {
-						if(find_err) {
-							callback({ status : false, error: find_err });
-						} else {
-							callback({ status : true, buffer: read_data, mimetype: find_data.type });
-						}
-					});
+				if(seek_err) {
+					callback({ status : false, error: seek_err });
+					end();
+					return;
 				}
+
+				seek_store.read(function (read_err, read_data) {
+					seek_store.close();
+
+					if(read_err) {
+						callback({ status : false, error: read_err });
+						end();
+					} else {
+
+						db.db.images.findOne({_id : id }, { name: 1, type : 1 }, function (find_err, find_data) {
+							if(find_err) {
+								callback({ status : false, error: find_err });
+							} else {
+								callback({ status : true, buffer: read_data, mimetype: find_data.type });
+							}
+							end();
+						});
+					}
+				});
 			});
 		});
 	});

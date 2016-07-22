@@ -9,16 +9,7 @@ exports.db = null;
 
 exports.start = function (info, callback) {
 
-	exports.db = new mongo.Db(info.name, new mongo.Server("localhost", 27017, { 
-		auto_reconnect : true, 
-		poolSize: 20, 
-		socketOptions: { 
-			noDelay : true, 
-			keepAlive : 10,
-			connectTimeoutMS: 100,
-			socketTimeoutMS: 500
-		} 
-	}), { safe : true });
+	exports.db = new mongo.Db(info.name, new mongo.Server("localhost", 27017, { auto_reconnect : true, poolSize: 20, socketOptions: { noDelay : true, } }), { safe : true });
 	exports.db.open(function (err, db) {
 		if(err) throw err;
 		var create = function (index, list, done) {

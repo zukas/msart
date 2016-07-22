@@ -10,7 +10,7 @@ var check 	= require("./validate"),
 	contact = require("./contact"),
 	config 	= require("../config")(),
 	url 	= require('url'),
-	gm		= require("gm"),
+	sharp 	= require('sharp'),
 	store 	= [];
 
 check.installRegex("ObjectID", /^[\w\d]{24}$/);
@@ -126,14 +126,20 @@ exports.list_images = function (req, res) {
 exports.load_image = function (req, res) {
 	prof("load_image", function(end){
 		images.load_image({ id : req.params.id }, function (data) {
-			gm(data.buffer, data.name) 
-			.resize(req.query.width, req.query.height)
-			.toBuffer("JPEG", function (err, buffer) {
-				
-				res.writeHead(200, {'Content-Type': data.mimetype, "Cache-Control" : "no-transform,public,max-age=86400" });
-				res.end(buffer, 'binary');
-				end();
-			});	
+			var width 	= parseInt(req.query.width),
+				height 	= parseInt(req.query.height);
+			prof("load_image_sharp", function (end2) {
+				width = isNaN(width) ? null : width;
+				height = isNaN(height) ? null : height;
+				sharp(data.buffer)
+				.resize(width, height)
+	  			.toBuffer(function(err, buffer) {
+	  				end2();
+					res.writeHead(200, {'Content-Type': data.mimetype, "Cache-Control" : "no-transform,public,max-age=86400" });
+					res.end(buffer, 'binary');
+					end();
+	  			});
+	  		})
 		});
 	});
 }
@@ -141,14 +147,16 @@ exports.load_image = function (req, res) {
 exports.load_small_image = function (req, res) {
 	prof("load_small_image", function(end){
 		images.load_image({ id : req.params.id }, function (data) {
-			gm(data.buffer, data.name)
-			.resize(null, 600)
-			.toBuffer("JPEG", function (err, buffer) {
-				
-				res.writeHead(200, {'Content-Type': data.mimetype, "Cache-Control" : "no-transform,public,max-age=86400" });
-				res.end(buffer, 'binary');
-				end();
-			});
+			prof("load_small_image_sharp", function(end2) {
+				sharp(data.buffer)
+				.resize(null, 600)
+	  			.toBuffer(function(err, buffer) {
+	  				end2();
+					res.writeHead(200, {'Content-Type': data.mimetype, "Cache-Control" : "no-transform,public,max-age=86400" });
+					res.end(buffer, 'binary');
+					end();
+	  			});
+	  		})
 		});
 	});
 }
@@ -156,14 +164,16 @@ exports.load_small_image = function (req, res) {
 exports.load_thumb_image = function (req, res) {
 	prof("load_thumb_image", function(end){
 		images.load_image({ id : req.params.id }, function (data) {
-			gm(data.buffer, data.name)
-			.resize(200, null)
-			.toBuffer("JPEG", function (err, buffer) {
-				
-				res.writeHead(200, {'Content-Type': data.mimetype, "Cache-Control" : "no-transform,public,max-age=86400" });
-				res.end(buffer, 'binary');
-				end();
-			});
+			prof("load_thumb_image_sharp", function (end2) {
+				sharp(data.buffer)
+				.resize(null, 300)
+	  			.toBuffer(function(err, buffer) {
+	  				end2();
+					res.writeHead(200, {'Content-Type': data.mimetype, "Cache-Control" : "no-transform,public,max-age=86400" });
+					res.end(buffer, 'binary');
+					end();
+	  			});
+	  		});
 		});
 	});
 }

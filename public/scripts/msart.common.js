@@ -569,6 +569,9 @@
         if(!options.files) {
             req.setRequestHeader("Content-type", "application/json");
         }
+        if(options.cache) {
+            req.setRequestHeader("Cache-Control", "max-age=86400");
+        }
         req.onloadend = function() { 
             if (req.status == 200) {
                 if(callback) {
