@@ -196,10 +196,15 @@
                 count   = nodes.length;
             pages.current = 1;
             pages.total = 1;
-
             if(count > 0) {
-                var iw      = nodes[0].offsetWidth + 6,
-                    ih      = nodes[0].offsetHeight + 6,
+                var i;
+                for(i = 0; i < count; ++i) {
+                    if(nodes[i].style.display.length == 0) {
+                        break;
+                    }
+                }
+                var iw      = nodes[i].offsetWidth + 6,
+                    ih      = nodes[i].offsetHeight + 6,
                     cw      = gallery.el.offsetWidth - 2,
                     ch      = gallery.el.offsetHeight - 2;
 
@@ -208,9 +213,9 @@
                 pages.thumbs = wf * hf;
                 pages.total = Math.ceil(count / pages.thumbs);
                 
-                for(var i = Math.min(pages.thumbs - 1, count); i >= 0; --i) {
+                for(i = Math.min(pages.thumbs, count) - 1; i >= 0; --i) {
                     if(nodes[i].style.display.length == 0) {
-                        break;
+                        continue;
                     }
                     async(function(item) {
                         item.style.display = null;
@@ -218,10 +223,9 @@
                     
                 } 
 
-                for(var i = Math.min(pages.thumbs, count); i < count; ++i) {
-
+                for(i = Math.min(pages.thumbs, count); i < count; ++i) {
                     if(nodes[i].style.display.length > 0) {
-                        break;
+                        continue;
                     }
                     async(function(item) {
                         item.style.display = "none";
@@ -245,7 +249,7 @@
                 var nodes   = gallery.el.childNodes,
                     count   = nodes.length;
 
-                for(var i = Math.min(pages.thumbs * pages.current, count); i >= pages.thumbs * (pages.current - 1); --i) {
+                for(var i = Math.min(pages.thumbs * pages.current, count) - 1; i >= pages.thumbs * (pages.current - 1); --i) {
                     async(function(item) {
                         item.style.display = "none";
                     }, [nodes[i]]);
@@ -258,7 +262,7 @@
                 controls.next.removeAttribute("disabled");
                 controls.data.innerHTML = pages.current + " / " + pages.total;
 
-                for(var i = Math.min(pages.thumbs * pages.current, count); i >= pages.thumbs * (pages.current - 1); --i) {
+                for(var i = Math.min(pages.thumbs * pages.current, count) - 1; i >= pages.thumbs * (pages.current - 1); --i) {
                     async(function(item) {
                         item.style.display = null;
                     }, [nodes[i]]);
