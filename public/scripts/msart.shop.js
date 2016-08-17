@@ -1366,6 +1366,18 @@
         view.appendChild(hdesc);
         view.appendChild(desc.el);
 
+        type.changed = function (val) {
+            if(val == 2) {
+                price.nullValue(true);
+                avail.setValue(1);
+                avail.lock(); 
+                action.setValue(0);
+                action.lock();
+                component.unlock();
+                container.setAttribute("advert",true);
+            }
+        }
+
         self.el = container;
 
         self.show = function () {
