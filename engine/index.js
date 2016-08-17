@@ -184,7 +184,7 @@ exports.save_image = function (req, res) {
 		if(req.session.admin) {
 			images.save_image({ file: req.files.file }, function (data) {
 				res.send(data);
-				prof();
+				end();
 			});
 		} else {
 			res.send({ status: false, error: "Not allowed"});
