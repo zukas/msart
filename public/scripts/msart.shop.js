@@ -353,7 +353,6 @@
                         delete thumbs_[picture_id];
                     }
                     carousel_.removeChild(thumb.el);
-                    Ps.update(carousel_);
                 }
 
                 var idx = ordered_.indexOf(picture_id);
