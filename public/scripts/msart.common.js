@@ -583,13 +583,24 @@
         return new Request(options);
     }
 
-    root.scrollBodyTo = function (target, offset) {
+    function margin_top(elem) {
+        var style = elem.currentStyle || window.getComputedStyle(elem);
+        return Length.toPx(elem, style.marginTop)
+    }
+
+    root.scrollBodyTo = function (target) {
         var content     = document.getElementById("content-wrapper"),
-            next_top    = parseInt(target.offsetTop),
-            curr_top    = parseInt(content.scrollTop),
-            offset      = parseInt(offset || 0);
+            next_top    = parseInt(target.offsetTop - margin_top(target)),
+            curr_top    = parseInt(content.scrollTop);
+
+        var parent = target.parentNode;
+        while(parent && parent != content) {
+            next_top += parseInt(parent.offsetTop - margin_top(parent));
+            parent = parent.parentNode;
+        }
+
         if(curr_top != next_top) {
-            var ajust = next_top - curr_top + offset;
+            var ajust = next_top - curr_top;
             morpheus.tween(500,
             function (ratio) {
                 var value = curr_top + ajust * ratio;

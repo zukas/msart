@@ -2,6 +2,7 @@
 
 SOURCES=(
 public/scripts/morpheus.js
+public/scripts/msart.units.js
 public/scripts/msart.common.js
 public/scripts/msart.language.js
 public/scripts/msart.header.js

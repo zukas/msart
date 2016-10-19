@@ -401,6 +401,7 @@
                         speed: 0.75 
                     });
                 }
+                scrollBodyTo(wrapper_);
                 preview_.el.setAttribute("current", thumb.id());
                 if(label_) {
                     label_.onchange = null;
@@ -1258,7 +1259,7 @@
 
         if(window.admin) {
             hcateg.className = "text-header header-text";
-	    language.bind ("category",hcateg);
+        language.bind ("category",hcateg);
             
 
             view.appendChild(hcateg);
@@ -1614,7 +1615,7 @@
             if(!options.force) {
                 container_.style.display = "block";
                 var height = container_.offsetHeight;
-                scrollBodyTo(window.shop.el, category.el.offsetTop + container_.offsetTop);
+                scrollBodyTo(container_);
                 container_.style.height = "0px";
                 morpheus(container_, {
                     height: height,
@@ -1631,7 +1632,7 @@
                     }
                 });
             } else {
-                scrollBodyTo(window.shop.el, category.el.offsetTop + container_.offsetTop);
+                scrollBodyTo(container_);
                 morpheus(container_, {
                     marginLeft : 0,
                     duration: 300,
@@ -1649,7 +1650,7 @@
                 duration: 300,
                 complete : function () {
                     if(!options.force) {
-                        scrollBodyTo(window.shop.el, category.el.offsetTop + item.position());
+                        scrollBodyTo(item.el);
                     }
                     container_.style.marginLeft = null;
                     if(!options.inline) {
