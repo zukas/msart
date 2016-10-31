@@ -8,6 +8,7 @@
     "compression": "^1.6.2",
     "connect": "^3.4.1",
     "connect-mongodb-session": "^1.1.1",
+    "cron": "^1.1.1",
     "errorhandler": "^1.4.3",
     "express": "^4.13.4",
     "express-device": "^0.4.2",

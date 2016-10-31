@@ -343,7 +343,7 @@ exports.track_sessions = function (session_store) {
 			(function (session_id) {
 				session_store.get(session_id, function (err, session) {
 					if(session){
-						if(session.valid && !	session.admin) {
+						if(session.valid && !session.admin) {
 							var current 	= new Date(),
 								valid 		= new Date(session.valid.getTime() + 15 * 60000);
 							if(valid < current) {
