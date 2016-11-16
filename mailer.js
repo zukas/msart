@@ -25,13 +25,15 @@ function sendMail (locals, to, callback) {
 			var mailOptions = {
 			    from: config.mailSender,
 			    to: to,
-			    subject: "Oferta",
+			    subject: "Dołącz do grona wyjątkowych osób o wyrafinowanych gustach",
 			    html: res
 			};
 			transport.sendMail(mailOptions, function(err2, info){
 			    if(err2){
+			    	console.log("Failed to send email to ", to , "Error:", err2);
 			        callback({status: false});
 			    } else {
+			    	console.log("Sent email to ", to);
 				    callback({status: true});
 			    }
 			});
@@ -58,16 +60,39 @@ function runner () {
 	});
 }
 
+
+
 db.start({
 	name: "mailer",
 	collections: [
 		"mails"
 	]
 }, function () {
-	// 
-	var task = new cron("0 11 * * 1-5", function () {
-		runner();
-	});
 
-	task.start();
+	if(process.argv.length == 4 && process.argv[2] == "-i") {
+		var file = process.argv[3];
+		file = fs.realpathSync(file);
+		console.log(file);
+		var data = fs.readFileSync(file, "utf8").toString();
+		data = data.replace(/[\n\r]/g,"").split(",");
+
+
+		var bulk = db.db.mails.initializeUnorderedBulkOp();
+		for(var i in data) {
+			bulk.find({ address : data[i] }).upsert().updateOne({
+				$setOnInsert: { address: data[i] },
+			});
+		}
+		bulk.execute(function(err) {
+			if(err) console.log(err);
+			process.exit(0);
+		});
+	} else {
+		// 0 10 * * 1-5
+		var task = new cron("* * * * *", function () {
+			runner();
+		});
+
+		task.start();
+	}
 });
