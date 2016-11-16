@@ -30,10 +30,10 @@ function sendMail (locals, to, callback) {
 			};
 			transport.sendMail(mailOptions, function(err2, info){
 			    if(err2){
-			    	console.log("Failed to send email to ", to , "Error:", err2);
+			    	console.log("Failed to send email to", to , "Error:", err2);
 			        callback({status: false});
 			    } else {
-			    	console.log("Sent email to ", to);
+			    	console.log("Sent email to", to);
 				    callback({status: true});
 			    }
 			});
@@ -89,7 +89,7 @@ db.start({
 		});
 	} else {
 		// 0 10 * * 1-5
-		var task = new cron("* * * * *", function () {
+		var task = new cron("0 10 * * 1-5", function () {
 			runner();
 		});
 
