@@ -25,7 +25,7 @@ function sendMail (locals, to, callback) {
 			var mailOptions = {
 			    from: config.mailSender,
 			    to: to,
-			    subject: "Materiały reklamowe i pamiątkowe.",
+			    subject: "Materiały reklamowe i promocyjne.",
 			    html: res
 			};
 			transport.sendMail(mailOptions, function(err2, info){
