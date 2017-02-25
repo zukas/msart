@@ -17,11 +17,17 @@ var mailer 		= require('nodemailer'),
 		info : "Item inquiry",
 		purchase : "Order details"
 	},
+	args 		= {
+		info : { 
+			domain : config.domain 
+		}
+	},
 	transport = mailer.createTransport(ses(config.ses));
 
 function renderTemplate(template, locals, callback) {
 	var file = templates[template];
 	if(file) {
+		locals.system = args[template];
 		swig.renderFile(file, locals, callback);
 	} else {
 		callback("No matching template", null);

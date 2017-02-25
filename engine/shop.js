@@ -26,7 +26,6 @@ exports.create_category = function (data, callback) {
 		}
 	});
 	
-	
 	if(res.status) {
 		data = res.data;
 		data.id = data.id ? data.id.toObjectID() : new ObjectID();

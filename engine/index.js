@@ -4,6 +4,7 @@ var check 	= require("./validate"),
 	images 	= require("./images"),
 	users 	= require("./users"),
 	about 	= require("./about"),
+	works 	= require("./workshops"),
 	shop 	= require("./shop"),
 	orders 	= require("./orders"),
 	gallery = require("./gallery"),
@@ -32,6 +33,13 @@ check.installConverter("String", "Number", function (value) {
 	} else {
 		return null;
 	}
+});
+
+check.installConverter("String", "DateTime", function (value) {
+
+	console.log("String to DateTime:", value);
+	return new DateTime().UTC();
+
 });
 
 check.installValidator("CardNumber", (function (arr) {
@@ -206,6 +214,39 @@ exports.load_about = function (req, res) {
 	about.load(function (data) {
 		res.send(data);
 	});
+}
+
+
+exports.list_workshops = function (req, res) {
+	works.list(req.body, function (data) {
+		res.send(data);
+	});
+}
+
+exports.save_workshop = function (req, res) {
+	if(req.session.admin) {
+		works.save(req.body, function (data) {
+			res.send(data);
+		});
+	} else {
+		res.send({ status: false, error: "Not allowed"});
+	}
+}
+
+exports.load_workshop = function (req, res) {
+	works.load(req.body, function (data) {
+		res.send(data);
+	});
+}
+
+exports.delete_workshop = function (req, res) {
+	if(req.session.admin) {
+		works.delete(req.body, function (data) {
+			res.send(data);
+		});
+	} else {
+		res.send({ status: false, error: "Not allowed"});
+	}
 }
 
 

@@ -55,7 +55,7 @@ app.engine('html', swig.renderFile);
 app.set('port', process.env.PORT || 80);
 app.set('views', path.join(__dirname, 'public/views'));
 app.set('view engine', 'html');
-app.set('view cache', true);
+app.set('view cache', !config.debug);
 app.use(compression());
 app.use(favicon(__dirname + '/public/favicons/favicon.ico'));
 app.use(methodOverride());
@@ -93,6 +93,11 @@ app.post('/async/images/delete', engine.delete_image);
 
 app.post('/async/about/save', engine.save_about);
 app.post('/async/about/load', engine.load_about);
+
+app.post('/async/workshop/list', engine.list_workshops);
+app.post('/async/workshop/save', engine.save_workshop);
+app.post('/async/workshop/load', engine.load_workshop);
+app.post('/async/workshop/delete', engine.delete_workshop);
 
 app.post('/async/shop/list', engine.list_shop_item);
 app.post('/async/shop/save', engine.save_shop_item);
@@ -137,6 +142,7 @@ db.start({
 		"users",
 		"images",
 		"about",
+		"workshops",
 		"shop",
 		"category",
 		"orders",

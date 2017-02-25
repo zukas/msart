@@ -312,7 +312,9 @@ body[mobile] #main_menu {
 	position: relative;
 	display: inline-block;
 	font-size: 2em;
-	width: 136px;
+	width: auto;
+	margin-left: 10px;
+	margin-right: 10px;
 	height: 40px;
 	text-align: center;
 	line-height: 40px;
@@ -321,6 +323,14 @@ body[mobile] #main_menu {
     box-sizing: border-box;
 	vertical-align: middle;
 	overflow: hidden;
+}
+
+#main_menu .menu_item:first-child {
+	margin-left: 0px;
+}
+
+#main_menu .menu_item:last-child {
+	margin-right: 0px;
 }
 
 body[mobile] #main_menu .menu_item {
@@ -601,9 +611,679 @@ body[mobile] #content-wrapper {
 	animation-delay: 25s;
 }
 
-#shop_panel {
+#workshop_panel {
 	/*background: #d2d6da;*/
 	background-image: url("../images/light_bg.jpg");
+	background-size: 200px;
+	background-repeat: repeat;
+
+	box-shadow: inset 0px 3px 4px -2px #303030;
+}
+
+#workshop_panel #workshop_item_view {
+	position: relative;
+	display: inline-block;
+	padding: 10px 10px;
+	margin-top: 50px;
+	width: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+#workshop_panel .workshop-item, #workshop_panel .workshop-item-new {
+	display: inline-block;
+	position: relative;
+	width: 370px;
+	height: 330px;
+	background-color: #f2f2f2;
+	box-shadow: 0px 0px 2px #292929;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	cursor: pointer;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+	clear: both;
+    overflow: hidden;
+}
+
+[admin] #workshop_panel .workshop-item, [admin] #workshop_panel .workshop-item-new {
+	height: 390px;
+}
+
+#workshop_panel .workshop-item:hover, #workshop_panel .workshop-item-new:hover {
+	box-shadow: 0px 0px 10px #292929;
+	z-index: 2;
+}
+
+#workshop_panel .workshop-item:first-child, #workshop_panel .workshop-item-new:first-child {
+	margin-left: 0px;
+}
+
+#workshop_panel .workshop-item-internal {
+	display: block;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+#workshop_panel .workshop-item-image {
+	position: absolute;
+	display: block;
+	width: 350px;
+	height: 280px;
+	top: 10px;
+	left: 10px;
+	font-size: 1em;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+#workshop_panel .workshop-item-new .workshop-item-image {
+	background-size: auto;
+	background-image: url("../images/add.png");
+	height: 370px;
+}
+
+
+[mobile] #workshop_panel .workshop-item-image {
+	height: 19vw;
+	width: 21.3vw;
+	top: 1.1vw;
+	left: 1.1vw;
+}
+
+[mobile] #workshop_panel .workshop-item-new .workshop-item-image {
+	width: 21.3vw;
+	height: 21.3vw;
+}
+
+#workshop_panel .workshop-item-title {
+	position: absolute;
+	display: block;
+	width: 280px;
+	height: 40px;
+	bottom: 0px;
+	left: 0px;
+	padding-left: 10px;
+	font-size: 20px;
+	line-height: 40px;
+	border: none;
+	white-space:nowrap;
+	overflow:hidden;	
+	text-overflow: ellipsis;
+	text-align: left;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+[mobile] #workshop_panel .workshop-item-title {
+	width: 15vw;
+	height: 3.4vw;
+	line-height: 3.4vw;
+	padding-left: 1.1vw;
+}
+
+#workshop_panel .workshop-item-price {
+	position: absolute;
+	display: block;
+	width: 70px;
+	height: 40px;
+	bottom: 0px;
+	right: 0px;
+	border: none;
+	font-size: 20px;
+	line-height: 40px;
+	text-align: right;
+	padding-right: 10px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+[mobile] #workshop_panel .workshop-item-price {
+	width: 8.5vw;
+	height: 3.4vw;
+	line-height: 3.4vw;
+	padding-right: 1.1vw;
+}
+
+[admin] #workshop_panel .workshop-item-title, [admin] #workshop_panel .workshop-item-price {
+	bottom: 60px;
+}
+
+#workshop_panel .workshop-item-price span {
+	text-align: right;
+}
+
+#workshop_panel .workshop-item .visit-counter-container {
+	position: absolute;
+	display: block;
+	width: 350px;
+	height: 60px;
+	bottom: 5px;
+	left: 10px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#workshop_panel .workshop-item .visit-counter {
+	width: 165px;
+	margin-right: 20px;
+	height: 20px;
+	position: relative;
+	font-size: 14px;
+	line-height: 20px;
+	text-align: left;
+	display: inline-block;
+}
+
+#workshop_panel .workshop-item .visit-counter:nth-of-type(even) {
+	margin-right: 0px;
+}
+
+#workshop_panel .workshop-item .visit-counter span {
+	float: right;
+}
+
+
+
+
+
+
+#workshop_panel .workshop-item-container {
+    display: none;
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	height: auto;
+	background: #f2f2f2;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+	box-shadow: 0px 1px 2px 1px #7e7e7e;
+	margin: 0px 0px 10px -110%;
+}
+
+#workshop_panel .workshop-item-view {
+	position: relative;
+	display: table;
+	width: 100%;
+	max-width: 1280px;
+	height: auto;
+	margin: 0px auto;
+	padding: 10px 0px;
+    border-collapse: separate;
+  	border-spacing: 10px 0px;
+  	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    table-layout: fixed;
+}
+
+#workshop_panel .picture-manager {
+	display: table-cell;
+	vertical-align: top;
+	width: 100%;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+#workshop_panel .picture-container {
+	display: block;
+	width: 100%;
+	overflow: hidden;
+	vertical-align: top;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+
+#workshop_panel .picture-preview {
+	display: block;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding-bottom: 80%;
+	min-width: 400px;
+	min-height: 320px;
+	overflow: hidden;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #7e7e7e;
+    box-shadow: 1px 3px 2px #292929;
+	border-bottom: 2px solid #336699;
+}
+
+
+
+#workshop_panel .picture-container .picture-carousel {
+
+	position: relative;
+	display: inline-block;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+
+#workshop_panel .picture-container .picture-thumb {
+	display: inline-block;
+	position: relative;
+	height: 140px;
+	width: 175px;
+	margin-right: 4px;
+	margin-bottom: 4px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+	background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #7e7e7e;
+    box-shadow: 1px 3px 2px #292929;
+	border-bottom: 2px solid #336699;
+    cursor: pointer;
+    	
+}
+
+#workshop_panel .picture-container .picture-thumb .picture-thumb-label {
+	display: block;
+	position: absolute;
+	font-size: 12px;
+	line-height: 12px;
+	height: 12px;
+	width: 100px;
+	right: 0px;
+	bottom: 10px;
+	background-color: #f2f2f2;
+	opacity: 0.75;
+	padding: 2px 1px;
+	box-shadow: -1px 2px 2px #292929;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	white-space: nowrap;
+  	overflow: hidden;
+  	text-overflow: ellipsis;
+}
+
+#workshop_panel .picture-container .picture-thumb:hover {
+	border-bottom-color: #4080bf;
+}
+
+#workshop_panel .picture-container .picture-thumb.add {
+	background-image: url("../images/add-white.png");
+	background-size: 50%;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+#workshop_panel .picture-container .picture-thumb.add input[type="file"] {
+	position: absolute;
+	top:0px;
+	left:0px;
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+#workshop_panel .picture-container .picture-thumb-remove {
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	right: 0px;
+	top: 0px;
+	background-image: url("../images/remove.png");
+	background-size: auto auto;
+	background-size: cover;
+}
+
+#workshop_panel .picture-container .picture-thumb-remove:hover {
+	width: 32px;
+	height: 32px;
+	right: -1px;
+	top: -1px;
+}
+
+#workshop_panel .details-container {
+	display: table-cell;
+	width: 100%;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+}
+
+#workshop_panel .details-view {
+	position: relative;
+	display: inline-block;
+	height: auto;
+	width: 100%;
+	padding-right: 20px;
+    padding-bottom: 55px;
+	margin-bottom: 10px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#workshop_panel .text-header {
+	height: 30px;
+	font-size: 24px;
+	line-height: 30px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+#workshop_panel .title, 
+#workshop_panel .desc {
+	font-size: 18px;
+	line-height: 24px;
+	margin-bottom: 20px;
+	width: 100%;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+#workshop_panel .edit .title, 
+#workshop_panel .edit .price,
+#workshop_panel .edit .desc  {
+	border-left: 1px solid #993333;
+	padding-left: 5px;
+}
+
+#workshop_panel .price {
+	font-size: 18px;
+	line-height: 24px;
+	margin-bottom: 20px;
+	width: 100%;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+#workshop_panel .price table {
+	border-collapse:collapse;
+	margin-right: 20px;
+	width: 100%;
+	table-layout: fixed;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    box-shadow: 1px 3px 2px #7e7e7e;
+}
+
+
+#workshop_panel .price td, 
+#workshop_panel .price th {
+	text-align: center;
+	height: 40px;
+	vertical-align: middle;
+	padding: 5px;
+}
+
+#workshop_panel .price th {
+	height: 50px;
+}
+
+#workshop_panel .price tr:nth-child(odd) {
+	background-color: #d3d3d3;
+}
+
+#workshop_panel .price tr:first-child {
+	background-color: #336699;
+	box-shadow: 1px 2px 2px #7e7e7e;
+	height: 50px;
+}
+
+#workshop_panel .price input {
+	width: 100%;
+	display: block;
+	height: 24px;
+}
+
+
+#workshop_panel .timetable-list .timetable-add {
+	vertical-align: top;
+	position: relative;
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	padding: 4px;
+	background-image: url("../images/add-white.png");
+	background-size: 50%;
+	background-color: #336699;
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	overflow: hidden;
+	box-shadow: 1px 3px 2px #7e7e7e;
+}
+
+#workshop_panel .timetable-list .timetable-element {
+	vertical-align: top;
+	position: relative;
+	display: inline-block;
+	height: 40px;
+	text-align: center;
+	vertical-align: middle;
+	padding: 4px;
+	width: 250px;
+	margin-right: 15px;
+	margin-bottom: 15px;
+	background: #336699;
+	box-shadow: 1px 3px 2px #7e7e7e;
+}
+
+#workshop_panel .timetable-list .timetable-element-input {
+	text-align: center;
+	line-height: 40px;
+	height: 40px;
+	width: 100%;
+}
+
+
+#workshop_panel .timetable-list .timetable-element-remove {
+	display: block;
+	position: absolute;
+	top: -12px;
+	right: -12px;
+	width: 26px;
+	height: 26px;
+	background-image: url("../images/remove.png");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;	
+}
+
+
+#workshop_panel .timetable-list .timetable-add input {
+	position: absolute;
+	top:0px;
+	left:0px;
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+
+#workshop_panel .desc {
+	white-space: pre-line;
+}
+
+#workshop_panel .workshop-item-contact-panel {
+	display: inline-block;
+	width: 100%;
+	height: auto;
+}
+
+#workshop_panel .workshop-item-contact-panel .name {
+	display: block;
+	width: 360px;
+	height: 40px;
+	margin-top: 10px;
+	line-height: 40px;
+	border: none;
+	box-shadow: inset 0px 0px 2px #000000;
+	background: #fafafa;
+	font-size: 16px;
+	padding: 0px 5px;
+	font-family: LobsterTwo;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#workshop_panel .workshop-item-contact-panel .email {
+	display: block;
+	width: 360px;
+	height: 40px;
+	margin-top: 10px;
+	line-height: 40px;
+	border: none;
+	box-shadow: inset 0px 0px 2px #000000;
+	background: #fafafa;
+	font-size: 16px;
+	padding: 0px 5px;
+	font-family: LobsterTwo;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#workshop_panel .workshop-item-contact-panel .message {
+	display: block;
+	width: 360px;
+	height: auto;
+	margin-top: 10px;
+	line-height: 22px;
+	min-height: 90px;
+	border: none;
+	box-shadow: inset 0px 0px 2px #000000;
+	background: #fafafa;	
+	font-size: 16px;
+	padding: 0px 5px;
+	resize: none;
+	font-family: LobsterTwo;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#workshop_panel .workshop-item-contact-panel .name[error],
+#workshop_panel .workshop-item-contact-panel .email[error],
+#workshop_panel .workshop-item-contact-panel .message[error] {
+	box-shadow: inset 0px 0px 6px #bf4040;
+	padding-right: 50px;
+	background-image: url("../images/error.png");
+	background-size: auto 40px;
+	background-repeat: no-repeat;
+	background-position: right center;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+#workshop_panel .control-view {
+	position: absolute;
+	display: inline-block;
+	height: 50px;
+	width: 100%;
+	padding: 0px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    bottom: 5px;
+    left: 0px;
+}
+
+#workshop_panel .delete-btn {
+	display: inline-block;
+	position: relative;
+	width: 140px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 30px;
+	margin-right: 10px;
+	background-color: #993333;
+	text-align: center;
+	box-shadow: 1px 3px 2px #292929;
+	cursor: pointer;
+	float: right;
+	}
+
+#workshop_panel .delete-btn:hover {
+	background-color: #bf4040;
+}
+
+#workshop_panel .action-btn {
+	display: inline-block;
+	position: relative;
+	width: 140px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 30px;
+	margin-right: 10px;
+	background-color: #336699;
+	text-align: center;
+	box-shadow: 1px 3px 2px #292929;
+	cursor: pointer;
+	float: left;
+	}
+
+#workshop_panel .action-btn:hover {
+	background-color: #4080bf;
+}
+
+#workshop_panel .close-btn {
+	display: inline-block;
+	position: relative;
+	width: 140px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 30px;
+	margin-right: 20px;
+	background-color: #7e7e7e;
+	text-align: center;
+	box-shadow: 1px 3px 2px #292929;
+	cursor: pointer;
+	float: left;
+	}
+
+#workshop_panel .close-btn:hover {
+	background-color: #999999;
+}
+
+
+
+
+
+
+
+#shop_panel {
+	/*background: #d2d6da;*/
+	background-image: url("../images/dark_bg.jpg");
 	background-size: 200px;
 	background-repeat: repeat;
 
@@ -964,11 +1644,13 @@ body[mobile] #content-wrapper {
   	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    table-layout: fixed;
 }
 
 #shop_panel .picture-manager {
 	display: table-cell;
 	vertical-align: top;
+	width: 100%;
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -990,8 +1672,9 @@ body[mobile] #content-wrapper {
 #shop_panel .picture-preview {
 	display: block;
 	position: relative;
-	width: 38vw;
-	height: 31vw;
+	width: 100%;
+	height: 100%;
+	padding-bottom: 80%;
 	min-width: 400px;
 	min-height: 320px;
 	overflow: hidden;
@@ -1004,7 +1687,7 @@ body[mobile] #content-wrapper {
     background-color: #7e7e7e;
     box-shadow: 1px 3px 2px #292929;
 	border-bottom: 2px solid #336699;
-	}
+}
 
 #shop_panel .picture-preview .picture-preview-label {
 	display: block;
@@ -2092,7 +2775,7 @@ body[mobile] #content-wrapper {
 #shop_panel .shop-item-new .shop-item-image {
 	background-size: auto;
 	background-image: url("../images/add.png");
-	height: 390px;
+	height: 370px;
 }
 
 [mobile] #shop_panel .shop-item-new .shop-item-image {
@@ -2971,7 +3654,7 @@ body[mobile] #content-wrapper {
 
 
 #gallery_panel {
-	background-image: url("../images/dark_bg.jpg");
+	background-image: url("../images/light_bg.jpg");
 	background-size: 200px;
 	background-repeat: repeat;
 	box-shadow: inset 0px 3px 4px -2px #292929;
@@ -2997,9 +3680,10 @@ body[mobile] #content-wrapper {
 
 #gallery_panel #gallery_view .preview {
 	display: block;
-	position: absolute;
-	width: 46vw;
-	height: 37vw;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding-bottom: 80%;
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;

@@ -12,6 +12,8 @@
       {% else %}
       <script type="text/javascript" src="compiled/msart.min.js" defer="defer"></script>
       {% endif %}
+      <script type="text/javascript" src="flatpickr/flatpickr.min.js" defer="defer"></script>
+      <script type="text/javascript" src="flatpickr/l10n/pl.js" defer="defer"></script>
   		{% block script %}
   		{% endblock script %}
       {% if debug %}
@@ -19,6 +21,7 @@
       {% else %}
       <link rel="stylesheet" href="css/index-min.css" />
       {% endif %}
+      <link rel="stylesheet" href="flatpickr/flatpickr.min.css" />
       {% block style %}
       {% endblock style %}
       <link rel="apple-touch-icon" sizes="120x120" href="/favicons/apple-touch-icon.png">

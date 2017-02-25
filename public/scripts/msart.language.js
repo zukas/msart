@@ -116,7 +116,10 @@
             lowprice: "Cena malejąco",
             hightprice: "Cena rosnąco",
             iagree: "Akceptuję", 
-            terms: "Regulamin sklepu"
+            terms: "Regulamin sklepu",
+            workshop: "Warsztaty",
+            duration: "Czas",
+            timetable: "Plan"
 		}
 	}
 

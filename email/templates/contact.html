@@ -1,19 +1,19 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div style="margin: 5px; text-align: left; font-size: 20px; color: #262626; text-shadow: 0px 2px 1px #fafafa;">Kontakt z klientem</div>
+<div style="margin: 5px; text-align: left; font-size: 20px; color: #262626; text-shadow: 0px 2px 1px #fafafa;">{{ "Kontakt z klientem"|escape }}</div>
 <table style="border-collapse: collapse; border: none; font-size: 16px; padding: 5px; width:100%;">
 <tr style="height: 50px;">
-	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Imię i nazwisko</td>
-	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ name }}</td>
+	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">{{ "Imię i nazwisko"|escape }}</td>
+	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ name|escape }}</td>
 </tr>
 <tr style="height: 50px;">
-	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Email</td>
-	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ email }}</td>
+	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">{{ "Email"|escape }}</td>
+	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ email|escape }}</td>
 </tr>
 <tr style="height: 50px;">
-	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">Wiadomość</td>
-	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ message }}</td>
+	<td style="text-align: right; padding: 5px; background: #336699; color: #f2f2f2;text-shadow: 0px 2px 1px #000000;">{{ "Wiadomość"|escape }}</td>
+	<td style="padding: 5px; color: #4d4d4d; text-shadow: 0px 2px 1px #f2f2f2;">{{ message|escape }}</td>
 </tr>
 </table>
 {% endblock %}
