@@ -21,6 +21,8 @@ window.addEventListener("load", function () {
 <script type="text/javascript" src="scripts/msart.order.js" defer="defer"></script>
 <script type="text/javascript" src="scripts/msart.gallery.js" defer="defer"></script>
 <script type="text/javascript" src="scripts/msart.contact.js" defer="defer"></script>
+{% else %}
+<script type="text/javascript" src="compiled/msart.min.js" defer="defer"></script>
 {% endif %}
 {% endblock %}
 
