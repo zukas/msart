@@ -12,10 +12,10 @@ public/scripts/msart.shop.js
 public/scripts/msart.gallery.js
 public/scripts/msart.contact.js
 public/scripts/msart.order.js
-public/scripts/msart.user.js
 )
 
 TMP="${SOURCES[*]}"
 
 java -jar compiler.jar --js_output_file=public/compiled/msart.min.js $TMP
+java -jar compiler.jar --js_output_file=public/compiled/msart.user.min.js public/scripts/msart.user.js
 cleancss -o public/css/index-min.css public/css/index.css
