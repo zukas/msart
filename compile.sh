@@ -1,6 +1,6 @@
 # !/bin/bash
 
-SOURCES=(
+SITE_SOURCES=(
 public/scripts/morpheus.js
 public/scripts/msart.units.js
 public/scripts/msart.common.js
@@ -14,8 +14,14 @@ public/scripts/msart.contact.js
 public/scripts/msart.order.js
 )
 
-TMP="${SOURCES[*]}"
+LOGIN_SOURCES=(
+public/scripts/msart.common.js
+public/scripts/msart.user.js
+)
 
-java -jar compiler.jar --js_output_file=public/compiled/msart.min.js $TMP
-java -jar compiler.jar --js_output_file=public/compiled/msart.user.min.js public/scripts/msart.user.js
+SITE_LIST="${SITE_SOURCES[*]}"
+LOGIN_LIST="${LOGIN_SOURCES[*]}"
+
+java -jar compiler.jar --js_output_file=public/compiled/msart.min.js $SITE_LIST
+java -jar compiler.jar --js_output_file=public/compiled/msart.user.min.js $LOGIN_LIST
 cleancss -o public/css/index-min.css public/css/index.css
