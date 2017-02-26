@@ -904,14 +904,11 @@
                         data.id = item.id();
                         data.images = pictures;
 
-                        console.log(data);
-
                         window.ajax({
                             type: "POST",
                             data: data,
                             url: '/async/workshop/save'
                         }).done(function (result) {
-                            console.log(result);
                             if(result.status) {
                                 var callback = null;
                                 if(c_item.id() == result._id) {
@@ -1342,7 +1339,6 @@
                 data: {},
                 url: '/async/workshop/list',
             }).done(function (result) {
-                console.log(result);
                 if(result && result.status) { 
                     var frag    = document.createElement("div"),
                         select  = null;
