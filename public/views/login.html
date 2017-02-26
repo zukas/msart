@@ -4,20 +4,20 @@
 {% if debug %}
 <script type="text/javascript" src="scripts/msart.user.js"></script>
 {% else %}
-<script type="text/javascript" src="scripts/msart.user.min.js"></script>
+<script type="text/javascript" src="compiled/msart.user.min.js"></script>
 {% endif %}
 {% endblock %}
 
 {% block content %}
 <div id='login_box'>
 	<div id="username" class="input-container">
-	<div id="username-img" class="input-img"></div>
-	<input id='username_input' class="input-field text" placeholder="username" type="text"/>
+		<div id="username-img" class="input-img"></div>
+		<input id='username_input' class="input-field text" placeholder="username" type="text"/>
 	</div>
 	<div id="password" class="input-container">
-	<div id="password-img" class="input-img"></div>
-	<input id='password_input' class="input-field text" placeholder="password" type="password"/>
-	<div id='login'></div>
+		<div id="password-img" class="input-img"></div>
+		<input id='password_input' class="input-field text" placeholder="password" type="password"/>
+		<div id='login'></div>
 	</div>
 	
 </div>
