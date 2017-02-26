@@ -5,6 +5,43 @@ var db 			= require("../db"),
 	check 		= require('./validate');
 
 
+
+exports.perform_cleanup = function () {
+
+	db.db.workshops.find({ timetable : { $not : { $size: 0 } } }, { _id : 1, timetable: 1})
+		.toArray(function (err, res) {
+		if(err) {
+			console.log(err);
+		} else {
+			var 	l 	= res.length,
+					l2 	= 0,
+					i 	= 0,
+					j 	= 0,
+					n 	= new Date().valueOf(),
+					t 	= 0,
+					op 	= db.db.workshops.initializeUnorderedBulkOp();
+
+			for(; i < l; i++) {
+				var item 	= res[i],
+					rem 	= [];
+				l2 = item.timetable.length;
+				for(j = 0; j < l2; j++) {
+					if(item.timetable[j] < n) {
+						rem[rem.length] = item.timetable[j];
+					}
+				}
+				if(rem.length > 0) {
+					op.find({ _id : item._id}).update({ $pull: { timetable: { $in: rem } } });
+					t++;
+				}
+			}
+			if(t > 0) {
+				op.execute();
+			}
+		}
+	});
+} 
+
 exports.list = function (data, callback) {
 
 	db.db.workshops.find({ timetable : { $not : { $size: 0 } } }, { _id : 1, title: 1, price: 1, preview: 1 })

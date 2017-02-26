@@ -687,6 +687,10 @@ body[mobile] #content-wrapper {
 	height: 370px;
 }
 
+[mobile] #workshop_panel .workshop-item, [mobile] #workshop_panel .workshop-item-new {
+	height: 23.5vw;
+	width: 23.5vw;
+}
 
 [mobile] #workshop_panel .workshop-item-image {
 	height: 19vw;

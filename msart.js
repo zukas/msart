@@ -79,6 +79,7 @@ swig.setDefaults({ cache: 'memory' });
 // development only
 
 engine.track_sessions(session_store);
+engine.system_updates();
 
 app.get('/', engine.index);
 app.get('/admin', engine.login);

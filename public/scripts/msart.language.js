@@ -118,8 +118,8 @@
             iagree: "Akceptuję", 
             terms: "Regulamin sklepu",
             workshop: "Warsztaty",
-            duration: "Czas",
-            timetable: "Plan"
+            duration: "Czas trwania",
+            timetable: "Terminy zajęć"
 		}
 	}
 

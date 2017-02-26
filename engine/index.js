@@ -66,6 +66,13 @@ check.installMod("firstCap", function (data) {
 	return data;
 })
 
+exports.system_updates = function() {
+
+	setInterval(function () {
+		works.perform_cleanup();
+	}, 1800000);
+}
+
 exports.index = function(req, res){
 
 	var renderFile = req.session.render || (req.device.type == "desktop" ? "desktop.html" : "mobile.html");
@@ -377,6 +384,7 @@ exports.swap_gallery = function (req, res) {
 		res.send({ status: false, error: "Not allowed"});
 	}	
 }
+
 
 exports.track_sessions = function (session_store) {
 	setInterval(function () {
