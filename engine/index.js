@@ -83,8 +83,8 @@ exports.index = function(req, res){
 
 	if(renderData && config.debug) {
 		renderData.debug = true;
-	} 
-
+	}
+	renderData.map_key = config.google_maps; 
 	renderData.admin = req.session.admin;
 	// renderData.lang = lang.fetch(sessionLang);
 	

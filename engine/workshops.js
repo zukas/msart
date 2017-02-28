@@ -96,6 +96,10 @@ exports.save = function (data, callback) {
 				},
 				minLength : 0
 			},
+			location : {
+				type : check.TYPE.VALUE,
+				class : "String"
+			},
 			images : {
 				type : check.TYPE.ARRAY,
 				members : {
@@ -174,6 +178,7 @@ exports.load = function (data, callback) {
 			price: 1, 
 			timetable : 1,
 			descrition: 1, 
+			location: 1,
 			images: 1, 
 		}, function (err, res) {
 			if(err) {

@@ -24,6 +24,9 @@ window.addEventListener("load", function () {
 {% else %}
 <script type="text/javascript" src="compiled/msart.min.js" defer="defer"></script>
 {% endif %}
+{% if map_key %}
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ map_key }}&language=pl&libraries=places" defer="defer"></script>
+{% endif %}
 {% endblock %}
 
 {% block content %}

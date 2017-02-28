@@ -601,6 +601,7 @@
 
         if(curr_top != next_top) {
             var ajust = next_top - curr_top;
+            console.log(next_top, curr_top, ajust);
             morpheus.tween(500,
             function (ratio) {
                 var value = curr_top + ajust * ratio;

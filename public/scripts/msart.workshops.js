@@ -280,7 +280,9 @@
                         speed: 0.75 
                     });
                 }
-                scrollBodyTo(wrapper_);
+                if(preview_.el.hasAttribute("current")){
+                    scrollBodyTo(wrapper_);
+                }
                 preview_.el.setAttribute("current", thumb.id());
             };
 
@@ -685,6 +687,166 @@
 
     }
 
+
+    function Location () {
+
+        var self        = this,
+            container   = document.createElement("div"),
+            map_div     = document.createElement("div"),
+            map         = null,
+            current_pid = null;
+
+        container.className = "location-control";
+        map_div.className = "location-map";
+
+        container.appendChild(map_div);
+
+        function Map(elem, current_location) {
+
+            var self        = this,
+                msart       = "ChIJGZKqLO0yGUcRDo5fRhYCJ1I",
+                is_valid    = current_location ? true : false,
+                input       = window.admin ? document.createElement("input") : null,
+                info        = document.createElement("div"),
+                name        = document.createElement("div"),
+                save_btn    = window.admin ? document.createElement("div") : null,
+                address     = document.createElement("div"),
+                website     = document.createElement("a"),
+                map_obj     = new google.maps.Map(elem, {
+                    center: { lat: 52.160418, lng: 21.022140 },
+                    zoom : 19,
+                    mapTypeControl : false,
+                    fullscreenControl: false
+                }),
+                marker      = new google.maps.Marker({map : map_obj}),
+                auto_done   = window.admin ? new google.maps.places.Autocomplete(input) : null,
+                service     = new google.maps.places.PlacesService(map_obj);
+                
+
+            
+            info.className = "location-info";
+            name.className = "name text-invert";
+            address.className = "address text";
+            website.className = "website text";
+            website.target = "_blank";
+
+                        if(window.admin) {
+                input.className = "location-input text";
+                save_btn.className = "save";
+                save_btn.setAttribute("checked", 0);
+
+                save_btn.onclick = function () {
+                    var val = parseInt(save_btn.getAttribute("checked"));
+                    if(val == 0) {
+                        var place = marker.getPlace();
+                        if(place) {
+                            current_pid = place.placeId;
+                            input.setAttribute("disabled",1);
+                            save_btn.setAttribute("checked", 1);
+                        }
+                    } else {
+                        current_pid = null;
+                        input.removeAttribute("disabled");
+                        save_btn.setAttribute("checked", 0);
+                    }
+                }
+
+
+                info.appendChild(input);
+                name.appendChild(save_btn);
+                auto_done.bindTo('bounds', map_obj);
+                auto_done.addListener('place_changed', function() {
+                    var place = auto_done.getPlace();
+                    if (!place.geometry) {
+                        return;
+                    }
+                    map_obj.setCenter(place.geometry.location);
+
+                    // Set the position of the marker using the place ID and location.
+                    marker.setPlace({
+                        placeId: place.place_id,
+                        location: place.geometry.location
+                    });
+                    marker.setVisible(true);
+                    map_obj.setZoom(17);
+
+                    
+
+                    name.innerHTML = place.name;
+                    name.appendChild(save_btn);
+                    address.innerHTML = place.formatted_address;
+                    website.innerHTML = place.website;
+                    website.href = place.website;
+                });
+            }
+
+            info.appendChild(name);
+            info.appendChild(address);
+            info.appendChild(website);
+
+            map_obj.controls[google.maps.ControlPosition.TOP_LEFT].push(info);
+            
+            service.getDetails({placeId : current_location || msart }, function (place, status) {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                         
+                    marker.setPlace({
+                        placeId: place.place_id,
+                        location: place.geometry.location
+                    });
+                    marker.setVisible(true);
+                    map_obj.setZoom(19);
+                    map_obj.setCenter(place.geometry.location);
+                   
+
+                    name.innerHTML = place.name;
+                    if(window.admin) {
+                        name.appendChild(save_btn);
+                    }
+                    address.innerHTML = place.formatted_address;
+                    website.innerHTML = place.website;
+                    website.href = place.website;
+                    if(window.admin && is_valid){
+                        input.setAttribute("disabled",1);
+                        save_btn.setAttribute("checked", 1);
+                    }
+                }
+
+            });
+
+
+            self.update = function () {
+                google.maps.event.trigger(map, 'resize');
+            }
+        }
+
+
+        self.el = container;
+
+        self.show = function () {
+            async(function () {
+                map_div.style.width = container.offsetWidth + "px";
+                map_div.style.height = container.offsetHeight + "px";
+                map = new Map(map_div, current_pid);
+
+                window.addEventListener("resize", function () {
+                    map_div.style.width = container.offsetWidth + "px";
+                    map_div.style.height = container.offsetHeight + "px";
+                    map.update();
+                });
+
+            });
+
+        }
+
+        self.value = function () {
+            return current_pid;
+        }
+
+        self.setValue = function (data) {
+            current_pid = data;
+        }
+    }
+
     function DetailsView(item) {
 
         var self        = this,
@@ -698,6 +860,8 @@
             price       = new PriceControl({ type : 0 }),
             htimetable  = document.createElement("div"),
             timetable   = new TimetableManager(),
+            hlocation   = document.createElement("div"),
+            location    = new Location(),
             hdesc       = document.createElement("div"),
             desc        = new MSInputObject({ className: "desc text", placeholder: "Description", multiline : true }),
             del_btn     = window.admin && item.id() ? document.createElement("div") : null,
@@ -708,6 +872,7 @@
                 title: title,
                 price: price,
                 timetable: timetable,
+                location: location,
                 descrition: desc
             };
 
@@ -737,6 +902,11 @@
         language.bind("timetable", htimetable);
         view.appendChild(htimetable);
         view.appendChild(timetable.el);
+
+        hlocation.className = "text-header header-text";
+        language.bind("location", hlocation);
+        view.appendChild(hlocation);
+        view.appendChild(location.el);
 
         hdesc.className = "text-header header-text";
         language.bind("description", hdesc);
@@ -800,6 +970,7 @@
         self.el = container;
 
         self.show = function () {
+            location.show();
         };
 
         self.init = function () {
@@ -1008,7 +1179,7 @@
                             marginLeft : 0,
                             duration: 300,
                             complete: function () {
-                                controller.show();
+                                async(controller.show);
                             }
                         });
                         container_.style.height = null;
@@ -1020,7 +1191,7 @@
                     marginLeft : 0,
                     duration: 300,
                     complete: function () {
-                        controller.show();
+                        async(controller.show);
                     }
                 });
             }

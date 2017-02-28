@@ -119,7 +119,8 @@
             terms: "Regulamin sklepu",
             workshop: "Warsztaty",
             duration: "Czas trwania",
-            timetable: "Terminy zajęć"
+            timetable: "Terminy zajęć",
+            location: "Lokalizacja" 
 		}
 	}
 
