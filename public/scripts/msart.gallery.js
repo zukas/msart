@@ -75,22 +75,25 @@
                 e.dataTransfer.setData("target", id_);
                 top.setAttribute("enabled",true);
                 bottom.setAttribute("enabled",true);
+                if(self.beginMove) {
+                    e.dataTransfer.setData("target", id_);
+                    self.beginMove(self);
+                }
             };
 
             item.el.ondragend = function (e) {
                 e.preventDefault();
                 top.removeAttribute("enabled");
                 bottom.removeAttribute("enabled");
+                if(self.endMove) {
+                    self.endMove(self);
+                }
             }
 
             item.el.ondragover = function (e) {
                 e.preventDefault();
-            };
-
-            item.el.ondrop = function (e) { 
-                e.preventDefault();
-                if(self.swap) {
-                    self.swap(e.dataTransfer.getData("target"), id_);
+                if(self.hoverTarget && e.target.className == "gallery-thumb") {
+                    self.hoverTarget(self, e.layerX);
                 }
             };
         }
@@ -147,6 +150,7 @@
                 thumbs : 0
             },
             thumbs      = {},
+            drop        = window.admin ? new DropInsertManager() : null,
             init        = function (thumb) {
                 if(thumb) {
                     set(thumb);
@@ -190,7 +194,7 @@
                     }); 
                 }
             };
-        
+       
         function fit() {
             var nodes   = gallery.el.childNodes,
                 count   = nodes.length;
@@ -239,8 +243,45 @@
                 controls.next.removeAttribute("disabled");
             }
             controls.data.innerHTML = pages.current + " / " + pages.total;
-        } 
-        if(!window.admin) {
+        }
+
+        if(window.admin) {
+            drop.insertBefore = function (source, target) {
+                window.ajax({
+                    type: "POST",
+                    data: { source: source.id(), target: target.id(), offset: 0 },
+                    url: '/async/gallery/move'
+                }).done(function (result) {
+                    if(result.status) {
+                        gallery.el.removeChild(source.el);
+                        gallery.el.insertBefore(source.el, target.el);
+                    } else {
+                        // console.log(result);
+                    }
+                }); 
+            }
+
+            drop.insertAfter = function (source, target) {
+                window.ajax({
+                    type: "POST",
+                    data: { source: source.id(), target: target.id(), offset: 1 },
+                    url: '/async/gallery/move'
+                }).done(function (result) {
+                    if(result.status) {
+                        gallery.el.removeChild(source.el);
+                        var next = target.el.nextElementSibling;
+                        if(next) {
+                            gallery.el.insertBefore(source.el, next);
+                        } else {
+                            gallery.el.appendChild(source.el);
+                        }
+                    } else {
+                        // console.log(result);
+                    }
+                }); 
+            } 
+        } else {
+
             window.addEventListener("resize", fit); 
             controls.prev.onclick = function () {
                 if(controls.prev.hasAttribute("disabled")) {
@@ -316,15 +357,21 @@
                         if(result.status) {
                             var item = new GalerryItem(result.id);
                             thumbs[item.id()] = item;
-                            item.swap = swap;
                             item.click = set;
                             item.remove = remove;
+                            if(window.admin) {
+                                item.beginMove = drop.beginMove;
+                                item.hoverTarget = drop.hoverTarget;
+                                item.endMove = drop.endMove;
+                            }
                             if(create.el.nextSibling) {
                                 gallery.el.insertBefore(item.el, create.el.nextSibling);
                             } else {
                                 gallery.el.appendChild(item.el);
                             }
                             set(item);
+                        } else {
+                            // console.log(result);
                         }
                     }); 
                 }
@@ -342,9 +389,13 @@
                 for(var i = 0; i < result.result.length; ++i) {
                     var item = new GalerryItem(result.result[i].id);
                     thumbs[item.id()] = item;
-                    item.swap = swap;
                     item.click = set;
                     item.remove = remove;
+                    if(window.admin) {
+                        item.beginMove = drop.beginMove;
+                        item.hoverTarget = drop.hoverTarget;
+                        item.endMove = drop.endMove;
+                    }
                     frag.appendChild(item.el);
                     if(!thumb) {
                         thumb = item;

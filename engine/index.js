@@ -347,6 +347,7 @@ exports.save_gallery_item = function (req, res) {
 	if(req.session.admin) {
 		images.save_image({ file: req.files.file }, function (data) {
 			if(data.status) {
+				data.id = data.id.toString();
 				gallery.save(data, function (response) {
 					res.send(response);
 				});
@@ -375,9 +376,9 @@ exports.delete_gallery_item = function (req, res) {
 	}
 }
 
-exports.swap_gallery = function (req, res) {
+exports.move_gallery = function (req, res) {
 	if(req.session.admin) {
-		gallery.swap_gallery(req.body, function (response) {
+		gallery.move(req.body, function (response) {
 			res.send(response);
 		});
 	} else {

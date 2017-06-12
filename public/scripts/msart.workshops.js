@@ -83,17 +83,23 @@
         if(window.admin) {
             container_.el.setAttribute("draggable", true);
             container_.el.ondragstart = function (e) {
-                e.dataTransfer.setData("target", id_);
+                if(self_.beginMove) {
+                    e.dataTransfer.setData("target", id_);
+                    self_.beginMove(self_);
+                }
             };
 
             container_.el.ondragover = function (e) {
                 e.preventDefault();
+                if(self_.hoverTarget && e.target.className == "picture-thumb") {
+                    self_.hoverTarget(self_, e.layerX);
+                }
             };
 
-            container_.el.ondrop = function (e) { 
+            container_.el.ondragend = function (e) {
                 e.preventDefault();
-                if(self_.swap) {
-                    self_.swap(e.dataTransfer.getData("target"), id_);
+                if(self_.endMove) {
+                    self_.endMove(self_);
                 }
             };
         }
@@ -227,6 +233,7 @@
             ready_      = true,
             thumbs_     = {},
             ordered_    = [],
+            drop_       = window.admin ? new DropInsertManager() : null,
             touch_      = 0,
             removed_    = function (picture_id) {
                 var thumb = thumbs_[picture_id];
@@ -285,6 +292,46 @@
                 }
                 preview_.el.setAttribute("current", thumb.id());
             };
+
+
+        if(window.admin) {
+            drop_.insertBefore = function (source, target) {
+                var src_idx    = ordered_.indexOf(source.id()),
+                    trg_idx    = null;
+                if(src_idx >= 0) {
+                    ordered_.splice(src_idx, 1);
+                    trg_idx = ordered_.indexOf(target.id());  
+
+                    if(trg_idx >=0) {
+                        ordered_.splice(trg_idx, 0, source.id());
+                        carousel_.removeChild(source.el);
+                        carousel_.insertBefore(source.el, target.el);
+                    }
+
+                }
+            }
+
+            drop_.insertAfter = function (source, target) {
+                var src_idx    = ordered_.indexOf(source.id()),
+                    trg_idx    = null;
+
+                if(src_idx >= 0) {
+                    ordered_.splice(src_idx, 1);
+                    trg_idx = ordered_.indexOf(target.id());  
+
+                    if(trg_idx >=0) {
+                        ordered_.splice(trg_idx + 1, 0, source.id());
+                        carousel_.removeChild(source.el);
+                        var next = target.el.nextElementSibling;
+                        if(next) {
+                            carousel_.insertBefore(source.el, next);
+                        } else {
+                            carousel_.appendChild(source.el);
+                        }
+                    }
+                }
+            } 
+        }
 
         wrapper_.className = "picture-manager";
         container_.className = "picture-container";
@@ -372,8 +419,12 @@
                     ordered_.push(picture_thumb.id());
                     thumbs_[picture_thumb.id()] = picture_thumb;
                     picture_thumb.removed = removed_;
-                    picture_thumb.swap = swap_;
                     picture_thumb.click = present_;
+                    if(window.admin) {
+                        picture_thumb.beginMove = drop_.beginMove;
+                        picture_thumb.hoverTarget = drop_.hoverTarget;
+                        picture_thumb.endMove = drop_.endMove;
+                    }
                     temp_.appendChild(picture_thumb.el);
                 }
             }
@@ -711,111 +762,116 @@
                 name        = document.createElement("div"),
                 save_btn    = window.admin ? document.createElement("div") : null,
                 address     = document.createElement("div"),
-                website     = document.createElement("a"),
-                map_obj     = new google.maps.Map(elem, {
-                    center: { lat: 52.160418, lng: 21.022140 },
-                    zoom : 19,
-                    mapTypeControl : false,
-                    fullscreenControl: false
-                }),
-                marker      = new google.maps.Marker({map : map_obj}),
-                auto_done   = window.admin ? new google.maps.places.Autocomplete(input) : null,
-                service     = new google.maps.places.PlacesService(map_obj);
+                website     = document.createElement("a");
+
+            if(window.maps) {
+                var map_obj     = new google.maps.Map(elem, {
+                        center: { lat: 52.160418, lng: 21.022140 },
+                        zoom : 19,
+                        mapTypeControl : false,
+                        fullscreenControl: false
+                    }),
+                    marker      = new google.maps.Marker({map : map_obj}),
+                    auto_done   = window.admin ? new google.maps.places.Autocomplete(input) : null,
+                    service     = new google.maps.places.PlacesService(map_obj);
+                    
+
                 
+                info.className = "location-info";
+                name.className = "name text-invert";
+                address.className = "address text";
+                website.className = "website text";
+                website.target = "_blank";
 
-            
-            info.className = "location-info";
-            name.className = "name text-invert";
-            address.className = "address text";
-            website.className = "website text";
-            website.target = "_blank";
+                            if(window.admin) {
+                    input.className = "location-input text";
+                    save_btn.className = "save";
+                    save_btn.setAttribute("checked", 0);
 
+                    save_btn.onclick = function () {
+                        var val = parseInt(save_btn.getAttribute("checked"));
+                        if(val == 0) {
+                            var place = marker.getPlace();
+                            if(place) {
+                                current_pid = place.placeId;
+                                input.setAttribute("disabled",1);
+                                save_btn.setAttribute("checked", 1);
+                            }
+                        } else {
+                            current_pid = null;
+                            input.removeAttribute("disabled");
+                            save_btn.setAttribute("checked", 0);
+                        }
+                    }
+
+
+                    info.appendChild(input);
+                    name.appendChild(save_btn);
+                    auto_done.bindTo('bounds', map_obj);
+                    auto_done.addListener('place_changed', function() {
+                        var place = auto_done.getPlace();
+                        if (!place.geometry) {
+                            return;
+                        }
+                        map_obj.setCenter(place.geometry.location);
+
+                        // Set the position of the marker using the place ID and location.
+                        marker.setPlace({
+                            placeId: place.place_id,
+                            location: place.geometry.location
+                        });
+                        marker.setVisible(true);
+                        map_obj.setZoom(17);
+
+                        
+
+                        name.innerHTML = place.name;
+                        name.appendChild(save_btn);
+                        address.innerHTML = place.formatted_address;
+                        website.innerHTML = place.website;
+                        website.href = place.website;
+                    });
+                }
+
+                info.appendChild(name);
+                info.appendChild(address);
+                info.appendChild(website);
+
+                map_obj.controls[google.maps.ControlPosition.TOP_LEFT].push(info);
+                
+                service.getDetails({placeId : current_location || msart }, function (place, status) {
+                    if (status == google.maps.places.PlacesServiceStatus.OK) {
+                             
+                        marker.setPlace({
+                            placeId: place.place_id,
+                            location: place.geometry.location
+                        });
+                        marker.setVisible(true);
+                        map_obj.setZoom(19);
+                        map_obj.setCenter(place.geometry.location);
+                       
+
+                        name.innerHTML = place.name;
                         if(window.admin) {
-                input.className = "location-input text";
-                save_btn.className = "save";
-                save_btn.setAttribute("checked", 0);
-
-                save_btn.onclick = function () {
-                    var val = parseInt(save_btn.getAttribute("checked"));
-                    if(val == 0) {
-                        var place = marker.getPlace();
-                        if(place) {
-                            current_pid = place.placeId;
+                            name.appendChild(save_btn);
+                        }
+                        address.innerHTML = place.formatted_address;
+                        website.innerHTML = place.website;
+                        website.href = place.website;
+                        if(window.admin && is_valid){
                             input.setAttribute("disabled",1);
                             save_btn.setAttribute("checked", 1);
                         }
-                    } else {
-                        current_pid = null;
-                        input.removeAttribute("disabled");
-                        save_btn.setAttribute("checked", 0);
                     }
-                }
 
-
-                info.appendChild(input);
-                name.appendChild(save_btn);
-                auto_done.bindTo('bounds', map_obj);
-                auto_done.addListener('place_changed', function() {
-                    var place = auto_done.getPlace();
-                    if (!place.geometry) {
-                        return;
-                    }
-                    map_obj.setCenter(place.geometry.location);
-
-                    // Set the position of the marker using the place ID and location.
-                    marker.setPlace({
-                        placeId: place.place_id,
-                        location: place.geometry.location
-                    });
-                    marker.setVisible(true);
-                    map_obj.setZoom(17);
-
-                    
-
-                    name.innerHTML = place.name;
-                    name.appendChild(save_btn);
-                    address.innerHTML = place.formatted_address;
-                    website.innerHTML = place.website;
-                    website.href = place.website;
                 });
             }
 
-            info.appendChild(name);
-            info.appendChild(address);
-            info.appendChild(website);
-
-            map_obj.controls[google.maps.ControlPosition.TOP_LEFT].push(info);
-            
-            service.getDetails({placeId : current_location || msart }, function (place, status) {
-                if (status == google.maps.places.PlacesServiceStatus.OK) {
-                         
-                    marker.setPlace({
-                        placeId: place.place_id,
-                        location: place.geometry.location
-                    });
-                    marker.setVisible(true);
-                    map_obj.setZoom(19);
-                    map_obj.setCenter(place.geometry.location);
-                   
-
-                    name.innerHTML = place.name;
-                    if(window.admin) {
-                        name.appendChild(save_btn);
-                    }
-                    address.innerHTML = place.formatted_address;
-                    website.innerHTML = place.website;
-                    website.href = place.website;
-                    if(window.admin && is_valid){
-                        input.setAttribute("disabled",1);
-                        save_btn.setAttribute("checked", 1);
-                    }
-                }
-
-            });
-
 
             self.update = function () {
-                google.maps.event.trigger(map, 'resize');
+                if(window.maps) {
+                    google.maps.event.trigger(map, 'resize');
+                }
             }
         }
 
@@ -823,19 +879,20 @@
         self.el = container;
 
         self.show = function () {
-            async(function () {
-                map_div.style.width = container.offsetWidth + "px";
-                map_div.style.height = container.offsetHeight + "px";
-                map = new Map(map_div, current_pid);
-
-                window.addEventListener("resize", function () {
+            if(window.maps) {
+                async(function () {
                     map_div.style.width = container.offsetWidth + "px";
                     map_div.style.height = container.offsetHeight + "px";
-                    map.update();
+                    map = new Map(map_div, current_pid);
+
+                    window.addEventListener("resize", function () {
+                        map_div.style.width = container.offsetWidth + "px";
+                        map_div.style.height = container.offsetHeight + "px";
+                        map.update();
+                    });
+
                 });
-
-            });
-
+            }
         }
 
         self.value = function () {

@@ -141,6 +141,36 @@ form:hover input[type="radio"]:checked + label span {
     outline: none;
 }
 
+[admin] .drop-point {
+	display: inline-block;
+	position: absolute;
+	width: 40px;
+	margin: 0px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+    background-image: url("../images/insert.png");
+    cursor: pointer;
+    z-index: 1;
+}
+
+.drop-point, [admin] .drop-point[position="0"] {
+	display: none;
+}
+
+[admin] .drop-point[position="1"] {
+	right: none;
+	left: 0px;
+	background-position: 0px 0px;
+}
+
+[admin] .drop-point[position="2"] {
+	left: none;
+	right: 0px;
+	background-position: -40px 0px;
+}
+
 #content_scroll_top, #content_scroll_bottom {
 	display: none;
 }
@@ -903,6 +933,11 @@ body[mobile] #content-wrapper {
 	border-bottom: 2px solid #336699;
     cursor: pointer;
     	
+}
+
+#workshop_panel .picture-container .drop-point {
+	top: 30px;
+	height: 80px;
 }
 
 #workshop_panel .picture-container .picture-thumb .picture-thumb-label {
@@ -1873,6 +1908,12 @@ body[mobile] #content-wrapper {
     cursor: pointer;
     	
 }
+
+#shop_panel .picture-container .drop-point {
+	top: 30px;
+	height: 80px;
+}
+
 
 #shop_panel .picture-container .picture-thumb .picture-thumb-label {
 	display: block;
@@ -3917,6 +3958,8 @@ body[mobile] #content-wrapper {
 	width: 14.5vw;
 	max-width: 175px;
 	max-height: 140px;
+	min-width: 128px;
+	min-height: 102px;
 	background-origin: border-box;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -3927,6 +3970,15 @@ body[mobile] #content-wrapper {
 	background-color: #f2f2f2;
 	box-shadow: 1px 3px 2px #292929;
 	cursor: pointer;
+}
+
+#gallery_panel .gallery-thumb .drop-point {
+	margin: auto 0px;
+	position: absolute;
+	top: 0; 
+	bottom: 0; 
+	height: 80px;
+	width: 40px;
 }
 
 #gallery_panel #gallery_thumb_new {

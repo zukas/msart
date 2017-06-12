@@ -6,7 +6,7 @@ var db 			= require("../db"),
 
 
 exports.load = function (callback) {
-	db.db.gallery.find({}).sort({created : -1}).toArray(function (err, res) {
+	db.db.gallery.find({}).sort({index : 1}).toArray(function (err, res) {
 		if(err) {
 			callback({status: false, error: err});
 		} else {
@@ -21,66 +21,90 @@ exports.load = function (callback) {
 
 exports.save = function (data, callback) {
 	
-	var _id = null;
-	if(typeof data.id === 'string' || data.id instanceof String) {
-		_id = ObjectID(data.id);
-	} else if(data.id instanceof ObjectID) {
-		_id = data.id;
-	} else {
-		callback({status: false, error: "Unknown image id"});
-		return;
-	}
-	
-	db.db.gallery.insert({ _id : _id, created : new Date() }, function (err, res) {
-		if(err) {
-			callback({status: false, error: err});
-		} else {	
-			
-			if(res.insertedIds && res.insertedIds.length == 1) {
-				callback({status : true, id: res.insertedIds[0]});
-			} else if(res.ops && res.ops.length == 1) {
-				callback({status : true, id: res.ops[0]._id});
-			} else {
-				callback({status: false, error: "Unknown"});
-			}
-		}
-	});
-}
-
-exports.delete = function (data, callback) {
-	
-	var _id = null;
-	if(typeof data.id === 'string' || data.id instanceof String) {
-		_id = ObjectID(data.id);
-	} else if(data.id instanceof ObjectID) {
-		_id = data.id;
-	} else {
-		callback({status: false, error: "Unknown image id"});
-		return;
-	}
-	db.db.gallery.remove({_id : _id}, function (err) {
-		if(err) {
-			callback({status: false, error: err});
-		} else {
-			callback({status : true});
-		}
-	});
-}
-
-exports.swap_gallery = function (data, callback) {
 	var res = check.run(data,
 	{
 		type: check.TYPE.OBJECT,
 		properties: {
-			one: {
+			id: {
 				type: check.TYPE.VALUE,
 				class: "String",
 				regex : "$ObjectID"
 			},
-			two: {
+		}
+	});
+
+	if(res.status) {
+		data = res.data;
+
+		db.db.gallery.count(function (err, count) {
+			if(err) {
+				callback({status: false, error: err2});
+			} else {
+				db.db.gallery.insert({ _id : data.id.toObjectID(), index: count }, function (err2, res) {
+					if(err) {
+						callback({status: false, error: err2});
+					} else {	
+						callback({status : true, id: data.id });
+					}
+				});
+			}
+		});
+
+	} else {
+		callback(res)
+	}
+	
+
+}
+
+exports.delete = function (data, callback) {
+
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			id: {
 				type: check.TYPE.VALUE,
 				class: "String",
 				regex : "$ObjectID"
+			},
+		}
+	});
+
+	if(res.status) {
+		data = res.data;
+		db.db.gallery.remove({_id : data.id.toObjectID() }, function (err) {
+			if(err) {
+				callback({status: false, error: err});
+			} else {
+				callback({status : true});
+			}
+		});
+	} else {
+		callback(res);
+	}
+}
+
+exports.move = function (data, callback) {
+	var res = check.run(data,
+	{
+		type: check.TYPE.OBJECT,
+		properties: {
+			source: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			},
+			target: {
+				type: check.TYPE.VALUE,
+				class: "String",
+				regex : "$ObjectID"
+			},
+			offset: {
+				type: check.TYPE.VALUE,
+				class: "Number",
+				value : "0|1",
+				convert : true
 			}
 		}
 	});
@@ -88,26 +112,59 @@ exports.swap_gallery = function (data, callback) {
 	if(res.status) {
 
 		data = {
-			one: res.data.one.toObjectID(),
-			two: res.data.two.toObjectID()
+			source: res.data.source.toObjectID(),
+			target: res.data.target.toObjectID(),
+			offset: res.data.offset
 		};
 
-		db.db.gallery.find({ _id : { $in : [ data.one, data.two ] }}, { created : 1 }).toArray(function (err, res) {
-			if(err) {
-				callback({status: false, error : err});
-			} else {
+		exports.load(function (res) {
+			if(res.status && res.result.length > 0) {
 
-				var bulk = db.db.gallery.initializeUnorderedBulkOp();
-				bulk.find({ _id : res[0]._id}).updateOne({ $set: { created : res[1].created }});
-				bulk.find({ _id : res[1]._id}).updateOne({ $set: { created : res[0].created }});
+				var items = res.result;
+
+				var src_idx 	= null,
+					trg_idx 	= null;
+				for(var i = 0; i < items.length; i++) {
+
+					if(items[i].id.equals(data.source)) {
+						src_idx = i;
+						if(trg_idx != null){
+							break;
+						}
+						continue;
+					}
+					if(items[i].id.equals(data.target)) {
+						trg_idx = i;
+						if(src_idx != null){
+							break;
+						}
+					}
+				}
+
+				var src = items[src_idx];
+				items.splice(src_idx, 1);
+
+				if(src_idx < trg_idx) {
+					trg_idx--;
+				}
+				items.splice(trg_idx + data.offset, 0, src);
+
+				var bulk = db.db.gallery.initializeUnorderedBulkOp();	
+				for(var i = 0; i < items.length; i++) {
+					bulk.find({ _id : items[i].id }).updateOne({ $set: { index : i }});
+				}
 				bulk.execute(function (err2, res2) {
 					if(err2) {
 						callback({status: false, error : err2});
 					} else {
 						callback({status : true});
 					}
-				})
+				});
+
+			} else {
+				callback(res);
 			}
+
 		});
 		
 	} else {

@@ -126,7 +126,7 @@ app.all("/async/paypal/cancel", engine.paypal_cancel);
 app.post('/async/gallery/load', engine.load_gallery);
 app.post('/async/gallery/save', engine.save_gallery_item);
 app.post('/async/gallery/delete', engine.delete_gallery_item);
-app.post('/async/gallery/swap', engine.swap_gallery);
+app.post('/async/gallery/move', engine.move_gallery);
 
 app.post('/async/contact', engine.contact);
 

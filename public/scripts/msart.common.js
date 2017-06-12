@@ -12,6 +12,69 @@
       return hash;
     };
 
+    root.DropInsertManager = function() {
+        var self_       = this,
+            source      = null,
+            target      = null,
+            droppoint   = document.createElement("div");
+
+        droppoint.className = "drop-point";
+
+        droppoint.ondragover = function (e) {
+            e.preventDefault();
+        }
+
+        droppoint.ondrop = function (e) {
+            e.preventDefault();
+            if(source != null && target != null && source != target) {
+                var attr = droppoint.getAttribute("position");
+                if(attr == 1 && self_.insertBefore) 
+                    self_.insertBefore(source, target);
+                else if(attr == 2 && self_.insertAfter)
+                    self_.insertAfter(source, target);
+            }
+        }
+
+        function resetDropPoint() {
+            droppoint.setAttribute("position", 0);
+            if(droppoint.parentNode) {
+                droppoint.parentNode.removeChild(droppoint);
+            }
+        }
+
+        self_.beginMove = function (new_source) {
+            source = new_source;
+        }
+
+        self_.hoverTarget = function (current_target, offset) {
+            if(current_target == source) {
+                resetDropPoint()
+                target = null;
+                return;
+            }
+
+            if(current_target != target) {
+                resetDropPoint()
+                target = current_target;
+                target.el.appendChild(droppoint);
+            }
+            var width   = target.el.offsetWidth,
+                half    = width / 2,
+                diff    = width - offset;
+
+            var attr = droppoint.getAttribute("position");
+
+            if(diff > half && attr != 1) {
+                droppoint.setAttribute("position", 1);
+
+            } else if (diff < half && attr != 2){
+                droppoint.setAttribute("position", 2);
+            }
+        }
+
+        self_.endMove = resetDropPoint;
+    }
+
     root.MSInputObject = function (options) {
 
         var self    = this;
@@ -601,7 +664,6 @@
 
         if(curr_top != next_top) {
             var ajust = next_top - curr_top;
-            console.log(next_top, curr_top, ajust);
             morpheus.tween(500,
             function (ratio) {
                 var value = curr_top + ajust * ratio;

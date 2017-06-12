@@ -1,10 +1,11 @@
 var util 		=require("util");
 	db 			= require("../db"),
 	versions 	= [
-		1.0, 1.1
+		1.0, 1.1, 1.2
 	];
 
 function check_update(current) {
+
 	var idx = versions.indexOf(current);
 	if(idx >= 0) {
 		if(idx + 1 < versions.length) {
@@ -40,11 +41,19 @@ function run_update(version, callback) {
 function check_run(version) {
 	print_success("Chiking available updates for version " + version);
 	var next = check_update(version);
+	print_success("Next version: " + (next || "None"));
 	if(next) {
 		run_update(next, function (status) {
 			if(status) {
 				print_success("Updated to version " + next);
-				check_run(next);
+				db.db.internal.update({_id : 0}, { $set: { _id: 0, version: next } }, { upsert : true }, function (err) {
+					if(err) {
+						print_fail("Failed to update from " + version + " to " + next);
+						process.exit(1);
+					} else {
+						check_run(next);
+					}
+				});
 			} else {
 				print_fail("Failed to update from " + version + " to " + next);
 				process.exit(1);
@@ -69,7 +78,7 @@ db.start({
 				print_fail(err);
 				process.exit(0);
 			} else {
-				check_run(res.version);
+				check_run(res ? res.version : 1.0);
 			}
 		});
 	} else {

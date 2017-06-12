@@ -190,17 +190,23 @@
         if(window.admin) {
             container_.el.setAttribute("draggable", true);
             container_.el.ondragstart = function (e) {
-                e.dataTransfer.setData("target", id_);
+                if(self_.beginMove) {
+                    e.dataTransfer.setData("target", id_);
+                    self_.beginMove(self_);
+                }
             };
 
             container_.el.ondragover = function (e) {
                 e.preventDefault();
+                if(self_.hoverTarget && e.target.className == "picture-thumb") {
+                    self_.hoverTarget(self_, e.layerX);
+                }
             };
 
-            container_.el.ondrop = function (e) { 
+            container_.el.ondragend = function (e) {
                 e.preventDefault();
-                if(self_.swap) {
-                    self_.swap(e.dataTransfer.getData("target"), id_);
+                if(self_.endMove) {
+                    self_.endMove(self_);
                 }
             };
         }
@@ -345,6 +351,7 @@
             ready_      = true,
             thumbs_     = {},
             ordered_    = [],
+            drop_       = window.admin ? new DropInsertManager() : null,
             touch_      = 0,
             removed_    = function (picture_id) {
                 var thumb = thumbs_[picture_id];
@@ -448,6 +455,46 @@
                 }
             };
 
+        if(window.admin) {
+            drop_.insertBefore = function (source, target) {
+                var src_idx    = ordered_.indexOf(source.id()),
+                    trg_idx    = null;
+                if(src_idx >= 0) {
+                    ordered_.splice(src_idx, 1);
+                    trg_idx = ordered_.indexOf(target.id());  
+
+                    if(trg_idx >=0) {
+                        ordered_.splice(trg_idx, 0, source.id());
+                        carousel_.removeChild(source.el);
+                        carousel_.insertBefore(source.el, target.el);
+                    }
+
+                }
+            }
+
+            drop_.insertAfter = function (source, target) {
+                var src_idx    = ordered_.indexOf(source.id()),
+                    trg_idx    = null;
+
+                if(src_idx >= 0) {
+                    ordered_.splice(src_idx, 1);
+                    trg_idx = ordered_.indexOf(target.id());  
+
+                    if(trg_idx >=0) {
+                        ordered_.splice(trg_idx + 1, 0, source.id());
+                        carousel_.removeChild(source.el);
+                        var next = target.el.nextElementSibling;
+                        if(next) {
+                            carousel_.insertBefore(source.el, next);
+                        } else {
+                            carousel_.appendChild(source.el);
+                        }
+                    }
+                }
+            } 
+        }
+
+
         wrapper_.className = "picture-manager";
         container_.className = "picture-container";
         carousel_.className = "picture-carousel";
@@ -538,8 +585,12 @@
                     ordered_.push(picture_thumb.id());
                     thumbs_[picture_thumb.id()] = picture_thumb;
                     picture_thumb.removed = removed_;
-                    picture_thumb.swap = swap_;
                     picture_thumb.click = present_;
+                    if(window.admin) {
+                        picture_thumb.beginMove = drop_.beginMove;
+                        picture_thumb.hoverTarget = drop_.hoverTarget;
+                        picture_thumb.endMove = drop_.endMove;
+                    }
                     temp_.appendChild(picture_thumb.el);
                     if(label_) {
                         picture_thumb.enableLabel();

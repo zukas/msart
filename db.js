@@ -1,17 +1,15 @@
 "use strict";
 
-var mongo = require("mongodb"),
-	events = {};
+var mongo 		= require("mongodb"),
+	events 		= {},
+	db_instance = null;
 
 require("./utils");
 
 exports.db = null;
 
 exports.start = function (info, callback) {
-
-	exports.db = new mongo.Db(info.name, new mongo.Server("localhost", 27017, { auto_reconnect : true, poolSize: 20, socketOptions: { noDelay : true, } }), { safe : true });
-	exports.db.open(function (err, db) {
-		if(err) throw err;
+	function updateCollections(db) {
 		var create = function (index, list, done) {
 			if (index < list.length) {
 				db.createCollection(list[index], {}, function (err2, collection) {
@@ -31,7 +29,19 @@ exports.start = function (info, callback) {
 				async(events.started[i]);
 			}
 		});
-	});
+	}
+	if(exports.db == null)
+		exports.db = new mongo.Db(info.name, new mongo.Server("localhost", 27017, { auto_reconnect : true, poolSize: 20, socketOptions: { noDelay : true, } }), { safe : true });
+
+	if(db_instance == null) {
+		exports.db.open(function (err, db) {
+			if(err) throw err;
+			db_instance = db;
+			updateCollections(db);
+		});
+	} else {
+		updateCollections(db_instance);
+	}
 };
 
 exports.on = function (event, callback) {

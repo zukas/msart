@@ -43,12 +43,9 @@ exports.execute = function () {
 							++total;
 							status("Updated " + total + " of " + results.length);
 							if(total == results.length) {
-								db.db.internal.update({_id : 0}, { $set: { _id: 0, version: 1.1 } }, { upsert : true }, function (err) {
-									if(err) {
-										error(err);
-									}
-									complete();
-								});
+								complete();
+							} else {
+								error("Not all images have been updated");
 							}
 						});
 					}
