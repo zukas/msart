@@ -1071,6 +1071,30 @@ body[mobile] #content-wrapper {
     box-shadow: 1px 3px 2px #7e7e7e;
 }
 
+[admin] #workshop_panel .price .enable-price {
+	display: block;
+	width: 100%;
+	height: 100%;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+	background-color: #f2f2f2;
+	background-image: url("../images/done.png");
+	background-repeat: no-repeat;;
+	background-size: contain;
+	box-shadow: 0px 3px 2px #292929;
+}
+
+[admin] #workshop_panel .price .enable-price[off] {
+	background-color: transparent;
+	background-image: url("../images/done-i.png");
+	box-shadow: inset 0px 2px 1px #292929;
+}
+
+[admin] #workshop_panel .price td:last-child, 
+[admin] #workshop_panel .price th:last-child {
+	width: 50px;
+}
 
 #workshop_panel .price td, 
 #workshop_panel .price th {

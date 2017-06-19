@@ -111,6 +111,7 @@ exports.save = function (data, callback) {
 			},
 			price: {
 				type : check.TYPE.OBJECT,
+				optional: true,
 				properties : {
 					duration : {
 						type : check.TYPE.VALUE,

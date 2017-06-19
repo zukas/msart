@@ -448,7 +448,26 @@
         var self        = this,
             table       = document.createElement("table"),
             duration    = new MSInputObject({ placeholder : "Duration", className : "text" }),
-            price       = new MSInputObject({ placeholder : "Price", className : "text" });
+            price       = new MSInputObject({ placeholder : "Price", className : "text" }),
+            enabled     = document.createElement("div"),
+            row         = document.createElement("tr");
+
+        enabled.className = "enable-price";
+
+        function chnage_enabled(force_state) {
+            var off = force_state ? (force_state == 1) : enabled.getAttribute("off");
+            if(off) {
+                enabled.removeAttribute("off");
+                row.style = "";
+            } else {
+                enabled.setAttribute("off", true);
+                row.style = "display:none;"
+            }
+        }
+
+        enabled.onclick = function () {
+            chnage_enabled();
+        }
 
         language.bindInput("duration", duration.el);
         language.bindInput("price", price.el);
@@ -456,7 +475,8 @@
         {
             var r   = document.createElement("tr"),
                 d   = document.createElement("th"),
-                p   = document.createElement("th");
+                p   = document.createElement("th"),
+                e   = document.createElement("th");
 
             r.className = "text-invert";
 
@@ -465,19 +485,22 @@
 
             r.appendChild(d);
             r.appendChild(p);
+            e.appendChild(enabled);
+            r.appendChild(e);
             table.appendChild(r);
         }
 
         {
-            var row     = document.createElement("tr"),
-                d       = document.createElement("td"),
-                p       = document.createElement("td");
+            var d       = document.createElement("td"),
+                p       = document.createElement("td"),
+                e       = document.createElement("td");
 
 
             d.appendChild(duration.el);
             row.appendChild(d);
             p.appendChild(price.el);
             row.appendChild(p);
+            row.appendChild(e);
             table.appendChild(row);
         }
 
@@ -486,12 +509,21 @@
         self.el = table;
 
         self.value = function () {
-            return { duration: duration.value(), price: price.value() };
+            var off = enabled.getAttribute("off");
+            if(off) {
+                return null;
+            } else {
+                return { duration: duration.value(), price: price.value() };
+            }
         }
 
         self.setValue = function (data) {
-            duration.setValue(data.duration);
-            price.setValue(data.price);
+            if(data) {
+                duration.setValue(data.duration);
+                price.setValue(data.price);
+            } else {
+                chnage_enabled(1);
+            }
         }
     }
 
@@ -556,8 +588,11 @@
         }
 
         self.setValue = function (data) {
-            if(data) {
+            if(data || window.admin) {
                 controls.setValue(data);
+            } else {
+                container.style = "display: none;";
+                return 1;
             }
         }
 
@@ -728,10 +763,15 @@
         }
 
         self.setValue = function (data) {
-            var l       = data ? data.length : 0;
-            for(var i = 0; i < l; i++) {
-                self.createTimetable(new Date(data[i]));
-            }
+            if((data && data.length > 0) || window.admin) {
+                var l       = data ? data.length : 0;
+                for(var i = 0; i < l; i++) {
+                    self.createTimetable(new Date(data[i]));
+                }
+            } else {
+                timetable.style = "display:none;";
+                return 1;
+            } 
         }
 
         self.el = timetable;
@@ -931,6 +971,14 @@
                 timetable: timetable,
                 location: location,
                 descrition: desc
+            },
+            headers     = 
+            {
+                title: htitle,
+                price: hprice,
+                timetable: htimetable,
+                location: hlocation,
+                descrition: hdesc
             };
 
         container.className = "details-container";
@@ -1038,7 +1086,9 @@
             for(var key in collective) {
                 if(collective.hasOwnProperty(key) && collective[key]) {
                     
-                    collective[key].setValue(data[key]);
+                    if(collective[key].setValue(data[key]) == 1 && headers[key]){
+                        headers[key].style = "display:none;";
+                    }
                 }
             }
         } 
