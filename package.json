@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.16.1",
+    "clean-css": "^4.2.1",
     "compression": "^1.6.2",
     "connect": "^3.6.0",
     "connect-mongodb-session": "^1.1.1",

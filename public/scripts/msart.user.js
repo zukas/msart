@@ -40,9 +40,15 @@
 
         pass_input.onkeyup = function (key) {
             if(can_login()) {
-                if(key.keyCode == 13) {
+                if(key.code == "Enter" || (!key.code && key.keyCode == 13) ) {
                     login();
                 }
+            }
+        }
+
+        login_btn.onclick = function () {
+            if (can_login()) {
+                login();
             }
         }
     }
