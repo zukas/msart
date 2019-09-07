@@ -1,0 +1,103 @@
+{% extends 'layout.html' %} {% macro item_thumb(type, link, fields) %}
+<div class="{{ type }}-item no-select">
+  <a href="{{ link }}">
+    <div class="{{ type }}-item-internal">
+      {% for field in fields %} {% if field.type == "image" %}
+      <div
+        class="{{ type }}-item-image"
+        style="background-image: url('{{ field.url }}')"
+      ></div>
+      {% elif field.type == "title" %}
+      <div class="{{ type }}-item-title text">
+        <h2>
+          {{ field.text }}
+        </h2>
+      </div>
+      {% elif field.type == "price" %}
+      <div class="{{ type }}-item-price text" currency="{{ field.currency }}">
+        {{ field.amount }}
+      </div>
+      {% endif %} {% endfor %}
+    </div>
+  </a>
+</div>
+{% endmacro %} {% block css %}
+<link rel="stylesheet" type="text/css" href="/css/shop.css" />
+{% endblock css %} {% block script %} {% if admin %}
+<script
+  type="text/javascript"
+  src="scripts/msart.shop-admin.js"
+  defer="defer"
+></script>
+{% endif %} {% endblock script %} {% block content %}
+<div id="shop" class="panel">
+  <h2 class="robo-text">Shop</h2>
+  {% if admin %}
+  <div class="shop-controls">
+    <div class="shop-controls-inner">
+      <a href="/shop/item/new">
+        <div class="control-button green header-text no-select">New Item</div>
+      </a>
+    </div>
+  </div>
+  {% endif %}
+  <div class="shop-item-thumb-layout">
+    {{
+      item_thumb("shop", "/shop-item", [
+        { type: "image", url: "../images/logo.png" },
+        { type: "title", text: "Shop item 1" },
+        { type: "price", amount: 100, currency: " €" }
+      ])
+    }}
+    {{
+      item_thumb("shop", "/shop", [
+        { type: "image", url: "../images/logo.png" },
+        { type: "title", text: "Shop item 2" },
+        { type: "price", amount: 200, currency: " £" }
+      ])
+    }}
+    {{
+      item_thumb("shop", "/", [
+        { type: "image", url: "../images/demo/projekt I Kasia.png" },
+        { type: "title", text: "Shop item 3" },
+        { type: "price", amount: 300, currency: " $" }
+      ])
+    }}
+    {{
+      item_thumb("shop", "/", [
+        { type: "image", url: "../images/logo.png" },
+        { type: "title", text: "Shop item 4" },
+        { type: "price", amount: 400, currency: " zł" }
+      ])
+    }}
+    {{
+      item_thumb("shop", "/", [
+        { type: "image", url: "../images/logo.png" },
+        { type: "title", text: "Shop item 5" },
+        { type: "price", amount: 500, currency: " £" }
+      ])
+    }}
+    {{
+      item_thumb("shop", "/", [
+        { type: "image", url: "../images/logo.png" },
+        { type: "title", text: "Shop item 6" },
+        { type: "price", amount: 600, currency: " €" }
+      ])
+    }}
+    {{
+      item_thumb("shop", "/", [
+        { type: "image", url: "../images/logo.png" },
+        { type: "title", text: "Shop item 7" },
+        { type: "price", amount: 700, currency: " zł" }
+      ])
+    }}
+    {{
+      item_thumb("shop", "/", [
+        { type: "image", url: "../images/logo.png" },
+        { type: "title", text: "Shop item 8" },
+        { type: "price", amount: 800, currency: " zł" }
+      ])
+    }}
+  </div>
+</div>
+{% endblock content %}

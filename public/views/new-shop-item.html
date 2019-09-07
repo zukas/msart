@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="/css/new-shop-item.css"/>
+{% endblock css %}
+
+{% block content %}
+  <div id="new-shop-item" class="panel">
+    <h2 class="robo-text">New Shop Item</h2>
+    <div class="new-shop-item-layout">
+      <form action="/create-shop-item" method="get">
+        <input type="text" placeholder="Item title" name="title" autofocus="true" required="true"></input>
+        <input type="file" name="images" accept="image/*" multiple="true" required="true"></input>
+        <textarea type="text" placeholder="Item title" name="desc" required="true"></textarea>
+      </form>
+    </div>
+
+  </div>
+{% endblock content %}

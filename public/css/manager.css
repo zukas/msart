@@ -1,0 +1,129 @@
+.media-image-preview {
+  height: 440px;
+  overflow: auto;
+  padding: 0px;
+}
+
+.media-image-preview-container {
+  float: left;
+  padding: 0px;
+}
+
+.preview-thumb {
+  display: inline-block;
+  width: 180px;
+  height: 150px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin: 1px;
+}
+
+.common-btn input[type="file"] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.media-image-preview-container hr {
+  display: block;
+  margin-top: 0em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  border-width: 1px;
+  border-color: var(--base-blue);
+}
+
+.media-preview-category {
+  margin-top: 0.5em;
+}
+
+#video-upload-frame[visible="1"] {
+  display: table;
+}
+
+#video-upload-frame {
+  z-index: 999;
+  display: none;
+  position: absolute;
+  clear: both;
+  content: "";
+  width: 580px;
+  height: 360px;
+  top: 50%;
+  left: 50%;
+  margin-top: -180px;
+  margin-left: -290px;
+  background: var(--base-mid);
+  padding: 5px;
+}
+
+#video-url {
+  display: inline-block;
+  position: absolute;
+  background-color: var(--base-light);
+  color: var(--text-color);
+  height: 40px;
+  line-height: 40px;
+  width: 455px;
+  top: 5px;
+  left: 5px;
+  box-sizing: border-box;
+  -webkit-touch-callout: auto;
+  -webkit-user-select: auto;
+  -khtml-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+#video-url::selection {
+  background-color: var(--hilight-blue);
+}
+
+#video-url-add {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#video-upload-cancel {
+  position: absolute;
+  bottom: 5px;
+  right: 130px;
+}
+
+#video-upload-save {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+
+#video-upload-preview {
+  position: absolute;
+  display: block;
+  background: var(--base-light);
+  top: 50px;
+  left: 5px;
+  width: 580px;
+  height: 270px;
+  padding: 5px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+#video-upload-preview-container {
+  position: relative;
+  box-sizing: border-box;
+  float: left;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}

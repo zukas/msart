@@ -1,0 +1,21 @@
+{% macro item_thumb(type, fields) %}
+    <a href="/">
+        <div class="{{ type }}-item no-select">
+            <div class="{{ type }}-item-internal">
+                {% for field in fields %}
+                    {% if field.type == "image" %}
+                        <div class="{{ type }}-item-image" style="background-image: url('{{ field.url }}')"></div>
+                    {% elif field.type == "title" %}
+                        <div class="{{ type }}-item-title text">
+                            <h2>
+                                {{ field.text }}
+                            </h2>
+                        </div>
+                    {% elif field.type == "price" %}
+                        <div class="{{ type }}-item-price text" currency="{{ field.currency }}">{{ field.amount }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </a>
+{% endmacro %}
