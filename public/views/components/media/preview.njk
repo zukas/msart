@@ -1,0 +1,42 @@
+{% import "../base/checkbox.njk" as checkbox %}
+
+{% macro __render_internal(images, videos) %}
+  <div class="media-preview-container">
+    {% if images %}
+      <div class="media-preview-category images">Images<hr />
+        {% for image in images %}
+          <div id="{{image.id}}" class="preview-thumb" type="image" style="background-image: url('/image/{{ image.id }}?width=500');">
+            {{ checkbox.render("preview-thumb-chk") }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if videos %}
+      <div class="media-preview-category videos">Videos<hr />
+        {% for video in videos %}
+          <div id="{{video.id}}" class="preview-thumb" type="video" src="{{ video.url }}">
+            <iframe src="{{ video.url }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+            {{ checkbox.render("preview-thumb-chk") }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% macro render(id, images, videos, isPopup) %}
+  {% if isPopup %}
+    <div id="{{id}}" class="media-preview-popup">
+      <div class="media-preview">
+        {{ __render_internal(images, videos) }}
+      </div>
+      <div id="media-popup-select" class="common-btn green">
+      Select
+      </div>
+    </div>
+  {% else %}
+    <div id="{{id}}" class="media-preview">
+      {{ __render_internal(images, videos) }}
+    </div>
+  {% endif %}
+{% endmacro %}

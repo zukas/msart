@@ -1,0 +1,16 @@
+#media-manager-panel {
+  height: 600px;
+  display: block;
+  box-sizing: border-box;
+}
+
+.common-btn input[type="file"] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  overflow: hidden;
+  cursor: pointer;
+}

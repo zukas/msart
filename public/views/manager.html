@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+{% import "components/media/preview.njk" as mediaPreviewPanel %}
+{% import "components/base/videoUpload.njk" as videoUploadPanel %}
+
+{% if admin %}
+  {% block script %}
+    {% include "components/media/preview.js" %}
+    {% include "components/base/videoUpload.js" %}
+    {% include "control/manager.js" %}
+  {% endblock script %}
+
+  {% block onload %}
+    createMediaPreviewPanel("menager-media");
+    createVideoUploadPanel("video-upload-popup");
+    createManagerControlBlock("video-upload-popup", "menager-media");
+  {% endblock onload %}
+
+  {% block css%}
+    {% include "components/base/checkbox.css" %}
+    {% include "components/base/videoUpload.css" %}
+    {% include "components/media/preview.css" %}
+    {% include "style/manager.css" %}
+  {% endblock css%}
+{% endif %}
+
+{% block content %}
+  <div id="manager" class="panel">
+    {{ videoUploadPanel.render("video-upload-popup") }}
+    <div id="media-manager-panel">
+      {{ mediaPreviewPanel.render("menager-media", images, videos, false) }}
+      <div class="common-btn blue">
+        <input id="image-upload" type="file" name="images" accept="image/*" multiple="multiple" required="true"></input>
+        Add images
+      </div>
+      <div id="video-upload" class="common-btn blue">
+        Add videos
+      </div>
+      <div id="delete-media" class="common-btn red">
+        Remove selected
+      </div>
+      <div id="video-upload" class="common-btn green">
+        Promote video
+      </div>
+    </div>
+  </div>
+{% endblock content %}

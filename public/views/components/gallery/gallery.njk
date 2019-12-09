@@ -1,0 +1,54 @@
+{% macro render(id, items, newItemId) %}
+  <div id="{{id}}" class="gallery-container" >
+    <span class="gallery-item-container">
+      {% if newItemId %}
+        <div class="gallery-item">
+          <div class="gallery-item-preview" id="{{newItemId}}" type="new"></div>
+        </div>
+      {% endif %}
+      {% for item in items %}
+        <div class="gallery-item">
+          {% if item.type == "image" %}
+            <div class="gallery-item-preview" type="{{item.type}}" id="{{item.id}}" style="background-image:url(/image/{{item.id}}?=1080)"></div>
+          {% elif item.type == "video" %}
+            <div class="gallery-item-preview" type="{{item.type}}" id="{{item.id}}">
+              <iframe src="{{ item.src }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+            </div>
+          {% endif %}
+          <div class="gallery-item-number">
+            {{ loop.index }} / {{ loop.length }}
+          </div>
+        </div>
+      {% endfor %}
+      <a class="gallery-nav-btn prev">&#10094;</a>
+      <a class="gallery-nav-btn next">&#10095;</a>
+    </span>
+    <div class="gallery-caption-container">
+      <p id="gallery-item-caption"></p>
+    </div>
+    <div class="gallery-thumb-row">
+      <div class="gallery-thumb-scroll-row">
+        <div class="gallery-thumb-inner-row">
+          {% if newItemId %}
+            <div class="gallery-thumb-column">
+              <div class="gallery-thumb-preview" type="new"></div>
+            </div>
+          {% endif %}
+          {% for item in items %}
+            <div class="gallery-thumb-column">
+              {% if item.type == "image" %}
+                <div class="gallery-thumb-preview" type="{{item.type}}" id="{{item.id}}" style="background-image:url(/image/{{item.id}}?=360)"></div>
+              {% elif item.type == "video" %}
+                <div class="gallery-thumb-preview" type="{{item.type}}" id="{{item.id}}">
+                  <iframe src="{{ item.src }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <a class="gallery-thumb-nav-btn prev">&#10094;</a>
+      <a class="gallery-thumb-nav-btn next">&#10095;</a>
+    </div>
+  </div>
+{% endmacro %}

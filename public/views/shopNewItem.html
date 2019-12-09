@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+
+{% import "components/media/preview.njk" as mediaPreviewPanel %}
+{% import "components/category/select/preview.njk" as categoryPreviewPopup %}
+{% import "components/category/select/panel.njk" as categoryPreviewPanel %}
+{% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
+
+{% block script %}
+  {% include "control/shopNewItem.js" %}
+  {% include "components/media/preview.js" %}
+  {% include "components/category/select/preview.js" %}
+  {% include "components/category/select/panel.js" %}
+  {% include "components/gallery/gallery.js" %}
+{% endblock script %}
+
+{% block css%}
+  {% include "components/base/checkbox.css" %}
+  {% include "components/category/category.css" %}
+  {% include "components/media/preview.css" %}
+  {% include "components/category/select/preview.css" %}
+  {% include "components/category/select/panel.css" %}
+  {% include "components/gallery/gallery.css" %}
+  {% include "style/shopNewItem.css" %}
+{% endblock css%}
+
+{% block onload %}
+  createMediaPreviewPanel("new-shop-item-media-select");
+  createCategoryPreviewPopup("new-shop-item-category-select");
+  createCategoryPreviewPanel("new-shop-item-category-select-panel", "new-shop-item-category-select");
+  createGalleryPreviewPanel("new-shop-item-gallery");
+  setupAddGalleryItem();
+{% endblock onload %}
+
+{% block content %}
+  {{ mediaPreviewPanel.render("new-shop-item-media-select", images, videos, true) }}
+  {{ categoryPreviewPopup.render("new-shop-item-category-select", categories, true) }}
+  <div id="new-shop-item" class="panel">
+    <h2 class="robo-text">New Shop Item</h2>
+    <div class="new-shop-item-layout">
+      <h2 class="text-invert">Title</h2>
+      <input id="caption" class="text" type="text" placeholder="Item's title" name="title" autofocus="true" required="true" value="{{item.caption}}">
+      <br />
+      <h2 class="text-invert">Thumb image</h2>
+      <div id="{{item.thumb}}" class="thumb-preview" style="background-image: url(/image/{{item.thumb}})" onclick="mediaThumbClicked(event)"></div>
+      <br />
+      <h2 class="text-invert">Description</h2>
+      <textarea id="description" type="text" placeholder="Item's description" name="desc" required="true">{{item.description}}</textarea>
+      <br />
+      <h2 class="text-invert">Price</h2>
+      <input id="price" type="number" placeholder="Item's price" name="price" required="true" value="{{item.price}}">
+      <br />
+      <h2 class="text-invert">Gallery images</h2>
+      {{ galleryPreviewPanel.render("new-shop-item-gallery", item.gallery, "new-gallery-item" ) }}
+      <br />
+      <h2 class="text-invert">Categories</h2>
+      {{ categoryPreviewPanel.render("new-shop-item-category-select-panel", categories, item.categories) }}
+      <br />
+      {% if item %}
+      <div class="common-btn green" onclick="updateShopItem(event, '{{item.id}}')">Update</div>
+      {% else %}
+      <div class="common-btn green" onclick="createShopItem(event)">Create</div>
+      {% endif %}
+      <a href="/shop">
+        <div class="common-btn red">Cancel</div>
+      </a>
+      <br />
+      <br />
+    </div>
+  </div>
+{% endblock content %}

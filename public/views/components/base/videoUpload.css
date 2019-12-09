@@ -1,0 +1,121 @@
+.upload-frame {
+  z-index: 999;
+  position: fixed;
+  display: none;
+  clear: both;
+  content: "";
+  width: 720px;
+  height: 560px;
+  top: 50%;
+  left: 50%;
+  margin-top: -360px;
+  margin-left: -280px;
+  background: var(--base-light);
+  padding: 5px;
+  border: 1px solid var(--base-blue);
+  border-radius: 4px;
+}
+
+.upload-frame-inner {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+.upload-frame-inner .common-btn {
+  margin: 0px;
+}
+
+#video-url {
+  position: absolute;
+  display: block;
+  background-color: var(--base-light);
+  color: var(--text-color);
+  height: 40px;
+  line-height: 40px;
+  top: 10px;
+  left: 10px;
+  right: 140px;
+  width: 570px;
+  box-sizing: border-box;
+  -webkit-touch-callout: auto;
+  -webkit-user-select: auto;
+  -khtml-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+  border: 1px solid var(--base-blue);
+  border-radius: 4px;
+}
+
+#video-url::selection {
+  background-color: var(--hilight-blue);
+}
+
+#video-url-add {
+  display: block;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  box-sizing: border-box;
+}
+
+#video-upload-cancel {
+  position: absolute;
+  display: block;
+  bottom: 10px;
+  left: 140px;
+  box-sizing: border-box;
+}
+
+#video-upload-save {
+  position: absolute;
+  display: block;
+  bottom: 10px;
+  left: 10px;
+  box-sizing: border-box;
+}
+
+#video-upload-preview {
+  position: absolute;
+  display: block;
+  background: var(--base-light);
+  top: 60px;
+  bottom: 60px;
+  left: 10px;
+  right: 10px;
+  box-sizing: border-box;
+  overflow: auto;
+  border: 1px solid var(--base-blue);
+  border-radius: 4px;
+}
+
+#video-upload-preview-container {
+  position: relative;
+  box-sizing: border-box;
+  float: left;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+#video-upload-preview .preview-thumb {
+  width: 33%;
+  padding-top: 25%;
+}
+
+@media only screen and (max-width: 1856px) {
+  #video-upload-preview .preview-thumb {
+    width: 49.7%;
+    padding-top: 37.5%;
+  }
+}
+
+@media only screen and (max-width: 1080px) {
+  #video-upload-preview .preview-thumb {
+    width: 99.7%;
+    padding-top: 75%;
+  }
+}

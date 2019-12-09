@@ -1,0 +1,6 @@
+body {
+  background-image: url(../images/light_bg.jpg);
+  background-size: 200px;
+  background-repeat: repeat;
+  box-shadow: inset 0 3px 4px -2px #303030;
+}

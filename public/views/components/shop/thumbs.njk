@@ -1,0 +1,21 @@
+{% macro __render_internal(base_link, currency, item) %}
+  <a id="{{item.id}}" href="{{base_link}}/{{item.id}}">
+    <div class="item-thumb no-select">
+      <div class="item-thumb-internal">
+        <div class="item-thumb-text text-invert" >
+          <div class="item-thumb-caption">{{item.caption}}</div>
+          <div class="item-thumb-price" currency="{{ currency | safe }}">{{item.price}}</div>
+        </div>
+        <div class="item-thumb-image" style="background-image: url(/image/{{ item.thumb }})"></div>
+      </div>
+    </div>
+  </a>
+{% endmacro %}
+
+{% macro render(id, base_link, currency, items) %}
+  <div id="{{id}}" class="items">
+    {% for item in items %}
+      {{ __render_internal(base_link, currency, item) }}
+    {% endfor %}
+  </div>
+{% endmacro %}

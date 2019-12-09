@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
+
+{% block script %}
+  {% include "control/shopItem.js" %}
+  {% include "components/gallery/gallery.js" %}
+{% endblock script %}
+
+{% block css%}
+  {% include "components/gallery/gallery.css" %}
+  {% include "style/shopItem.css" %}
+{% endblock css%}
+
+{% block onload %}
+  createGalleryPreviewPanel("shop-item-gallery");
+{% endblock onload %}
+
+{% block content %}
+  <div id="shop-item" class="panel">
+    <h1 class="robo-text">Shop Item</h1>
+    <div class="shop-item-layout">
+      <h1 id="caption" class="text-invert">{{item.caption}}</h1>
+      <br />
+      {{ galleryPreviewPanel.render("shop-item-gallery", item.gallery) }}
+      <br />
+      <h3 id="description" class="text-invert">{{item.description | escape | nl2br }}</h3>
+      <br />
+      <br />
+      <h2 id="price" class="text-invert" currency="&#163">{{item.price}}</h2>
+      <br />
+      <div class="common-btn green">Order</div>
+      {% if admin %}
+        <a href="/shop/edit/{{item.id}}">
+          <div class="common-btn blue">Edit</div>
+        </a>
+      {% endif %}
+      <br />
+      <br />
+    </div>
+  </div>
+{% endblock content %}

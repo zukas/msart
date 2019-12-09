@@ -1,0 +1,8 @@
+.category-select-panel {
+  box-sizing: border-box;
+}
+
+.category-select-panel .category-item-caption {
+  font-size: 0.8em;
+  line-height: 0.9em;
+}
