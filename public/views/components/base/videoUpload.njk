@@ -1,0 +1,13 @@
+{% macro render(id) %}
+  <div id="{{id}}" class="upload-frame">
+    <div class="upload-frame-inner">
+      <input id="video-url" type="text" placeholder="https://youtu.be/Rb0UmrCXxVA"></input>
+      <div id="video-url-add" class="common-btn blue">Add</div>
+      <div id="video-upload-preview">
+        <div id="video-upload-preview-container"></div>
+      </div>
+      <div id="video-upload-cancel" class="common-btn red">Cancel</div>
+      <div id="video-upload-save" class="common-btn green">Save</div>
+    </div>
+  </div>
+{% endmacro %}

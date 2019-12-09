@@ -1,0 +1,36 @@
+{% import "../../base/checkbox.njk" as checkbox %}
+
+{% macro __render_internal(categories) %}
+  <div class="category-preview-container">
+    {% for category in categories %}
+      <div id="{{category.id}}" class="category-item">
+        <div class="category-item-internal">
+          <div class="category-item-text text-invert" >
+            <div class="category-item-caption">{{category.caption}}</div>
+            <div class="category-item-description">{{category.description}}</div>
+          </div>
+          <div id="{{category.thumb}}" class="category-item-image" style="background-image: url(/image/{{category.thumb}});">
+            {{ checkbox.render("preview-category-chk") }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro render(id, categories, isPopup) %}
+  {% if isPopup %}
+    <div id="{{id}}" class="category-preview-popup">
+      <div class="category-preview">
+        {{ __render_internal(categories) }}
+      </div>
+      <div id="category-popup-select" class="common-btn green">
+      Select
+      </div>
+    </div>
+  {% else %}
+    <div id="{{id}}" class="category-preview">
+      {{ __render_internal(images, videos) }}
+    </div>
+  {% endif %}
+{% endmacro %}

@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% import "components/shop/thumbs.njk" as shopThumbs %}
+
+{% block script %}{% endblock script %}
+
+{% block onload %}{% endblock onload %}
+
+{% block css%}
+  {% include "components/shop/thumbs.css" %}
+{% endblock css%}
+
+{% block content %}
+  <div id="shop" class="panel">
+    <h2 class="robo-text">Shop</h2>
+    <div class="shop-item-thumb-layout">
+      {{ shopThumbs.render("shop-items", "/shop/item", "&#163", items ) }}
+    </div>
+  </div>
+{% endblock content %}

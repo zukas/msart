@@ -7,6 +7,7 @@ const favicon = require("serve-favicon");
 const methodOverride = require("method-override");
 const express = require("express");
 const session = require("express-session");
+const minifyHTML = require("express-minify-html");
 const ssm = require("connect-mongodb-session")(session);
 const bodyParser = require("body-parser");
 const multer = require("multer");
@@ -59,9 +60,25 @@ const setupOptions = app => {
     })
   );
 
+  app.use(
+    minifyHTML({
+      override: true,
+      exception_url: false,
+      htmlMinifier: {
+        removeComments: true,
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true,
+        minifyJS: true,
+        minifyCSS: true
+      }
+    })
+  );
+
   expressNunjucks(app, {
     watch: config.debug || true,
-    noCache: config.debug || true
+    noCache: config.debug ? true : false
   });
 };
 
@@ -70,22 +87,27 @@ const setupRoutes = app => {
   app.get("/", engine.index);
   app.get("/manager", engine.manager);
   app.get("/about", engine.about);
-  app.get("/blog", engine.blog);
-  app.get("/shop", engine.shop);
-  app.get("/gallery", engine.gallery);
   app.get("/contact", engine.contact);
 
-  app.get("/blog/group/:groupId", engine.blogGroup);
-  app.get("/blog/group/:groupId/item/:itemId", engine.blogItem);
+  app.get(/^\/(shop|blog|gallery)$/, engine.categories);
+  app.get(/^\/(shop|blog|gallery)\/category\/new$/, engine.newCategory);
+  app.post(/^\/(shop|blog|gallery)\/category\/create$/, engine.createCategory);
 
-  app.get("/shop/group/:groupId", engine.shopGroup);
-  app.get("/shop/group/:groupId/item/:itemId", engine.shopItem);
+  app.get(/^\/(shop|blog)\/item\/new$/, engine.newItem);
+  app.post(/^\/(shop|blog)\/item\/create$/, engine.createItem);
+  app.post(/^\/(shop|blog)\/item\/update$/, engine.updateItem);
 
-  app.get("/shop/group/new", engine.shopGroupTemplate);
-  app.get("/shop/item/new", engine.shopItemTemplate);
+  app.get(/^\/(shop|blog)\/item\/([\w\d]{24})$/, engine.item);
+  app.get(/^\/(shop|blog)\/edit\/([\w\d]{24})$/, engine.editItem);
 
-  app.get("/gallery/group/:groupId", engine.galleryGroup);
-  app.get("/gallert/group/:groupId/item/:itemId", engine.galleryItem);
+  // app.get("/blog/item/new", engine.newBlogItem);
+  // app.post("/blog/item/create", engine.createBlogItem);
+
+  // app.get("/gallery/item/new", engine.newGallery);
+  // app.post("/gallery/item/create", engine.createGaller);
+
+  app.get(/^\/(shop|blog)\/category\/(none|[\w\d]{24})$/, engine.categoryItems);
+  // app.get("/gallery/:category", engine.galleryItems);
 
   app.get("/image/:id", engine.loadImage);
 
@@ -95,6 +117,8 @@ const setupRoutes = app => {
     engine.uploadImages
   );
   app.post("/manager/upload/videos", engine.uploadVideos);
+
+  app.post("/manager/delete/media", engine.deleteMedia);
 };
 
 const createServer = async app => {

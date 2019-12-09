@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% import "components/media/preview.njk" as mediaPreviewPanel %}
+
+{% block script %}
+  {% include "control/categoryNew.js" %}
+  {% include "components/media/preview.js" %}
+{% endblock script %}
+
+{% block css%}
+  {% include "components/base/checkbox.css" %}
+  {% include "components/media/preview.css" %}
+  {% include "style/categoryNew.css" %}
+{% endblock css%}
+
+{% block onload %}
+createMediaPreviewPanel("new-category-media-select");
+{% endblock onload %}
+
+{% block content %}
+  {{ mediaPreviewPanel.render("new-category-media-select", images, videos, true) }}
+  <div id="new-category" target="{{target}}" class="panel">
+    <h2 class="robo-text">New Category</h2>
+    <div class="new-category-layout">
+      <h2 class="text-invert">Caption</b2>
+      <input id="caption" type="text" placeholder="Caption" autofocus="true" required="true">
+      <br />
+      <h2 class="text-invert">Thumb image</b2>
+      <div class="thumb-preview" onclick="mediaThumbClicked(event)"></div>
+      <br />
+      <h2 class="text-invert">Description</b2>
+      <textarea id="description" type="text" placeholder="Description" required="true"></textarea>
+      <br />
+      <div class="common-btn green" onclick="createNewCategory(event)">Create</div>
+      <a href="/{{target}}">
+        <div class="common-btn red" >Cancel</div>
+      </a>
+      <br />
+      <br />
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,21 @@
+{% macro __render_internal(base_link, item) %}
+  <a href="{{base_link}}/{{item.id}}">
+    <div id="{{item.id}}" class="blog-item">
+      <div class="blog-item-internal">
+        <div class="blog-item-text text-invert" >
+          <div class="blog-item-caption">{{item.caption}}</div>
+          <div class="blog-item-description">{{item.description | escape | nl2br}}</div>
+        </div>
+        <div class="blog-item-image" style="background-image: url(/image/{{item.thumb}});"></div>
+      </div>
+    </div>
+  </a>
+{% endmacro %}
+
+{% macro render(id, base_link, items) %}
+  <div id="{{id}}" class="blog-posts">
+    {% for item in items %}
+      {{ __render_internal(base_link, item) }}
+    {% endfor %}
+  </div>
+{% endmacro %}

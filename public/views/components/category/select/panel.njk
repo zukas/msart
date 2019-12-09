@@ -1,0 +1,20 @@
+{% macro render(id, categories, selected) %}
+  <div id="{{id}}" class="category-select-panel">
+    <div class="category-select-panel-inner">
+      {% for curr in selected %}
+        {% for category in categories %}
+          {% if curr == category.id %}
+            <div id="{{curr}}" class="category-item">
+              <div class="category-item-internal">
+                <div class="category-item-text text-invert">
+                  <div class="category-item-caption">{{category.caption}}</div> 
+                </div>
+                <div class="category-item-image" style="background-image: url(/image/{{category.thumb}}?width=800)"></div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+{% endmacro %}

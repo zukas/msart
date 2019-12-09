@@ -7,111 +7,40 @@
       </div>
     </div>
     <style>
-      #loader {
-        width: 100%;
-        height: 100%;
-        background-color: #303030;
-        display: block;
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        z-index: 999;
-        text-align: center;
-      }
-      #loader[loaded="1"] {
-        display: none !important;
-      }
-      #loader div {
-        position: relative;
-        display: block;
-        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-        line-height: 80px;
-        height: 80px;
-        font-size: 70px;
-        width: 100%;
-        position: absolute;
-        top: 50%;
-        margin-top: -40px;
-        left: 0px;
-        color: #fcfcfc;
-      }
+      {% include "style/site.css" %}
+      {% block css %}
+      {% endblock css %}
     </style>
     <meta charset="UTF-8" />
-    <meta
-      name="description"
-      content="Zapraszam do zapoznania się z ofertą pracowni. Jeśli pragniesz kupić coś oryginalnego i obdarować kogoś wyjątkowym prezentem, zapraszam do sklepu, w którym każdy znajdzie coś dla siebie. Jeśli pragniesz odnowić meble i tchnąć w nie drugie życie, masz własną wizje i pomysł na udekorowanie przedmiotu, jestem otwarta na wszelkie propozycje. Chętnie podejmę się realizacji indywidualnych i spersonalizowanych zamówień, dopasowanych do konkretnych potrzeb i oczekiwań. Oferta pracowni skierowana jest nie tylko do osób prywatnych, ale również do firm."
-    />
-    <meta
-      name="keywords"
-      content="pracownia,rękodzieło,decoupage,vintage,shabby chic,Małgorzata,Schirok,unikatowe,Walentynki,Święta,Wielkanoc,Boże,Narodzenie,Halloween,prezent,dekoracje,oryginalne,materiały reklamowe"
-    />
-    <meta name="author" content="Małgorzata Schirok" />
-    {% if debug %}
-    <!-- <script
-      type="text/javascript"
-      src="scripts/msart.units.js"
-      defer="defer"
-    ></script>
-    <script
-      type="text/javascript"
-      src="scripts/msart.common.js"
-      defer="defer"
-    ></script>
-    <script
-      type="text/javascript"
-      src="scripts/msart.language.js"
-      defer="defer"
-    ></script>
-    {% endif %}
-    <script
-      type="text/javascript"
-      src="flatpickr/flatpickr.min.js"
-      defer="defer"
-    ></script>
-    <script
-      type="text/javascript"
-      src="flatpickr/l10n/pl.js"
-      defer="defer"
-    ></script> -->
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="Julius Zukaskas" />
     <script type="text/javascript">
-      (root => {
-        "use strict";
-        root.addEventListener("load", () => {
-          console.log("loaded");
-          document.getElementById("loader").setAttribute("loaded", 1);
-        });
-      })(window);
+      function debug() {
+        {% if debug %}
+          if (typeof console !== "undefined") {
+            console
+              .log
+              .apply(console, arguments);
+          }
+        {% endif %}
+      }
+      "use strict";
+      window.addEventListener("load", () => {
+        debug("loaded");
+        {% include "components/loader.js" %}
+        {% include "components/registerFeature.js" %}
+        {% block onload %}{% endblock onload %}
+      });
+      {% block script %}{% endblock script %}
     </script>
-    {% block script %}{% endblock script %} {% if debug %}
-    <link rel="stylesheet" type="text/css" href="/css/msart.css" />
-    {% else %}
-    <link rel="stylesheet" type="text/css" href="/css/index-min.css" />
-    {% endif %} {% block css %}{% endblock css %}
-    <!-- <link rel="stylesheet" href="flatpickr/flatpickr.min.css" /> -->
-    {% block style %}{% endblock style %}
-    <link
-      rel="apple-touch-icon"
-      sizes="120x120"
-      href="/favicons/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/favicons/favicon-32x32.png"
-      sizes="32x32"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/favicons/favicon-16x16.png"
-      sizes="16x16"
-    />
+
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16" />
     <link rel="manifest" href="/favicons/manifest.json" />
-    <link
-      rel="mask-icon"
-      href="/favicons/safari-pinned-tab.svg"
-      color="#5bbad5"
-    />
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+    {% block link %}{% endblock link %}
     <meta name="theme-color" content="#ffffff" />
     <title>MS Craftshop</title>
   </head>
@@ -122,9 +51,9 @@
       <div id="main_menu" class="no-select">
         <span>
           {% if admin %}
-          <a href="/manager">
-            <div class="menu_item header-text noselect">Manager</div>
-          </a>
+            <a href="/manager">
+              <div class="menu_item header-text noselect">Manager</div>
+            </a>
           {% endif %}
           <a href="/about">
             <div class="menu_item header-text noselect">About</div>
@@ -144,6 +73,8 @@
         </span>
       </div>
     </div>
-    {% block content %}{% endblock content %}
+    <div id="content">
+      {% block content %}{% endblock content %}
+    </div>
   </body>
 </html>

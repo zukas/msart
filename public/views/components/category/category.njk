@@ -1,0 +1,28 @@
+{% macro __render_internal(base_link, item) %}
+  <a href="{{base_link}}/{{item.id}}">
+    <div id="{{item.id}}" class="category-item">
+      <div class="category-item-internal">
+        <div class="category-item-text text-invert" >
+          <div class="category-item-caption">{{item.caption}}</div>
+          <div class="category-item-description">{{item.description | escape | nl2br}}</div>
+        </div>
+        {% if item.id == 'none' %}
+          <div class="category-item-image" style="background-image: url(/images/construction.jpg);"></div>
+        {% else %}
+          <div class="category-item-image" style="background-image: url(/image/{{item.thumb}});"></div>
+        {% endif %}
+      </div>
+    </div>
+  </a>
+{% endmacro %}
+
+{% macro render(id, base_link, items, admin) %}
+  <div id="{{id}}" class="categories">
+    {% if admin %}
+      {{ __render_internal(base_link, { 'id': 'none', 'caption': 'Uncategorised' }) }}
+    {% endif %}
+    {% for item in items %}
+      {{ __render_internal(base_link, item) }}
+    {% endfor %}
+  </div>
+{% endmacro %}

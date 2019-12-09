@@ -1,0 +1,110 @@
+.new-shop-item-layout {
+  display: block;
+  position: relative;
+  width: 640px;
+  left: 50%;
+  margin-left: -320px;
+}
+
+.new-shop-item-layout h2 {
+  display: block;
+  font-size: 1.5em;
+  line-height: 1.6em;
+  width: 100%;
+}
+
+.new-shop-item-layout input, .new-shop-item-layout textarea {
+  display: block;
+  border: 2px solid var(--base-blue);
+  border-radius: 4px;
+  width: 100%;
+  color: var(--text-color);
+  font-size: 1.2em;
+  background-color: var(--base-light);
+  min-height: 2em;
+}
+
+.new-shop-item-layout input:focus {
+  border: 2px solid var(--base-blue);
+  border-radius: 4px;
+  background-color: var(--base-light);
+}
+
+.new-shop-item-layout textarea {
+  min-height: 300px;
+}
+
+.new-shop-item-layout ::selection, .new-shop-item-layout ::-moz-selection {
+  background: var(--hilight-blue);
+}
+
+.new-shop-item-layout .thumb-preview[style*="background-image"] {
+  background-size: cover;
+}
+
+.new-shop-item-layout .thumb-preview {
+  height: 480px;
+  background-image: url(/images/add.png);
+  background-size: 120px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid var(--base-blue);
+  border-radius: 4px;
+  background-color: var(--base-light);
+}
+
+.new-shop-item-layout .thumb-preview:not([style*="background-image"]):hover {
+  background-image: url(/images/add-white.png);
+  background-color: var(--base-mid);
+}
+
+.thumb-preview iframe {
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+#new-shop-item-gallery {
+  width: 640px;
+  border: 2px solid var(--base-blue);
+  border-radius: 4px;
+  background-color: var(--base-light);
+}
+
+#new-shop-item-category-select-panel .category-select-panel-inner {
+  min-height: 200px;
+}
+
+#new-shop-item-category-select-panel .category-select-panel-inner:empty {
+  background-image: url(/images/add.png);
+  background-repeat: no-repeat;
+  background-size: 100px;
+  background-position: center;
+}
+
+#new-shop-item-category-select-panel .category-select-panel-inner:hover {
+  background-color: var(--base-mid);
+}
+
+#new-shop-item-category-select-panel .category-select-panel-inner:empty:hover {
+  background-image: url(/images/add-white.png);
+}
+
+#new-shop-item-category-select .category-preview {
+  background-image: url(/images/black_bg.jpg);
+  background-size: 200px;
+  background-repeat: repeat;
+}
+
+#new-shop-item-category-select-panel .category-item {
+  background-color: var(--base-dark);
+}
+
+#new-shop-item-category-select-panel {
+  width: 640px;
+  display: inline-block;
+  border: 2px solid var(--base-blue);
+  border-radius: 4px;
+  background-color: var(--base-light);
+  overflow: auto;
+}

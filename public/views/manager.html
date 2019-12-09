@@ -1,49 +1,33 @@
 {% extends 'layout.html' %}
+{% import "components/media/preview.njk" as mediaPreviewPanel %}
+{% import "components/base/videoUpload.njk" as videoUploadPanel %}
 
-{% block css %}
-  <link rel="stylesheet" href="css/manager.css"/>
-{% endblock css %}
+{% if admin %}
+  {% block script %}
+    {% include "components/media/preview.js" %}
+    {% include "components/base/videoUpload.js" %}
+    {% include "control/manager.js" %}
+  {% endblock script %}
 
-{% block script %}
-  {% if admin %}
-    <script type="text/javascript" src="scripts/msart.manager.js" defer="defer"></script>
-  {% endif %}
-{% endblock script %}
+  {% block onload %}
+    createMediaPreviewPanel("menager-media");
+    createVideoUploadPanel("video-upload-popup");
+    createManagerControlBlock("video-upload-popup", "menager-media");
+  {% endblock onload %}
+
+  {% block css%}
+    {% include "components/base/checkbox.css" %}
+    {% include "components/base/videoUpload.css" %}
+    {% include "components/media/preview.css" %}
+    {% include "style/manager.css" %}
+  {% endblock css%}
+{% endif %}
 
 {% block content %}
   <div id="manager" class="panel">
-    <div id="video-upload-frame" visible="0">
-        <input id="video-url" type="text" placeholder="https://youtu.be/Rb0UmrCXxVA"></input>
-        <div id="video-url-add" class="common-btn blue">
-            Add
-        </div>
-        <div id="video-upload-preview">
-            <dir id="video-upload-preview-container">
-            </dir>
-        </div>
-        <div id="video-upload-cancel" class="common-btn red">
-            Cancel
-        </div>
-        <div id="video-upload-save" class="common-btn green">
-            Save
-        </div>
-    </div>
+    {{ videoUploadPanel.render("video-upload-popup") }}
     <div id="media-manager-panel">
-      <dir class="media-image-preview">
-          <dir class="media-image-preview-container">
-            <div class="media-preview-category">Images</div>
-            <hr>
-            {% for image in images %}
-              <div class="preview-thumb" style="background-image: url('/image/{{ image.id }}?width=200');">
-              </div>
-            {% endfor %}
-            <div class="media-preview-category">Videos</div>
-            <hr>
-            {% for video in videos %}
-            <iframe class="preview-thumb" src="{{ video }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            {% endfor %}
-        </dir>
-      </dir>
+      {{ mediaPreviewPanel.render("menager-media", images, videos, false) }}
       <div class="common-btn blue">
         <input id="image-upload" type="file" name="images" accept="image/*" multiple="multiple" required="true"></input>
         Add images
@@ -51,13 +35,12 @@
       <div id="video-upload" class="common-btn blue">
         Add videos
       </div>
-      <div id="video-upload" class="common-btn red">
-          Remove selected
+      <div id="delete-media" class="common-btn red">
+        Remove selected
       </div>
       <div id="video-upload" class="common-btn green">
-          Promote video
+        Promote video
       </div>
-
     </div>
   </div>
 {% endblock content %}

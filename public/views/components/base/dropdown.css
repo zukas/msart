@@ -1,0 +1,38 @@
+.dropbtn {
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  padding: 6px;
+  position: absolute;
+  min-width: 260px;
+  z-index: 10;
+  background-color: var(--base-light);
+  border-radius: 4px;
+  border: 1px solid var(--base-dark);
+}
+
+.dropdown-content.down {
+  top: 0px;
+}
+
+.dropdown-content.up {
+  bottom: 0px;
+}
+
+.dropdown-content .dropdown-item {
+  display: block;
+  box-sizing: border-box;
+  width: auto;
+}
+
+.dropdown.open .dropdown-content {
+  display: block;
+}

@@ -61,9 +61,21 @@ exports.fetchStoredMedia = async () => {
   });
 
   resolve[1].forEach(elem => {
-    res.videos.push(elem.url);
+    res.videos.push({ id: elem._id, url: elem.url });
   });
   return res;
+};
+
+exports.removeStoredMedia = async data => {
+  const bucket = new GridFSBucket(db.__native_handle, { bucketName: "images" });
+  console.log("removeStoredMedia", data);
+  let promisses = data.images.map(id => {
+    return bucket.delete(ObjectID(id));
+  });
+  promisses.push(
+    db.videos.deleteMany({ _id: { $in: data.videos.map(id => ObjectID(id)) } })
+  );
+  await Promise.all(promisses);
 };
 
 exports.loadImage = async (outStream, id, toPng, width, height) => {

@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% import "components/category/category.njk" as group %}
+
+{% block css%}
+  {% include "components/category/category.css" %}
+{% endblock css%}
+
+{% block content %}
+  <div class="panel">
+    <h2 class="robo-text">{{target}}</h2>
+    {% if admin %}
+      <div class="page-controls">
+        <div class="page-controls-inner">
+          <a href="/{{target}}/item/new">
+            <div class="common-btn green no-select">New item</div>
+          </a>
+          <a href="/{{target}}/category/new">
+            <div class="common-btn green no-select">New category</div>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+    {{ group.render([target, "-categories"] | join, ["/", target, "/category"] | join, categories, admin) }}
+  </div>
+{% endblock %}
