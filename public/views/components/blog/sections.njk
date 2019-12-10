@@ -1,0 +1,72 @@
+{% import "../gallery/gallery.njk" as galleryPreviewPanel %}
+
+{% macro renderHeader(data) %}
+  <h2 class="text-invert">{{data}}</h2>
+{% endmacro %}
+
+{% macro renderText(data) %}
+  <h3 class="text-invert">{{data | escape | nl2br}}</h3>
+{% endmacro %}
+
+{% macro renderMedia(data) %}
+  {% if data.type == "image"%}
+    <div class="media-item" type="{{data.type}}" id="{{data.id}}" style="background-image:url(/image/{{data.id}}?=1080)"></div>
+  {% elif data.type == "video" %}
+    <div class="media-item" type="{{data.type}}" id="{{data.id}}">
+      <iframe src="{{ data.src }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+    </div>
+  {%endif%}
+{% endmacro %}
+
+{% macro render(sections) %}
+  {% for section in sections %}
+    {% if section.type == "header" %}
+      {{ renderHeader(section.data) }}
+      <br />
+    {% elif section.type == "text" %}
+      {{ renderText(section.data) }}
+      <br />
+    {% elif section.type == "media" %}
+      {{ renderMedia(section.data) }}
+      <br />
+    {% elif section.type == "gallery" %}
+      {{ galleryPreviewPanel.render("gallery-" + loop.index, section.data) }}
+      <br />
+    {%endif%}
+  {%endfor%}
+{% endmacro %}
+
+{% macro renderOnLoadJs(sections) %}
+  {% for section in sections %}
+    {% if section.type == "gallery" %}
+      createGalleryPreviewPanel("gallery-{{loop.index}}");
+    {%endif%}
+  {%endfor%}
+{% endmacro %}
+
+
+{% macro renderEditOnLoadJs(rootQuery, sections) %}
+  {% for section in sections %}
+    {% if section.type == "header" %}
+      (function(){
+        const root = document.querySelector("{{rootQuery}}");
+        addBlogHeaderSection(root, {{ section.data | dump | safe }});
+      })();
+    {% elif section.type == "text" %}
+      (function(){
+        const root = document.querySelector("{{rootQuery}}");
+        addBlogTextSection(root, {{ section.data | dump | safe }});
+      })();
+    {% elif section.type == "media" %}
+      (function(){
+        const root = document.querySelector("{{rootQuery}}");
+        addBlogMediaSection(root, {{ section.data | dump | safe }});
+      })();
+    {% elif section.type == "gallery" %}
+      (function(){
+        const root = document.querySelector("{{rootQuery}}");
+        addBlogGallerySection(root, {{ section.data | dump | safe }});
+      })();
+    {%endif%}
+  {%endfor%}
+{% endmacro %}

@@ -2,7 +2,7 @@ const db = require("../db");
 const ObjectID = require("mongodb").ObjectID;
 
 exports.getItem = async id => {
-  let item = db.blog.findOne({ _id: ObjectID(id) });
+  let item = await db.blog.findOne({ _id: ObjectID(id) });
   item["id"] = item["_id"];
   delete item["_id"];
   return item;
