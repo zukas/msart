@@ -5,6 +5,7 @@
 {% import "components/category/select/panel.njk" as categoryPreviewPanel %}
 {% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
 {% import "components/base/dropdown.njk" as dropdown %}
+{% import "components/blog/sections.njk" as blogSections %}
 
 {% block script %}
   {% include "control/blogNewItem.js" %}
@@ -30,6 +31,9 @@
   createCategoryPreviewPopup("new-blog-item-category-select");
   createCategoryPreviewPanel("new-blog-item-category-select-panel", "new-blog-item-category-select");
   createBlogManager();
+  {% if admin and item %}
+    {{ blogSections.renderEditOnLoadJs("#new-blog-item-section-type-add", item.sections) }}
+  {% endif %}
 {% endblock onload %}
 
 {% block content %}
@@ -39,16 +43,16 @@
     <h2 class="robo-text">New Blog Item</h2>
     <div class="new-blog-item-layout">
       <h2 class="text-invert">Title</h2>
-      <input id="caption" class="text" type="text" placeholder="Item's title" name="title" autofocus="true" required="true">
+      <input id="caption" class="text" type="text" placeholder="Item's title" name="title" autofocus="true" required="true" value="{{item.caption}}">
       <br />
       <h2 class="text-invert">Thumb image</h2>
-      <div class="thumb-preview" onclick="mediaThumbClicked(event)"></div>
+      <div id="{{item.thumb}}" class="thumb-preview" type="image" style="background-image: url(/image/{{item.thumb}})" onclick="mediaThumbClicked(event)"></div>
       <br />
       <h2 class="text-invert">Description</h2>
-      <textarea id="description" class="text" type="text" placeholder="Item's description" name="desc" required="true"></textarea>
+      <textarea id="description" class="text" type="text" placeholder="Item's description" name="desc" required="true">{{item.description}}</textarea>
       <br />
       <h2 class="text-invert">Categories</h2>
-      {{ categoryPreviewPanel.render("new-blog-item-category-select-panel") }}
+      {{ categoryPreviewPanel.render("new-blog-item-category-select-panel", categories, item.categories) }}
       <br />
       <h2 class="text-invert">Blog post content</h2>
       {{ dropdown.render("new-blog-item-section-type-add", "Add section", [
@@ -60,10 +64,14 @@
       }}
       <br />
       <br />
+      {% if item %}
+        <div class="common-btn green" onclick="updateBlogItem(event, '{{item.id}}')">Update</div>
+      {% else %}
       <div class="common-btn green" onclick="createBlogItem(event)">Create</div>
-      <a href="/shop">
-        <div class="common-btn red">Cancel</div>
-      </a>
+        <a href="/shop">
+          <div class="common-btn red">Cancel</div>
+        </a>
+      {% endif %}
       <br />
       <br />
     </div>

@@ -224,7 +224,7 @@ function addSection(id, root, content) {
   recalcSectionPositions(root.parentNode);
 }
 
-function addBlogHeaderSection(root) {
+function addBlogHeaderSection(root, data) {
   debug("addBlogHeaderSection", root);
 
   const id = `blog-header-section-${uniqueID()}`;
@@ -234,6 +234,9 @@ function addBlogHeaderSection(root) {
   const input = document.createElement("input");
   input.className = "text";
   input.type = "text";
+  if (data) {
+    input.value = data;
+  }
   fragment.appendChild(input);
   addSection(id, root, fragment);
   blogManager().addSection(id, () => {
@@ -241,7 +244,7 @@ function addBlogHeaderSection(root) {
   });
 }
 
-function addBlogTextSection(root) {
+function addBlogTextSection(root, data) {
   debug("addBlogTextSection", root);
 
   const id = `blog-text-section-${uniqueID()}`;
@@ -251,6 +254,9 @@ function addBlogTextSection(root) {
   const textarea = document.createElement("textarea");
   textarea.className = "text";
   textarea.type = "text";
+  if (data) {
+    textarea.value = data;
+  }
   fragment.appendChild(textarea);
 
   addSection(id, root, fragment);
@@ -259,7 +265,7 @@ function addBlogTextSection(root) {
   });
 }
 
-function addBlogMediaSection(root) {
+function addBlogMediaSection(root, data) {
   debug("addBlogMediaSection", root);
 
   const id = `blog-media-section-${uniqueID()}`;
@@ -269,11 +275,28 @@ function addBlogMediaSection(root) {
   const mediaThumb = document.createElement("div");
   mediaThumb.className = "thumb-preview";
   mediaThumb.onclick = mediaThumbClicked;
+  if (data) {
+    mediaThumb.id = data.id;
+    mediaThumb.setAttribute("type", data.type);
+    if (data.type == "image") {
+      mediaThumb.style.backgroundImage = `url(/image/${data.id})`;
+    } else if (data.type == "video") {
+      const videoFrame = document.createElement("iframe");
+      videoFrame.frameBorder = 0;
+      videoFrame.allow =
+        "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+      videoFrame.allowFullscreen = "allowfullscreen";
+      videoFrame.src = data.src;
+      mediaThumb.appendChild(videoFrame);
+    }
+  }
   fragment.appendChild(mediaThumb);
 
   addSection(id, root, fragment);
   blogManager().addSection(id, () => {
     const type = mediaThumb.getAttribute("type");
+    debug(mediaThumb);
+    debug(type);
     return {
       type: "media",
       data:
@@ -288,7 +311,7 @@ function addBlogMediaSection(root) {
   });
 }
 
-function addBlogGallerySection(root) {
+function addBlogGallerySection(root, data) {
   debug("addBlogGallerySection", root);
 
   const id = `blog-gallery-section-${uniqueID()}`;
@@ -381,6 +404,10 @@ function addBlogGallerySection(root) {
 
   setupAddGalleryItem(id);
 
+  if (data) {
+    galleryPreviewPanel(id).addItems(data);
+  }
+
   blogManager().addSection(id, () => {
     return { type: "gallery", data: galleryPreviewPanel(id).getItems() };
   });
@@ -412,4 +439,26 @@ function setupAddGalleryItem(id) {
     panel.registerSelectionCallback(galleryItemSelection, id);
     panel.show();
   };
+}
+
+function updateBlogItem(e, id) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  let blogItem = blogManager().getData();
+  blogItem.id = id;
+
+  return fetch(`/blog/item/update`, {
+    method: "POST",
+    body: JSON.stringify(blogItem),
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(response => response.json())
+    .then(r => {
+      debug(r);
+      location.assign(`/blog`);
+    });
 }
