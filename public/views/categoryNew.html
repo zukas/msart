@@ -23,15 +23,19 @@ createMediaPreviewPanel("new-category-media-select");
     <h2 class="robo-text">New Category</h2>
     <div class="new-category-layout">
       <h2 class="text-invert">Caption</b2>
-      <input id="caption" type="text" placeholder="Caption" autofocus="true" required="true">
+      <input id="caption" type="text" placeholder="Caption" autofocus="true" required="true" value="{{category.caption}}">
       <br />
       <h2 class="text-invert">Thumb image</b2>
-      <div class="thumb-preview" onclick="mediaThumbClicked(event)"></div>
+      <div id="{{category.thumb}}" type="image" {% if category %} style="background-image: url(/image/{{category.thumb}}?width=640);" {% endif %} class="thumb-preview" onclick="mediaThumbClicked(event, 'images')"></div>
       <br />
       <h2 class="text-invert">Description</b2>
-      <textarea id="description" type="text" placeholder="Description" required="true"></textarea>
+      <textarea id="description" type="text" placeholder="Description" required="true">{{category.description}}</textarea>
       <br />
-      <div class="common-btn green" onclick="createNewCategory(event)">Create</div>
+      {% if category %}
+        <div class="common-btn green" onclick="updateCategory(event, '{{category.id}}')">Update</div>
+      {% else %}
+        <div class="common-btn green" onclick="createNewCategory(event)">Create</div>
+      {% endif %}
       <a href="/{{target}}">
         <div class="common-btn red" >Cancel</div>
       </a>

@@ -96,5 +96,5 @@ exports.loadImage = async (outStream, id, toPng, width, height) => {
     : sharp()
         .resize(width, height)
         .webp();
-  pipeline(readStream, sharpPipeline, outStream);
+  return pipeline(readStream, sharpPipeline, outStream);
 };

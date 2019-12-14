@@ -1,9 +1,10 @@
-function mediaThumbClicked(e) {
+function mediaThumbClicked(e, groupType) {
   e.preventDefault();
   e.stopPropagation();
   debug("mediaThumbClicked");
   const panel = mediaPreviewPanel("new-category-media-select");
   panel.setSelectionMode("single");
+  panel.setSelectionType(groupType);
   panel.registerSelectionCallback(mediaPreviewSelection, e.target);
   panel.show();
 }
@@ -46,6 +47,36 @@ function createNewCategory(e) {
   return fetch(`/${target}/category/create`, {
     method: "POST",
     body: JSON.stringify({
+      caption: caption.value,
+      thumb: image.id,
+      description: desc.value,
+      published: true
+    }),
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(response => response.json())
+    .then(r => {
+      debug(r);
+      location.assign(`/${target}`);
+    });
+}
+
+function updateCategory(e, id) {
+  e.preventDefault();
+  e.stopPropagation();
+  const panel = document.querySelector("#new-category");
+  const target = panel.getAttribute("target");
+  const caption = panel.querySelector("#caption");
+  const image = panel.querySelector(".thumb-preview");
+  const desc = panel.querySelector("#description");
+
+  return fetch(`/${target}/category/update`, {
+    method: "POST",
+    body: JSON.stringify({
+      id: id,
       caption: caption.value,
       thumb: image.id,
       description: desc.value,

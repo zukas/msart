@@ -13,6 +13,18 @@
 {% block content %}
   <div id="blog" class="panel">
     <h2 class="robo-text">Blog</h2>
+    {% if admin and id %}
+      <div class="page-controls">
+        <div class="page-controls-inner">
+          <a href="/blog/category/edit/{{id}}">
+            <div class="common-btn blue no-select">Edit Category</div>
+          </a>
+          <a href="/blog/category/delete/{{id}}">
+            <div class="common-btn red no-select">Delete Category</div>
+          </a>
+        </div>
+      </div>
+    {% endif %}
     <div class="blog-item-thumb-layout">
       {{ blogThumbs.render("blog-items", "/blog/item", items ) }}
     </div>

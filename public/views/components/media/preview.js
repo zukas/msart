@@ -73,6 +73,24 @@ function MediaPreviewPanelJs(frame, btn, elems) {
     }
   };
 
+  self.setSelectionType = type => {
+    debug("MediaPreviewPanelJs::setSelectionType", type);
+    if (type) {
+      Array.from(
+        frame.querySelectorAll(`.media-preview-category:not(.${type})`)
+      ).forEach(group => {
+        debug("hide group", group);
+        group.style.display = "none";
+      });
+    } else {
+      Array.from(frame.querySelectorAll(`.media-preview-category`)).forEach(
+        group => {
+          group.style.display = "";
+        }
+      );
+    }
+  };
+
   self.show = () => {
     frame.style.display = "block";
   };

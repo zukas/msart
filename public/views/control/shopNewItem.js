@@ -1,9 +1,10 @@
-function mediaThumbClicked(e) {
+function mediaThumbClicked(e, groupType) {
   e.preventDefault();
   e.stopPropagation();
   debug("mediaThumbClicked");
   const panel = mediaPreviewPanel("new-shop-item-media-select");
   panel.setSelectionMode("single");
+  panel.setSelectionType(groupType);
   panel.registerSelectionCallback(mediaPreviewSelection, e.target);
   panel.show();
 }

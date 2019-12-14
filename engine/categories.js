@@ -1,12 +1,17 @@
 const db = require("../db");
 const ObjectID = require("mongodb").ObjectID;
 
-exports.getCategories = async type => {
+exports.getCategories = async (type, all) => {
+  const query = (() => {
+    let temp = { type: type };
+    if (!all) {
+      temp.published = true;
+    }
+    return temp;
+  })();
+
   const categories = await db.categories
-    .find(
-      { type: type, published: true },
-      { _id: 1, thumb: 1, caption: 1, description: 1, updated: 1 }
-    )
+    .find(query, { _id: 1, thumb: 1, caption: 1, description: 1, updated: 1 })
     .toArray();
 
   console.log("getCategories", categories);
@@ -19,6 +24,30 @@ exports.getCategories = async type => {
       updated: item.updated
     };
   });
+};
+
+exports.getCategory = async (id, type, all) => {
+  const query = (() => {
+    let temp = { _id: ObjectID(id), type: type };
+    if (!all) {
+      temp.published = true;
+    }
+    return temp;
+  })();
+  console.log(query);
+  let category = await db.categories.findOne(query, {
+    _id: 1,
+    thumb: 1,
+    caption: 1,
+    description: 1,
+    updated: 1
+  });
+
+  category["id"] = category["_id"];
+  delete category["_id"];
+
+  console.log("getCategory", category);
+  return category;
 };
 
 exports.addCategory = async data => {
@@ -34,6 +63,7 @@ exports.addCategory = async data => {
 };
 
 exports.updateCategory = async data => {
+  console.log("updateCategory", data);
   return db.categories.updateOne(
     { _id: ObjectID(data.id) },
     {
@@ -48,6 +78,6 @@ exports.updateCategory = async data => {
   );
 };
 
-exports.deleteCatagory = async data => {
-  return db.categories.deleteOne({ _id: ObjectID(data.id) });
+exports.deleteCatagory = async id => {
+  return db.categories.deleteOne({ _id: ObjectID(id) });
 };
