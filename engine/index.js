@@ -59,7 +59,7 @@ exports.categories = async (req, res) => {
   const type = req.params[0];
   console.log("categories", type);
   categories
-    .getCategories(type)
+    .getCategories(type, true)
     .then(items => {
       console.log(items);
       let renderData = deafultData(req);
@@ -99,11 +99,61 @@ exports.newCategory = async (req, res) => {
     });
 };
 
+exports.editCategory = async (req, res) => {
+  const type = req.params[0];
+  const id = req.params[1];
+  console.log("editCategory", type);
+  Promise.all([
+    media.fetchStoredMedia(),
+    categories.getCategory(id, type, true)
+  ])
+    .then(data => {
+      console.log(data);
+      let renderData = deafultData(req);
+      renderData.category = data[1];
+      renderData.images = data[0].images;
+      renderData.videos = data[0].videos;
+      renderData.target = type;
+      res.render("categoryNew.html", renderData);
+    })
+    .catch(e => {
+      console.log("manager load error =", e);
+      let renderData = deafultData(req);
+      renderData.images = [];
+      renderData.videos = [];
+      renderData.target = type;
+      res.render("categoryNew.html", renderData);
+    });
+};
+
+exports.deleteCategory = async (req, res) => {
+  const type = req.params[0];
+  const id = req.params[1];
+  target[type]
+    .removeCategory(id)
+    .then(() => {
+      categories
+        .deleteCatagory(id)
+        .then(() => res.redirect(`/${type}`))
+        .catch(() => res.redirect(`/${type}`));
+    })
+    .catch(() => res.redirect(`/${type}`));
+};
+
 exports.createCategory = async (req, res) => {
   let data = req.body;
   data.type = req.params[0];
   categories
     .addCategory(data)
+    .then(() => res.send({ msg: "Done" }))
+    .catch(() => res.send({ msg: "Error" }));
+};
+
+exports.updateCategory = async (req, res) => {
+  let data = req.body;
+  data.type = req.params[0];
+  categories
+    .updateCategory(data)
     .then(() => res.send({ msg: "Done" }))
     .catch(() => res.send({ msg: "Error" }));
 };
@@ -157,6 +207,7 @@ exports.categoryItems = async (req, res) => {
     .then(items => {
       console.log(items);
       let renderData = deafultData(req);
+      renderData.id = category;
       renderData.items = items;
       res.render(`${type}CategoryItems.html`, renderData);
     })
@@ -234,7 +285,10 @@ exports.loadImage = async (req, res) => {
     "Content-Type": toPng ? "image/webp" : "image/webp",
     "Cache-Control": "no-transform,public,max-age=86400"
   });
-  media.loadImage(res, req.params.id, toPng, req.query.width, req.query.height);
+  media
+    .loadImage(res, req.params.id, toPng, req.query.width, req.query.height)
+    .then()
+    .catch(e => console.log("Failed to load image", req.params.id, e));
 };
 
 exports.deleteMedia = async (req, res) => {

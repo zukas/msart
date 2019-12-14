@@ -53,12 +53,13 @@ function BlogItemCreator(caption, thumb, description, categories) {
   };
 }
 
-function mediaThumbClicked(e) {
+function mediaThumbClicked(e, groupType) {
   e.preventDefault();
   e.stopPropagation();
   debug("mediaThumbClicked");
   const panel = mediaPreviewPanel("new-blog-item-media-select");
   panel.setSelectionMode("single");
+  panel.setSelectionType(groupType);
   panel.registerSelectionCallback(mediaPreviewSelection, e.target);
   panel.show();
 }
@@ -70,6 +71,7 @@ function mediaPreviewSelection(target) {
   const item = panel.getSelected();
   debug(item);
   panel.clearSelection();
+  panel.setSelectionType();
   panel.unregisterSelectionCallback(mediaPreviewSelection);
   if (!item) return;
   target.innerHTML = "";

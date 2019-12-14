@@ -13,8 +13,7 @@
   width: 100%;
 }
 
-.new-category-layout input:not([type="submit"]),
-.new-category-layout textarea {
+.new-category-layout input:not([type="submit"]), .new-category-layout textarea {
   display: block;
   border: 2px solid var(--base-blue);
   border-radius: 4px;
@@ -34,8 +33,7 @@
   min-height: 200px;
 }
 
-.new-category-layout ::selection,
-.new-category-layout ::-moz-selection {
+.new-category-layout ::selection, .new-category-layout ::-moz-selection {
   background: var(--hilight-blue);
 }
 

@@ -12,6 +12,18 @@
 {% block content %}
   <div id="shop" class="panel">
     <h2 class="robo-text">Shop</h2>
+    {% if admin and id %}
+      <div class="page-controls">
+        <div class="page-controls-inner">
+          <a href="/shop/category/edit/{{id}}">
+            <div class="common-btn blue no-select">Edit Category</div>
+          </a>
+          <a href="/shop/category/delete/{{id}}">
+            <div class="common-btn red no-select">Delete Category</div>
+          </a>
+        </div>
+      </div>
+    {% endif %}
     <div class="shop-item-thumb-layout">
       {{ shopThumbs.render("shop-items", "/shop/item", "&#163", items ) }}
     </div>

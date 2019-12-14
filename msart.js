@@ -90,15 +90,25 @@ const setupRoutes = app => {
   app.get("/contact", engine.contact);
 
   app.get(/^\/(shop|blog|gallery)$/, engine.categories);
+  app.get(/^\/(shop|blog)\/category\/(none|[\w\d]{24})$/, engine.categoryItems);
   app.get(/^\/(shop|blog|gallery)\/category\/new$/, engine.newCategory);
+  app.get(
+    /^\/(shop|blog|gallery)\/category\/edit\/([\w\d]{24})$/,
+    engine.editCategory
+  );
+  app.get(
+    /^\/(shop|blog|gallery)\/category\/delete\/([\w\d]{24})$/,
+    engine.deleteCategory
+  );
   app.post(/^\/(shop|blog|gallery)\/category\/create$/, engine.createCategory);
+  app.post(/^\/(shop|blog|gallery)\/category\/update$/, engine.updateCategory);
 
   app.get(/^\/(shop|blog)\/item\/new$/, engine.newItem);
-  app.post(/^\/(shop|blog)\/item\/create$/, engine.createItem);
-  app.post(/^\/(shop|blog)\/item\/update$/, engine.updateItem);
-
   app.get(/^\/(shop|blog)\/item\/([\w\d]{24})$/, engine.item);
   app.get(/^\/(shop|blog)\/edit\/([\w\d]{24})$/, engine.editItem);
+  // app.get(/^\/(shop|blog)\/delete\/([\w\d]{24})$/, engine.deleteItem);
+  app.post(/^\/(shop|blog)\/item\/create$/, engine.createItem);
+  app.post(/^\/(shop|blog)\/item\/update$/, engine.updateItem);
 
   // app.get("/blog/item/new", engine.newBlogItem);
   // app.post("/blog/item/create", engine.createBlogItem);
@@ -106,7 +116,6 @@ const setupRoutes = app => {
   // app.get("/gallery/item/new", engine.newGallery);
   // app.post("/gallery/item/create", engine.createGaller);
 
-  app.get(/^\/(shop|blog)\/category\/(none|[\w\d]{24})$/, engine.categoryItems);
   // app.get("/gallery/:category", engine.galleryItems);
 
   app.get("/image/:id", engine.loadImage);

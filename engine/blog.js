@@ -10,7 +10,8 @@ exports.getItem = async id => {
 
 exports.getItems = async (category, admin) => {
   let query = {};
-  query["categories"] = category == "none" ? { $size: 0 } : { $in: [category] };
+  query["categories"] =
+    category == "none" ? { $size: 0 } : { $in: [ObjectID(category)] };
   if (!admin) {
     query["published"] = true;
   }
@@ -46,7 +47,7 @@ exports.addItem = async data => {
     caption: data.caption,
     description: data.description,
     sections: data.sections || [],
-    categories: data.categories || [],
+    categories: (data.categories || []).map(c => ObjectID(c)),
     published: data.published,
     updated: Date.now()
   });
@@ -61,7 +62,7 @@ exports.updateItem = async data => {
         caption: data.caption,
         description: data.description,
         sections: data.sections || [],
-        categories: data.categories || [],
+        categories: (data.categories || []).map(c => ObjectID(c)),
         published: data.published,
         updated: Date.now()
       }
@@ -69,6 +70,14 @@ exports.updateItem = async data => {
   );
 };
 
-exports.deleteItem = async data => {
-  return db.blog.deleteOne({ _id: ObjectID(data.id) });
+exports.deleteItem = async id => {
+  return db.blog.deleteOne({ _id: ObjectID(id) });
+};
+
+exports.removeCategory = async id => {
+  return db.blog.update(
+    {},
+    { $pullAll: { categories: [ObjectID(id)] } },
+    { multi: true }
+  );
 };
