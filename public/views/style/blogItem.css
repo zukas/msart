@@ -1,9 +1,8 @@
 .blog-item-layout {
   display: block;
   position: relative;
-  width: 640px;
-  left: 50%;
-  margin-left: -320px;
+  width: 50vw;
+  margin-left: 25vw;
 }
 
 .blog-item-layout h2 {
@@ -25,7 +24,7 @@
 }
 
 .blog-item-layout .media-item {
-  height: 480px;
+  height: 37.5vw;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -40,7 +39,7 @@
 }
 
 .gallery-container {
-  width: 640px;
+  width: 100%;
   border: 2px solid var(--base-blue);
   border-radius: 4px;
   background-color: var(--base-light);

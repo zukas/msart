@@ -78,7 +78,7 @@ function mediaPreviewSelection(target) {
   target.setAttribute("type", item.type);
   target.id = item.id;
   if (item.type == "image") {
-    target.style.backgroundImage = `url('/image/${item.id}?width=640')`;
+    target.style.backgroundImage = `url('/image/${item.id}?width=1920')`;
   } else if (item.type == "video" && item.src) {
     let video = document.createElement("iframe");
     video.src = item.src;
@@ -351,15 +351,6 @@ function addBlogGallerySection(root, data) {
         galleryItemContainer.appendChild(galleryNavBtnNext);
       }
       galleryContainer.appendChild(galleryItemContainer);
-
-      const galleryCaptionContainer = document.createElement("div");
-      galleryCaptionContainer.className = "gallery-caption-container";
-      {
-        const galleryItemCaption = document.createElement("p");
-        galleryItemCaption.className = "gallery-item-caption";
-        galleryCaptionContainer.appendChild(galleryItemCaption);
-      }
-      galleryContainer.appendChild(galleryCaptionContainer);
 
       const galleryThumbRow = document.createElement("div");
       galleryThumbRow.className = "gallery-thumb-row";

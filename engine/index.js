@@ -3,10 +3,12 @@ const media = require("./media");
 const categories = require("./categories");
 const shop = require("./shop");
 const blog = require("./blog");
+const gallery = require("./gallery");
 
 const target = {
   shop: shop,
-  blog: blog
+  blog: blog,
+  gallery: gallery
 };
 
 const deafultData = req => {
@@ -211,8 +213,32 @@ exports.categoryItems = async (req, res) => {
       renderData.items = items;
       res.render(`${type}CategoryItems.html`, renderData);
     })
-    .catch(() => {
-      res.send({ msg: "Error" });
+    .catch(e => {
+      console.log(e);
+      let renderData = deafultData(req);
+      renderData.id = null;
+      renderData.items = [];
+      res.render(`${type}CategoryItems.html`, renderData);
+    });
+};
+
+exports.galleryCategoryItems = async (req, res) => {
+  const id = req.params[0];
+  categories
+    .getCategory(id, "gallery", true)
+    .then(data => {
+      console.log(data);
+      let renderData = deafultData(req);
+      renderData.id = data.id;
+      renderData.gallery = data.gallery;
+      res.render(`galleryCategoryItems.html`, renderData);
+    })
+    .catch(e => {
+      console.log(e);
+      let renderData = deafultData(req);
+      renderData.id = null;
+      renderData.gallery = [];
+      res.render(`galleryCategoryItems.html`, renderData);
     });
 };
 
