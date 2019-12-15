@@ -6,7 +6,10 @@ let client = null;
 let db = null;
 let local_exports = {
   init: async info => {
-    client = await MongoClient.connect(info.uri, { useNewUrlParser: true });
+    client = await MongoClient.connect(info.uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
     db = client.db(info.name);
 
     let collection_promisses = [];
