@@ -22,6 +22,7 @@ function CategoryPreviewPopup(frame, btn, elems) {
 
   elems.forEach(elem => {
     elem.addEventListener("change", change);
+    elem.checked = false;
   });
 
   self.getSelected = () => {

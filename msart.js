@@ -91,6 +91,7 @@ const setupRoutes = app => {
 
   app.get(/^\/(shop|blog|gallery)$/, engine.categories);
   app.get(/^\/(shop|blog)\/category\/(none|[\w\d]{24})$/, engine.categoryItems);
+  app.get(/^\/gallery\/category\/([\w\d]{24})$/, engine.galleryCategoryItems);
   app.get(/^\/(shop|blog|gallery)\/category\/new$/, engine.newCategory);
   app.get(
     /^\/(shop|blog|gallery)\/category\/edit\/([\w\d]{24})$/,

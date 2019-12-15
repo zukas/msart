@@ -40,6 +40,7 @@ exports.getCategory = async (id, type, all) => {
     thumb: 1,
     caption: 1,
     description: 1,
+    gallery: 1,
     updated: 1
   });
 
@@ -57,6 +58,7 @@ exports.addCategory = async data => {
     thumb: ObjectID(data.thumb),
     caption: data.caption,
     description: data.description,
+    gallery: data.gallery,
     published: data.published,
     updated: Date.now()
   });
@@ -71,6 +73,7 @@ exports.updateCategory = async data => {
         thumb: ObjectID(data.thumb),
         caption: data.caption,
         description: data.description,
+        gallery: data.gallery,
         published: data.published,
         updated: Date.now()
       }

@@ -1,0 +1,14 @@
+.gallery-layout {
+  display: block;
+  position: relative;
+  width: 66.7vw;
+  margin-left: 16.5vw;
+}
+
+#gallery-item-gallery {
+  width: 100%;
+  border: 2px solid var(--base-blue);
+  border-radius: 4px;
+  background-color: var(--base-light);
+  box-sizing: border-box;
+}

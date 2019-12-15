@@ -1,12 +1,37 @@
 {% extends 'layout.html' %}
 
-{% block css %}
-  <link rel="stylesheet" href="css/gallery.css"/>
-{% endblock css %}
+{% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
+
+{% block script %}
+  {% include "components/gallery/gallery.js" %}
+{% endblock script %}
+
+{% block css%}
+  {% include "components/gallery/gallery.css" %}
+  {% include "style/galleryCategoryItems.css" %}
+{% endblock css%}
+
+{% block onload %}
+  createGalleryPreviewPanel("gallery-item-gallery");
+{% endblock onload %}
 
 {% block content %}
   <div class="panel">
     <h2 class="robo-text">Gallery</h2>
-
+    {% if admin and id != "none" %}
+      <div class="page-controls">
+        <div class="page-controls-inner">
+          <a href="/gallery/category/edit/{{id}}">
+            <div class="common-btn blue no-select">Edit Category</div>
+          </a>
+          <a href="/gallery/category/delete/{{id}}">
+            <div class="common-btn red no-select">Delete Category</div>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+    <div class="gallery-layout">
+      {{ galleryPreviewPanel.render("gallery-item-gallery", gallery) }}
+    </div>
   </div>
 {% endblock %}

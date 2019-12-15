@@ -81,12 +81,14 @@ function GalleryPreviewJs(
       let item = document.createElement("div");
       let itemPreview = document.createElement("div");
       let itemNumber = document.createElement("div");
+      let itemCaption = document.createElement("div");
       let thumb = document.createElement("div");
       let thumbPreview = document.createElement("div");
 
       item.className = "gallery-item";
 
       itemNumber.className = "gallery-item-number";
+      itemCaption.className = "gallery-item-caption";
 
       itemPreview.id = newNtem.id;
       itemPreview.setAttribute("type", newNtem.type);
@@ -99,8 +101,8 @@ function GalleryPreviewJs(
       thumbPreview.className = "gallery-thumb-preview";
 
       if (newNtem.type == "image") {
-        itemPreview.style.backgroundImage = `url(/image/${newNtem.id}?width=1080)`;
-        thumbPreview.style.backgroundImage = `url(/image/${newNtem.id}?width=360)`;
+        itemPreview.style.backgroundImage = `url(/image/${newNtem.id}?width=1920)`;
+        thumbPreview.style.backgroundImage = `url(/image/${newNtem.id}?width=720)`;
       } else if (newNtem.type == "video") {
         let itemVideoFrame = document.createElement("iframe");
         itemVideoFrame.src = newNtem.src;
@@ -120,6 +122,7 @@ function GalleryPreviewJs(
       }
 
       item.appendChild(itemNumber);
+      item.appendChild(itemCaption);
       item.appendChild(itemPreview);
       thumb.appendChild(thumbPreview);
 

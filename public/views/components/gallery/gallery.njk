@@ -18,14 +18,12 @@
           <div class="gallery-item-number">
             {{ loop.index }} / {{ loop.length }}
           </div>
+          <div class="gallery-item-caption">{{item.caption if item.caption else "Title not set, please set your title for the media item"}} </div>
         </div>
       {% endfor %}
       <a class="gallery-nav-btn prev">&#10094;</a>
       <a class="gallery-nav-btn next">&#10095;</a>
     </span>
-    <div class="gallery-caption-container">
-      <p id="gallery-item-caption"></p>
-    </div>
     <div class="gallery-thumb-row">
       <div class="gallery-thumb-scroll-row">
         <div class="gallery-thumb-inner-row">

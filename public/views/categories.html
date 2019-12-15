@@ -12,15 +12,17 @@
     {% if admin %}
       <div class="page-controls">
         <div class="page-controls-inner">
-          <a href="/{{target}}/item/new">
-            <div class="common-btn green no-select">New item</div>
-          </a>
+          {% if target != "gallery" %}
+            <a href="/{{target}}/item/new">
+              <div class="common-btn green no-select">New item</div>
+            </a>
+          {% endif %}
           <a href="/{{target}}/category/new">
             <div class="common-btn green no-select">New category</div>
           </a>
         </div>
       </div>
     {% endif %}
-    {{ group.render([target, "-categories"] | join, ["/", target, "/category"] | join, categories, admin) }}
+    {{ group.render([target, "-categories"] | join, ["/", target, "/category"] | join, categories, admin if target != "gallery" ) }}
   </div>
 {% endblock %}

@@ -41,7 +41,7 @@
       <input id="caption" class="text" type="text" placeholder="Item's title" name="title" autofocus="true" required="true" value="{{item.caption}}">
       <br />
       <h2 class="text-invert">Thumb image</h2>
-      <div id="{{item.thumb}}" class="thumb-preview" {% if item %} style="background-image: url(/image/{{item.thumb}}?width=640);" {% endif %} onclick="mediaThumbClicked(event, 'images')"></div>
+      <div id="{{item.thumb}}" class="thumb-preview" {% if item %} style="background-image: url(/image/{{item.thumb}}?width=1920);" {% endif %} onclick="mediaThumbClicked(event, 'images')"></div>
       <br />
       <h2 class="text-invert">Description</h2>
       <textarea id="description" type="text" placeholder="Item's description" name="desc" required="true">{{item.description}}</textarea>

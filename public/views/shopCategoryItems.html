@@ -12,7 +12,7 @@
 {% block content %}
   <div id="shop" class="panel">
     <h2 class="robo-text">Shop</h2>
-    {% if admin and id %}
+    {% if admin and id != "none" %}
       <div class="page-controls">
         <div class="page-controls-inner">
           <a href="/shop/category/edit/{{id}}">

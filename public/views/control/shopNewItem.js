@@ -22,7 +22,7 @@ function mediaPreviewSelection(target) {
   target.setAttribute("type", item.type);
   target.id = item.id;
   if (item.type == "image") {
-    target.style.backgroundImage = `url('/image/${item.id}?width=640')`;
+    target.style.backgroundImage = `url('/image/${item.id}?width=1920')`;
   } else if (item.type == "video" && item.src) {
     let video = document.createElement("iframe");
     video.src = item.src;

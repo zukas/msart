@@ -1,20 +1,25 @@
 {% extends 'layout.html' %}
 
 {% import "components/media/preview.njk" as mediaPreviewPanel %}
+{% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
 
 {% block script %}
   {% include "control/categoryNew.js" %}
   {% include "components/media/preview.js" %}
+  {% include "components/gallery/gallery.js" %}
 {% endblock script %}
 
 {% block css%}
   {% include "components/base/checkbox.css" %}
   {% include "components/media/preview.css" %}
+  {% include "components/gallery/gallery.css" %}
   {% include "style/categoryNew.css" %}
 {% endblock css%}
 
 {% block onload %}
 createMediaPreviewPanel("new-category-media-select");
+createGalleryPreviewPanel("gallery-item-gallery");
+setupAddGalleryItem();
 {% endblock onload %}
 
 {% block content %}
@@ -26,11 +31,16 @@ createMediaPreviewPanel("new-category-media-select");
       <input id="caption" type="text" placeholder="Caption" autofocus="true" required="true" value="{{category.caption}}">
       <br />
       <h2 class="text-invert">Thumb image</b2>
-      <div id="{{category.thumb}}" type="image" {% if category %} style="background-image: url(/image/{{category.thumb}}?width=640);" {% endif %} class="thumb-preview" onclick="mediaThumbClicked(event, 'images')"></div>
+      <div id="{{category.thumb}}" type="image" {% if category %} style="background-image: url(/image/{{category.thumb}}?width=1920);" {% endif %} class="thumb-preview" onclick="mediaThumbClicked(event, 'images')"></div>
       <br />
       <h2 class="text-invert">Description</b2>
       <textarea id="description" type="text" placeholder="Description" required="true">{{category.description}}</textarea>
       <br />
+      {% if target == "gallery" %}
+        <h2 class="text-invert">Gallery</b2>
+        {{ galleryPreviewPanel.render("gallery-item-gallery", category.gallery, "new-gallery-item") }}
+        <br />
+      {% endif %}
       {% if category %}
         <div class="common-btn green" onclick="updateCategory(event, '{{category.id}}')">Update</div>
       {% else %}
