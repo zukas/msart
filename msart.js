@@ -85,9 +85,13 @@ const setupOptions = app => {
 const setupRoutes = app => {
   const engine = require("./engine");
   app.get("/", engine.index);
+  app.get("/login", engine.login);
+  app.get("/logout", engine.logout);
   app.get("/manager", engine.manager);
   app.get("/about", engine.about);
   app.get("/contact", engine.contact);
+
+  app.post("/login", engine.doLogin);
 
   app.get(/^\/(shop|blog|gallery)$/, engine.categories);
   app.get(/^\/(shop|blog)\/category\/(none|[\w\d]{24})$/, engine.categoryItems);

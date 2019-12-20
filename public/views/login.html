@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block css%}
+  {% include "style/login.css" %}
+{% endblock css%}
+
+{% block script %}
+  {% include "control/login.js" %}
+{% endblock script %}
+
+{% block content %}
+  <div id="login" class="panel">
+    <div id="login-form">
+      <div id="logo"></div>
+      <input id="username" class="text" type="text" placeholder="Username"></input>
+      <input id="password" class="text" type="password" placeholder="Password" onfocus="passwordBeginEdit(event)" onkeyup="quickKey(event)"></input>
+      <div id="doLogin" class="common-btn green" onclick="performLogin(event)">Login</div>
+    </div>
+  </div>
+{% endblock content %}
