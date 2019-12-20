@@ -1,33 +1,32 @@
-	
-require("./utils")
+const process = require("process");
+const db = require("./db");
+const config = require("./config")();
+const hasher = require("password-hash");
 
-var db = require("./db"),
-	hasher = require('password-hash');
-
-if(process.argv.length != 4) {
-	console.log("usage init.js [username] [password]");
+if (process.argv.length != 4) {
+  console.log("usage init.js [username] [password]");
 } else {
-	db.start({
-	name: "msart",
-	collections: [
-		"users",
-		"images",
-		"about",
-		"shop",
-		"category",
-		"orders",
-		"gallery",
-		"history",
-		"access"
-	]
-	}, function () {
-		db.db.users.insert({_id : process.argv[2], password: hasher.generate(process.argv[3])}, function (err) {
-			if(err) {
-				console.log(err);
-			} else {
-				console.log("user " + process.argv[2] + "successfully created");
-			}
-			process.exit(0);
-		})
-	});
+  db.init(config.db)
+    .then(() => {
+      db.users
+        .insertOne({
+          _id: process.argv[2],
+          password: hasher.generate(process.argv[3]),
+          admin: true
+        })
+        .then(() => {
+          console.log("User " + process.argv[2] + " successfully created");
+          process.exit(0);
+        })
+        .catch(e => {
+          console.log("Failed to create a user");
+          console.log(e);
+          process.exit(1);
+        });
+    })
+    .catch(e => {
+      console.log("Failed to initialise database");
+      console.log(e);
+      process.exit(1);
+    });
 }

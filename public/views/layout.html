@@ -48,28 +48,60 @@
     <h1 class="robo-text">MS Craftshop</h1>
     <div id="header">
       <div id="title" class="main-title noselect"></div>
-      <div id="main_menu" class="no-select">
+      <div id="main-menu" class="no-select">
         <span>
           {% if admin %}
-            <a href="/manager">
-              <div class="menu_item header-text noselect">Manager</div>
-            </a>
+              <div class="menu-item header-text noselect">
+                <div class="menu-dropdown text noselect">
+                  <a href="/manager">Manager</a>
+                </div>
+                <div class="menu-dropdown-content">
+                    <div class="menu-dropdown-item text">
+                      <a href="/manager">Manager</a>
+                    </div>
+                    <div class="menu-dropdown-item text">
+                      <a href="/logout">Logout</a>
+                    </div>
+                </div>
+              </div>
+          {% elif username %}
+            <div class="menu-item header-text noselect">
+              <div class="menu-dropdown text noselect">
+                <a href="/home">Hello, {{forename}} {{surname}}</a>
+              </div>
+            </div>
+          {% else %}
+            <div class="menu-item header-text noselect">
+              <div class="menu-dropdown text noselect">
+                <a href="/login">Login</a>
+              </div>
+            </div>
           {% endif %}
-          <a href="/about">
-            <div class="menu_item header-text noselect">About</div>
-          </a>
-          <a href="/blog">
-            <div class="menu_item header-text noselect">Blog</div>
-          </a>
-          <a href="/shop">
-            <div class="menu_item header-text noselect">Shop</div>
-          </a>
-          <a href="/gallery">
-            <div class="menu_item header-text noselect">Gallery</div>
-          </a>
-          <a href="/contact">
-            <div class="menu_item header-text noselect">Contact</div>
-          </a>
+          <div class="menu-item header-text noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/about">About</a>
+            </div>
+          </div>
+          <div class="menu-item header-text noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/blog">Blog</a>
+            </div>
+          </div>
+          <div class="menu-item header-text noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/shop">Shop</a>
+            </div>
+          </div>
+          <div class="menu-item header-text noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/gallery">Gallery</a>
+            </div>
+          </div>
+          <div class="menu-item header-text noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/contact">Contact</a>
+            </div>
+          </div>
         </span>
       </div>
     </div>

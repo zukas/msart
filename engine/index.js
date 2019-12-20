@@ -1,9 +1,12 @@
+"use strict";
+
 const config = require("../config")();
 const media = require("./media");
 const categories = require("./categories");
 const shop = require("./shop");
 const blog = require("./blog");
 const gallery = require("./gallery");
+const user = require("./user");
 
 const target = {
   shop: shop,
@@ -14,7 +17,7 @@ const target = {
 const deafultData = req => {
   console.log(config);
   return {
-    admin: req.session.admin || true,
+    admin: req.session.admin || false,
     lenguage: req.session.lang || "en",
     ua: req.useragent,
     debug: config.debug || false,
@@ -23,11 +26,51 @@ const deafultData = req => {
 };
 
 exports.index = async (req, res) => {
-  if (/*req.session.admin*/ true) {
+  let renderData = deafultData(req);
+  if (renderData.admin) {
     this.manager(req, res);
   } else {
     this.about(req, res);
   }
+};
+
+exports.login = async (req, res) => {
+  let renderData = deafultData(req);
+  if (renderData.admin) {
+    res.redirect("/manager");
+  } else if (renderData.username) {
+    res.redirect("/");
+  } else {
+    res.render("login.html", renderData);
+  }
+};
+
+exports.logout = async (req, res) => {
+  req.session.destroy();
+  req.session = null;
+  res.redirect("/");
+};
+
+exports.doLogin = async (req, res) => {
+  console.log("doLogin", req.body);
+  user
+    .doLogin(req.body)
+    .then(u => {
+      console.log(u);
+      if (u) {
+        req.session.username = u._id;
+        req.session.forename = u.forename;
+        req.session.surname = u.surname;
+        req.session.admin = u.admin;
+        res.send({ msg: "Success", success: true });
+      } else {
+        res.send({ msg: "Error", success: false });
+      }
+    })
+    .catch(e => {
+      console.log(e);
+      res.send({ msg: "Error", success: false });
+    });
 };
 
 exports.manager = async (req, res) => {
