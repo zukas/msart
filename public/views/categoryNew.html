@@ -38,7 +38,7 @@ setupAddGalleryItem();
       <br />
       {% if target == "gallery" %}
         <h2 class="text-invert">Gallery</b2>
-        {{ galleryPreviewPanel.render("gallery-item-gallery", category.gallery, "new-gallery-item") }}
+        {{ galleryPreviewPanel.render("gallery-item-gallery", category.gallery, "new-gallery-item", admin) }}
         <br />
       {% endif %}
       {% if category %}

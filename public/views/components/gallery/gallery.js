@@ -1,5 +1,4 @@
 function GalleryPreviewJs(
-  caption,
   itemContainer,
   thumbContainer,
   itemNext,
@@ -11,6 +10,16 @@ function GalleryPreviewJs(
   let currentIndex = 0;
   let size = itemContainer.querySelectorAll(".gallery-item").length;
 
+  self.removeCurrentItem = () => {
+    const items = itemContainer.querySelectorAll(".gallery-item");
+    const thumbs = thumbContainer.querySelectorAll(".gallery-thumb-column");
+    itemContainer.removeChild(items[currentIndex]);
+    thumbContainer.removeChild(thumbs[currentIndex]);
+    self.update();
+    currentIndex = currentIndex >= size ? size - 1 : currentIndex;
+    self.setCurrent(currentIndex);
+  };
+
   self.setCurrent = index => {
     const items = itemContainer.querySelectorAll(".gallery-item");
     const thumbs = thumbContainer.querySelectorAll(".gallery-thumb-preview");
@@ -18,12 +27,21 @@ function GalleryPreviewJs(
     if (index >= 0 && index < items.length) {
       items[currentIndex].removeAttribute("active");
       thumbs[currentIndex].removeAttribute("active");
+      const rmBtn1 = items[currentIndex].querySelector(".gallery-item-control");
+      if (rmBtn1) {
+        rmBtn1.removeEventListener("click", self.removeCurrentItem);
+      }
 
       currentIndex = index;
 
       items[currentIndex].setAttribute("active", true);
       thumbs[currentIndex].setAttribute("active", true);
       thumbContainer.parentNode.scrollLeft = thumbs[currentIndex].offsetLeft;
+
+      const rmBtn2 = items[currentIndex].querySelector(".gallery-item-control");
+      if (rmBtn2) {
+        rmBtn2.addEventListener("click", self.removeCurrentItem);
+      }
     }
   };
 
@@ -81,6 +99,7 @@ function GalleryPreviewJs(
       let item = document.createElement("div");
       let itemPreview = document.createElement("div");
       let itemNumber = document.createElement("div");
+      let itemControl = document.createElement("div");
       let itemCaption = document.createElement("div");
       let thumb = document.createElement("div");
       let thumbPreview = document.createElement("div");
@@ -88,6 +107,8 @@ function GalleryPreviewJs(
       item.className = "gallery-item";
 
       itemNumber.className = "gallery-item-number";
+      itemControl.className = "gallery-item-control common-btn red";
+      itemControl.innerHTML = "Remove";
       itemCaption.className = "gallery-item-caption";
 
       itemPreview.id = newNtem.id;
@@ -121,10 +142,11 @@ function GalleryPreviewJs(
         thumbPreview.appendChild(thumbVideoFrame);
       }
 
-      item.appendChild(itemNumber);
-      item.appendChild(itemCaption);
-      item.appendChild(itemPreview);
       thumb.appendChild(thumbPreview);
+      item.appendChild(itemPreview);
+      item.appendChild(itemNumber);
+      item.appendChild(itemControl);
+      item.appendChild(itemCaption);
 
       itemFragment.appendChild(item);
       thumbFragment.appendChild(thumb);
@@ -206,7 +228,6 @@ function galleryPreviewPanel(id) {
 
 function createGalleryPreviewPanel(id) {
   const frame = document.querySelector(`#${id}`);
-  const caption = frame.querySelector("#gallery-item-caption");
   const elementContainer = frame.querySelector(".gallery-item-container");
   const thumbContainer = frame.querySelector(".gallery-thumb-inner-row");
   const elemNext = frame.querySelector(".gallery-nav-btn.next");
@@ -214,7 +235,6 @@ function createGalleryPreviewPanel(id) {
   const thumbNext = frame.querySelector(".gallery-thumb-nav-btn.next");
   const thumbPrev = frame.querySelector(".gallery-thumb-nav-btn.prev");
   const obj = new GalleryPreviewJs(
-    caption,
     elementContainer,
     thumbContainer,
     elemNext,
