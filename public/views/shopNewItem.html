@@ -50,7 +50,7 @@
       <input id="price" type="number" placeholder="Item's price" name="price" required="true" value="{{item.price}}">
       <br />
       <h2 class="text-invert">Gallery images</h2>
-      {{ galleryPreviewPanel.render("new-shop-item-gallery", item.gallery, "new-gallery-item" ) }}
+      {{ galleryPreviewPanel.render("new-shop-item-gallery", item.gallery, "new-gallery-item", admin) }}
       <br />
       <h2 class="text-invert">Categories</h2>
       {{ categoryPreviewPanel.render("new-shop-item-category-select-panel", categories, item.categories) }}

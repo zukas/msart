@@ -1,4 +1,4 @@
-{% macro render(id, items, newItemId) %}
+{% macro render(id, items, newItemId, admin) %}
   <div id="{{id}}" class="gallery-container" >
     <span class="gallery-item-container">
       {% if newItemId %}
@@ -18,6 +18,9 @@
           <div class="gallery-item-number">
             {{ loop.index }} / {{ loop.length }}
           </div>
+          {% if admin %}
+            <div class="gallery-item-control common-btn red">Remove</div>
+          {% endif %}
           <div class="gallery-item-caption">{{item.caption if item.caption else "Title not set, please set your title for the media item"}} </div>
         </div>
       {% endfor %}
