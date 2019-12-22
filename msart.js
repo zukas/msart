@@ -133,6 +133,7 @@ const setupRoutes = app => {
   app.post("/manager/upload/videos", engine.uploadVideos);
 
   app.post("/manager/delete/media", engine.deleteMedia);
+  app.post("/manager/update/media", engine.updateMedia);
 };
 
 const createServer = async app => {
@@ -167,6 +168,7 @@ const getServerPort = () => {
 })()
   .then(() => {
     console.log("Setver started");
+    console.log(db);
   })
   .catch(err => console.error(err));
 

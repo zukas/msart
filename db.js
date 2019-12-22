@@ -20,7 +20,19 @@ let local_exports = {
 
     let collections = await Promise.all(collection_promisses);
     for (let i in info.collections) {
-      local_exports[info.collections[i]] = collections[i];
+      const sections = info.collections[i].split(".");
+      let curr = local_exports;
+      for (let j = 0; j < sections.length; ++j) {
+        const key = sections[j];
+        if (j + 1 < sections.length) {
+          if (!(key in curr)) {
+            curr[key] = {};
+          }
+          curr = curr[key];
+        } else {
+          curr[key] = collections[i];
+        }
+      }
     }
     local_exports.__native_handle = db;
   }

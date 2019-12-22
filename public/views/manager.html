@@ -27,7 +27,7 @@
   <div id="manager" class="panel">
     {{ videoUploadPanel.render("video-upload-popup") }}
     <div id="media-manager-panel">
-      {{ mediaPreviewPanel.render("menager-media", images, videos, false) }}
+      {{ mediaPreviewPanel.render("menager-media", images, videos, false, "onCaptionChanged") }}
       <div class="common-btn blue">
         <input id="image-upload" type="file" name="images" accept="image/*" multiple="multiple" required="true"></input>
         Add images
