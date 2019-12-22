@@ -271,10 +271,22 @@ exports.galleryCategoryItems = async (req, res) => {
     .getCategory(id, "gallery", true)
     .then(data => {
       console.log(data);
-      let renderData = deafultData(req);
-      renderData.id = data.id;
-      renderData.gallery = data.gallery;
-      res.render(`galleryCategoryItems.html`, renderData);
+      media
+        .fetchStoredMedia(data.gallery)
+        .then(gallery => {
+          console.log(gallery);
+          let renderData = deafultData(req);
+          renderData.id = data.id;
+          renderData.gallery = gallery;
+          res.render(`galleryCategoryItems.html`, renderData);
+        })
+        .catch(e => {
+          console.log(e);
+          let renderData = deafultData(req);
+          renderData.id = null;
+          renderData.gallery = [];
+          res.render(`galleryCategoryItems.html`, renderData);
+        });
     })
     .catch(e => {
       console.log(e);
@@ -294,12 +306,52 @@ exports.item = async (req, res) => {
     .getItem(id)
     .then(data => {
       console.log(data);
-      let renderData = deafultData(req);
-      renderData.item = data;
-      res.render(`${type}Item.html`, renderData);
+
+      const sections = data.sections;
+      let galleryLookups = [];
+      for (let i in sections) {
+        if (sections[i].type == "gallery") {
+          galleryLookups.push({ idx: i, data: sections[i].data });
+        }
+      }
+      if (data.gallery) {
+        media
+          .fetchStoredMedia(data.gallery)
+          .then(gallery => {
+            console.log(gallery);
+            data.gallery = gallery;
+            let renderData = deafultData(req);
+            renderData.item = data;
+            res.render(`${type}Item.html`, renderData);
+          })
+          .catch(e => {
+            console.log(e);
+            res.send({ msg: "Error", success: false });
+          });
+      } else if (galleryLookups.length > 0) {
+        let promises = [];
+        for (let i in galleryLookups) {
+          promises.push(media.fetchStoredMedia(galleryLookups[i].data));
+        }
+        Promise.all(promises)
+          .then(galleryArray => {
+            console.log(galleryArray);
+            for (let i in galleryArray) {
+              data.sections[galleryLookups[i].idx].data = galleryArray[i];
+            }
+            let renderData = deafultData(req);
+            renderData.item = data;
+            res.render(`${type}Item.html`, renderData);
+          })
+          .catch(e => {
+            console.log(e);
+            res.send({ msg: "Error", success: false });
+          });
+      }
     })
     .catch(() => {
-      res.send({ msg: "Error" });
+      console.log(e);
+      res.send({ msg: "Error", success: false });
     });
 };
 
@@ -367,5 +419,15 @@ exports.deleteMedia = async (req, res) => {
     .catch(e => {
       console.log(e);
       res.send({ msg: "Error" });
+    });
+};
+
+exports.updateMedia = async (req, res) => {
+  media
+    .updateMediaMetadata(req.body)
+    .then(() => res.send({ msg: "Done", success: true }))
+    .catch(e => {
+      console.log(e);
+      res.send({ msg: "Error", success: false });
     });
 };

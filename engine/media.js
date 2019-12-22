@@ -34,36 +34,131 @@ exports.storeImages = async files => {
 exports.storeVideos = async videoUrls => {
   console.log(videoUrls);
   db.videos.bulkWrite(
-    videoUrls.map(url => ({
+    videoUrls.map(video => ({
       updateOne: {
-        filter: { url: url },
+        filter: {
+          url: video.url,
+          caption: video.caption
+        },
         upsert: true,
-        update: { $set: { url: url } }
+        update: {
+          $set: {
+            url: video.url,
+            caption: video.caption
+          }
+        }
       }
     }))
   );
 };
 
-exports.fetchStoredMedia = async () => {
-  const bucket = new GridFSBucket(db.__native_handle, { bucketName: "images" });
-  let res = { images: [], videos: [] };
-  const images = bucket.find().toArray();
-  const videos = db.videos.find({}, { url: 1 }).toArray();
+exports.fetchStoredMedia = async elems => {
+  let imageQuery = {};
+  let videoQuery = {};
+  if (elems) {
+    elems.forEach(elem => {
+      if (elem.type == "image") {
+        if ("_id" in imageQuery) {
+          imageQuery["_id"]["$in"].push(ObjectID(elem.id));
+        } else {
+          imageQuery = { _id: { $in: [ObjectID(elem.id)] } };
+        }
+      } else if (elem.type == "video") {
+        if ("_id" in videoQuery) {
+          videoQuery["_id"]["$in"].push(ObjectID(elem.id));
+        } else {
+          videoQuery = { _id: { $in: [ObjectID(elem.id)] } };
+        }
+      }
+    });
+  }
+
+  console.log("imageQuery", imageQuery);
+  console.log("videoQuery", videoQuery);
+
+  const images = db.images.files
+    .find(imageQuery, { filename: 1, caption: 1 })
+    .toArray();
+  const videos = db.videos.find(videoQuery, { url: 1, caption: 1 }).toArray();
 
   const resolve = await Promise.all([images, videos]);
 
-  resolve[0].forEach(elem => {
-    res.images.push({
-      id: elem._id,
-      filename: elem.filename,
-      uploadDate: elem.uploadDate
+  if (elems) {
+    let query = {
+      images: {},
+      videos: {}
+    };
+    console.log(resolve);
+    resolve[0].forEach(elem => {
+      query.images[elem._id] = {
+        filename: elem.filename,
+        caption: elem.caption
+      };
     });
+    resolve[1].forEach(elem => {
+      query.videos[elem._id] = {
+        url: elem.url,
+        caption: elem.caption
+      };
+    });
+
+    elems.forEach(elem => {
+      if (elem.type == "image") {
+        elem.filename = query.images[elem.id].filename;
+        elem.caption = query.images[elem.id].caption;
+      } else if (elem.type == "video") {
+        elem.url = query.videos[elem.id].url;
+        elem.caption = query.videos[elem.id].caption;
+      }
+    });
+    return elems;
+  } else {
+    let res = { images: [], videos: [] };
+    resolve[0].forEach(elem => {
+      res.images.push({
+        id: elem._id,
+        filename: elem.filename,
+        caption: elem.caption
+      });
+    });
+
+    resolve[1].forEach(elem => {
+      res.videos.push({ id: elem._id, url: elem.url, caption: elem.caption });
+    });
+    return res;
+  }
+};
+
+exports.updateMediaMetadata = async data => {
+  let imageWrites = [];
+  let videoWrites = [];
+  data.forEach(elem => {
+    if (elem.type == "image") {
+      imageWrites.push({
+        updateOne: {
+          filter: { _id: ObjectID(elem.id) },
+          update: { $set: { caption: elem.caption } }
+        }
+      });
+    } else if (elem.type == "video") {
+      videoWrites.push({
+        updateOne: {
+          filter: { _id: ObjectID(elem.id) },
+          update: { $set: { caption: elem.caption } }
+        }
+      });
+    }
   });
 
-  resolve[1].forEach(elem => {
-    res.videos.push({ id: elem._id, url: elem.url });
-  });
-  return res;
+  let promises = [];
+  if (imageWrites.length > 0) {
+    promises.push(db.images.files.bulkWrite(imageWrites, { ordered: false }));
+  }
+  if (videoWrites.length > 0) {
+    promises.push(db.videos.bulkWrite(videoWrites, { ordered: false }));
+  }
+
+  return Promise.all(promises);
 };
 
 exports.removeStoredMedia = async data => {

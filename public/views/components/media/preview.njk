@@ -1,11 +1,16 @@
 {% import "../base/checkbox.njk" as checkbox %}
 
-{% macro __render_internal(images, videos) %}
+{% macro __render_internal(images, videos, captionChanged) %}
   <div class="media-preview-container">
     {% if images %}
       <div class="media-preview-category images">Images<hr />
         {% for image in images %}
           <div id="{{image.id}}" class="preview-thumb" type="image" style="background-image: url('/image/{{ image.id }}?width=500');">
+            {% if captionChanged %}
+              <input class="thumb-caption" maxlength="40" value="{{ image.caption | default(image.filename) }}" onkeypress="{{captionChanged}}(event, '{{ image.id }}', 'image');"></input>
+            {% else %}
+              <div class="thumb-caption">{{ image.caption | default(image.filename) }}</div>
+            {% endif %}
             {{ checkbox.render("preview-thumb-chk") }}
           </div>
         {% endfor %}
@@ -16,6 +21,11 @@
         {% for video in videos %}
           <div id="{{video.id}}" class="preview-thumb" type="video" src="{{ video.url }}">
             <iframe src="{{ video.url }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+            {% if captionChanged %}
+              <input class="thumb-caption" maxlength="40" value="{{ video.caption | default(video.url) }}" onkeypress="{{captionChanged}}(event, '{{ video.id }}', 'video');"></input>
+            {% else %}
+              <div class="thumb-caption">{{ video.caption | default(video.url) }}</div>
+            {% endif %}
             {{ checkbox.render("preview-thumb-chk") }}
           </div>
         {% endfor %}
@@ -24,11 +34,11 @@
   </div>
 {% endmacro %}
 
-{% macro render(id, images, videos, isPopup) %}
+{% macro render(id, images, videos, isPopup, captionChanged) %}
   {% if isPopup %}
     <div id="{{id}}" class="media-preview-popup">
       <div class="media-preview">
-        {{ __render_internal(images, videos) }}
+        {{ __render_internal(images, videos, captionChanged) }}
       </div>
       <div id="media-popup-select" class="common-btn green">
       Select
@@ -36,7 +46,7 @@
     </div>
   {% else %}
     <div id="{{id}}" class="media-preview">
-      {{ __render_internal(images, videos) }}
+      {{ __render_internal(images, videos, captionChanged) }}
     </div>
   {% endif %}
 {% endmacro %}

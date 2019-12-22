@@ -56,3 +56,33 @@ function createManagerControlBlock(videoUploadId, mediaPreviewId) {
       });
   });
 }
+
+function onCaptionChanged(event, id, type) {
+  const key = event.which || event.keyCode;
+  debug(event);
+  debug(key);
+  if (key == 13) {
+    event.preventDefault();
+    const caption = event.target.value;
+    const data = [{ id: id, type: type, caption: caption }];
+    debug(data);
+    return fetch("/manager/update/media", {
+      method: "POST",
+      body: JSON.stringify(data),
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(r => {
+        debug(r);
+        if (r.success) {
+          event.target.setAttribute("updated", 1);
+          setTimeout(() => {
+            event.target.removeAttribute("updated");
+          }, 1000);
+        }
+      });
+  }
+}
