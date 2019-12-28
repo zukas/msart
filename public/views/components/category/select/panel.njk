@@ -3,7 +3,8 @@
     <div class="category-select-panel-inner">
       {% for curr in selected %}
         {% for category in categories %}
-          {% if curr == category.id %}
+          {% set match = curr | string == category.id | string %}
+          {% if match %}
             <div id="{{curr}}" class="category-item">
               <div class="category-item-internal">
                 <div class="category-item-text text-invert">
