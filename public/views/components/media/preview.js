@@ -122,3 +122,18 @@ function createMediaPreviewPanel(id) {
   const obj = new MediaPreviewPanelJs(frame, selectBtn, elems);
   document.attachFeature("mediaPreviewPanel", `id-${id}`, obj);
 }
+
+function beginSearch(id, event) {
+  debug("beginSearch", id, event);
+  const root = document.getElementById(id);
+  const regexp = new RegExp(event.target.value, "i");
+  Array.from(root.querySelectorAll("div.thumb-caption")).forEach(elem => {
+    elem.parentNode.classList.toggle(
+      "hidden",
+      elem.innerHTML.search(regexp) == -1
+    );
+  });
+  Array.from(root.querySelectorAll("input.thumb-caption")).forEach(elem => {
+    elem.parentNode.classList.toggle("hidden", elem.value.search(regexp) == -1);
+  });
+}

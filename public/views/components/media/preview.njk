@@ -37,6 +37,9 @@
 {% macro render(id, images, videos, isPopup, captionChanged) %}
   {% if isPopup %}
     <div id="{{id}}" class="media-preview-popup">
+      <div class="media-preview-header">
+        <input type="text" placeholder="Search.." onkeyup="beginSearch('{{id}}', event)"></input>
+      </div>
       <div class="media-preview">
         {{ __render_internal(images, videos, captionChanged) }}
       </div>
@@ -45,6 +48,9 @@
       </div>
     </div>
   {% else %}
+    <div class="media-preview-header">
+      <input type="text" placeholder="Search.." onkeyup="beginSearch('{{id}}', event)"></input>
+    </div>
     <div id="{{id}}" class="media-preview">
       {{ __render_internal(images, videos, captionChanged) }}
     </div>
