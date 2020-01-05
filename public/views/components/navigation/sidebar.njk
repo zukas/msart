@@ -1,0 +1,32 @@
+{% macro render (root, current, categoryies, admin) %}
+  <div class="navigation-menu">
+    <div class="navigation-menu-internal">
+      {% if admin %}
+        {% set active = current == "none" %}
+        <a href="/{{ root }}/category/none">
+          <div active="{{active}}" class="category-item">
+            <div class="category-item-internal">
+              <div class="category-item-text text-invert">
+                <div class="category-item-caption">Uncategorised</div> 
+              </div>
+              <div class="category-item-image" style="background-image: url(/images/construction.jpg);"></div>
+            </div>
+          </div>
+        </a>
+      {% endif %}
+      {% for category in categoryies %}
+        <a href="/{{ root }}/category/{{ category.id }}">
+          {% set active = current | string == category.id | string %}
+          <div id="{{ category.id }}" active="{{active}}" class="category-item">
+            <div class="category-item-internal">
+              <div class="category-item-text text-invert">
+                <div class="category-item-caption">{{category.caption}}</div> 
+              </div>
+              <div class="category-item-image" style="background-image: url(/image/{{category.thumb}}?width=800);"></div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endmacro %}

@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
+{% import "components/navigation/sidebar.njk" as sidebar %}
 
 {% block script %}
   {% include "components/gallery/gallery.js" %}
@@ -9,6 +10,7 @@
 {% block css%}
   {% include "components/gallery/gallery.css" %}
   {% include "style/galleryCategoryItems.css" %}
+  {% include "components/navigation/sidebar.css" %}
 {% endblock css%}
 
 {% block onload %}
@@ -16,6 +18,7 @@
 {% endblock onload %}
 
 {% block content %}
+  {{ sidebar.render("gallery", id, categories) }}
   <div class="panel">
     <h2 class="robo-text">Gallery</h2>
     {% if admin and id != "none" %}
@@ -30,6 +33,7 @@
         </div>
       </div>
     {% endif %}
+    <h2 class="text-invert">{{header}}</h2>
     <div class="gallery-layout">
       {{ galleryPreviewPanel.render("gallery-item-gallery", gallery) }}
     </div>

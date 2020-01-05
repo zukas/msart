@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% import "components/shop/thumbs.njk" as shopThumbs %}
+{% import "components/navigation/sidebar.njk" as sidebar %}
 
 {% block script %}{% endblock script %}
 
@@ -7,9 +8,11 @@
 
 {% block css%}
   {% include "components/shop/thumbs.css" %}
+  {% include "components/navigation/sidebar.css" %}
 {% endblock css%}
 
 {% block content %}
+  {{ sidebar.render("shop", id, categories, admin) }}
   <div id="shop" class="panel">
     <h2 class="robo-text">Shop</h2>
     {% if admin and id != "none" %}
@@ -24,6 +27,7 @@
         </div>
       </div>
     {% endif %}
+    <h2 class="text-invert">{{header}}</h2>
     <div class="shop-item-thumb-layout">
       {{ shopThumbs.render("shop-items", "/shop/item", "&#163", items ) }}
     </div>

@@ -247,37 +247,48 @@ exports.categoryItems = async (req, res) => {
   const type = req.params[0];
   const category = req.params[1];
   console.log("categoryItems", type, category);
-  target[type]
-    .getItems(category, true)
-    .then(items => {
-      console.log(items);
+  Promise.all([
+    target[type].getItems(category, true),
+    categories.getCategories(type, true),
+    categories.getCategory(category, type, true)
+  ])
+    .then(data => {
+      console.log(data);
       let renderData = deafultData(req);
       renderData.id = category;
-      renderData.items = items;
+      renderData.header = data[2].caption;
+      renderData.items = data[0];
+      renderData.categories = data[1];
       res.render(`${type}CategoryItems.html`, renderData);
     })
     .catch(e => {
       console.log(e);
       let renderData = deafultData(req);
       renderData.id = null;
+      renderData.header = null;
       renderData.items = [];
+      renderData.categories = [];
       res.render(`${type}CategoryItems.html`, renderData);
     });
 };
 
 exports.galleryCategoryItems = async (req, res) => {
   const id = req.params[0];
-  categories
-    .getCategory(id, "gallery", true)
+  Promise.all([
+    categories.getCategory(id, "gallery", true),
+    categories.getCategories("gallery", true)
+  ])
     .then(data => {
       console.log(data);
       media
-        .fetchStoredMedia(data.gallery)
+        .fetchStoredMedia(data[0].gallery)
         .then(gallery => {
           console.log(gallery);
           let renderData = deafultData(req);
-          renderData.id = data.id;
+          renderData.id = data[0].id;
+          renderData.header = data[0].caption;
           renderData.gallery = gallery;
+          renderData.categories = data[1];
           res.render(`galleryCategoryItems.html`, renderData);
         })
         .catch(e => {
