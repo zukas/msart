@@ -254,6 +254,9 @@ exports.categoryItems = async (req, res) => {
   ])
     .then(data => {
       console.log(data);
+
+      req.session.navigation = { root: type, category: category };
+
       let renderData = deafultData(req);
       renderData.id = category;
       renderData.header = data[2].caption;
@@ -313,26 +316,39 @@ exports.item = async (req, res) => {
   const id = req.params[1];
 
   console.log("item", type, id);
-  target[type]
-    .getItem(id)
+
+  const category =
+    req.session.navigation && req.session.navigation.root == type
+      ? req.session.navigation.category
+      : null;
+
+  const requests = category
+    ? [target[type].getItem(id), target[type].getItems(category, true)]
+    : [target[type].getItem(id)];
+
+  Promise.all(requests)
     .then(data => {
       console.log(data);
 
-      const sections = data.sections;
+      const sections = data[0].sections;
       let galleryLookups = [];
       for (let i in sections) {
         if (sections[i].type == "gallery") {
           galleryLookups.push({ idx: i, data: sections[i].data });
         }
       }
-      if (data.gallery) {
+      if (data[0].gallery) {
         media
-          .fetchStoredMedia(data.gallery)
+          .fetchStoredMedia(data[0].gallery)
           .then(gallery => {
             console.log(gallery);
             data.gallery = gallery;
             let renderData = deafultData(req);
-            renderData.item = data;
+            renderData.item = data[0];
+            if (category) {
+              renderData.category = category;
+              renderData.items = data[1];
+            }
             res.render(`${type}Item.html`, renderData);
           })
           .catch(e => {
@@ -348,10 +364,16 @@ exports.item = async (req, res) => {
           .then(galleryArray => {
             console.log(galleryArray);
             for (let i in galleryArray) {
-              data.sections[galleryLookups[i].idx].data = galleryArray[i];
+              data[0].sections[galleryLookups[i].idx].data = galleryArray[i];
             }
             let renderData = deafultData(req);
-            renderData.item = data;
+            renderData.item = data[0];
+
+            if (category) {
+              renderData.category = category;
+              renderData.items = data[1];
+            }
+
             res.render(`${type}Item.html`, renderData);
           })
           .catch(e => {
@@ -360,7 +382,7 @@ exports.item = async (req, res) => {
           });
       }
     })
-    .catch(() => {
+    .catch(e => {
       console.log(e);
       res.send({ msg: "Error", success: false });
     });

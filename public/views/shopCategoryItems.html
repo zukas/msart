@@ -12,7 +12,7 @@
 {% endblock css%}
 
 {% block content %}
-  {{ sidebar.render("shop", id, categories, admin) }}
+  {{ sidebar.render("shop", "category", id, categories, "/shop", admin) }}
   <div id="shop" class="panel">
     <h2 class="robo-text">Shop</h2>
     {% if admin and id != "none" %}
@@ -27,8 +27,8 @@
         </div>
       </div>
     {% endif %}
-    <h2 class="text-invert">{{header}}</h2>
     <div class="shop-item-thumb-layout">
+      <h2 class="text-invert">{{header}}</h2>
       {{ shopThumbs.render("shop-items", "/shop/item", "&#163", items ) }}
     </div>
   </div>

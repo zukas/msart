@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
+{% import "components/navigation/sidebar.njk" as sidebar %}
 
 {% block script %}
   {% include "control/shopItem.js" %}
@@ -9,6 +10,7 @@
 
 {% block css%}
   {% include "components/gallery/gallery.css" %}
+  {% include "components/navigation/sidebar.css" %}
   {% include "style/shopItem.css" %}
 {% endblock css%}
 
@@ -17,6 +19,7 @@
 {% endblock onload %}
 
 {% block content %}
+  {{ sidebar.render("shop", "item", item.id, items, "/shop/category/" + category) }}
   <div id="shop-item" class="panel">
     <h1 class="robo-text">Shop Item</h1>
     <div class="shop-item-layout">

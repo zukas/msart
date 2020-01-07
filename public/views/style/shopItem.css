@@ -2,7 +2,16 @@
   display: block;
   position: relative;
   width: 50vw;
-  margin-left: 25vw;
+  margin-left: 21vw;
+  -webkit-transition: margin-left 1s ease;
+  -moz-transition: margin-left 1s ease;
+  -o-transition: margin-left 1s ease;
+  -ms-transition: margin-left 1s ease;
+  transition: margin-left 1s ease;
+}
+
+.navigation-menu:hover+.panel .shop-item-layout {
+  margin-left: 10vw;
 }
 
 .shop-item-layout>* {

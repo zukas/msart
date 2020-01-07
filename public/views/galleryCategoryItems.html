@@ -18,7 +18,7 @@
 {% endblock onload %}
 
 {% block content %}
-  {{ sidebar.render("gallery", id, categories) }}
+  {{ sidebar.render("gallery", "category", id, categories, "/gallery") }}
   <div class="panel">
     <h2 class="robo-text">Gallery</h2>
     {% if admin and id != "none" %}
@@ -33,8 +33,8 @@
         </div>
       </div>
     {% endif %}
-    <h2 class="text-invert">{{header}}</h2>
     <div class="gallery-layout">
+      <h2 class="text-invert">{{header}}</h2>
       {{ galleryPreviewPanel.render("gallery-item-gallery", gallery) }}
     </div>
   </div>
