@@ -29,6 +29,9 @@ exports.getCategories = async (type, all) => {
 };
 
 exports.getCategory = async (id, type, all) => {
+  if (id == "none") {
+    return { id: "none" };
+  }
   const query = (() => {
     let temp = { _id: ObjectID(id), type: type };
     if (!all) {

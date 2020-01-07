@@ -1,0 +1,112 @@
+.navigation-menu {
+  position: fixed;
+  width: 14vw;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 5px;
+  background-image: url(/images/white_bg.jpg);
+  background-repeat: repeat;
+  background-size: 100px;
+  margin: 0px;
+  top: 0px;
+  left: -10vw;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 2px solid var(--base-blue);
+}
+
+.navigation-menu.animate {
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  transition: all 1s ease;
+}
+
+.navigation-menu:hover {
+  left: 0px;
+}
+
+.navigation-menu .common-btn {
+  box-sizing: border-box;
+  margin-top: 80px;
+  width: 99%;
+  position: relative;
+  float: left;
+}
+
+.navigation-menu-internal {
+  box-sizing: border-box;
+  padding-top: 80px;
+}
+
+.navigation-menu+.panel {
+  padding-left: 5vw;
+  -webkit-transition: padding-left 1s ease;
+  -moz-transition: padding-left 1s ease;
+  -o-transition: padding-left 1s ease;
+  -ms-transition: padding-left 1s ease;
+  transition: padding-left 1s ease;
+}
+
+.navigation-menu:hover+.panel {
+  padding-left: 15vw;
+}
+
+.category-item {
+  box-sizing: border-box;
+  display: block;
+  position: relative;
+  float: left;
+  width: 99%;
+  margin: 0.5%;
+  background-color: var(--base-mid);
+  border-radius: 4px;
+}
+
+.category-item[active="true"] {
+  background-color: var(--base-blue);
+}
+
+.category-item[active="true"] .category-item-caption {
+  line-height: 1.2em;
+  font-size: 1.1em;
+}
+
+.category-item:hover {
+  background-color: var(--hilight-blue);
+}
+
+.category-item-internal {
+  padding: 5px;
+}
+
+.category-item-image {
+  display: block;
+  width: 100%;
+  padding-top: 42.18%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: var(--base-light);
+}
+
+.category-item-text {
+  position: absolute;
+  max-height: 50%;
+  background-color: var(--base-dark);
+  background-color: rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  vertical-align: bottom;
+  z-index: 5;
+  padding: 5px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+}
+
+.category-item-caption {
+  position: relative;
+  line-height: 1em;
+  font-size: 0.9em;
+}

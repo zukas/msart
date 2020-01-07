@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% import "components/blog/sections.njk" as blogSections %}
+{% import "components/navigation/sidebar.njk" as sidebar %}
 
 {% block script %}
   {% include "control/blogItem.js" %}
@@ -9,6 +10,7 @@
 
 {% block css%}
   {% include "components/gallery/gallery.css" %}
+  {% include "components/navigation/sidebar.css" %}
   {% include "style/blogItem.css" %}
 {% endblock css%}
 
@@ -17,6 +19,7 @@
 {% endblock onload %}
 
 {% block content %}
+  {{ sidebar.render("blog", "item", item.id, items, "/blog/category/" + category) }}
   <div id="blog-item" class="panel">
     <h1 class="robo-text">Blog Item</h1>
     <div class="blog-item-layout">
