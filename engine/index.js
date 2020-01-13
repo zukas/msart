@@ -311,12 +311,10 @@ exports.galleryCategoryItems = async (req, res) => {
     });
 };
 
-exports.item = async (req, res) => {
+const resolveCommonItemData = async req => {
   const type = req.params[0];
   const id = req.params[1];
-
-  console.log("item", type, id);
-
+  console.log("resolveCommonItemData", type, id);
   const category =
     req.session.navigation && req.session.navigation.root == type
       ? req.session.navigation.category
@@ -326,61 +324,78 @@ exports.item = async (req, res) => {
     ? [target[type].getItem(id), target[type].getItems(category, true)]
     : [target[type].getItem(id)];
 
-  Promise.all(requests)
+  const requestData = await Promise.all(requests);
+  return {
+    id: id,
+    type: type,
+    category: category,
+    item: requestData[0],
+    items: category ? requestData[1] : null
+  };
+};
+
+exports.shopItem = async (req, res) => {
+  resolveCommonItemData(req)
     .then(data => {
-      console.log(data);
+      console.log("shopItem", data);
+      media
+        .fetchStoredMedia(data.item.gallery)
+        .then(gallery => {
+          console.log(gallery);
+          data.item.gallery = gallery;
+          let renderData = deafultData(req);
+          renderData.item = data.item;
+          renderData.category = data.category;
+          renderData.items = data.items;
+          res.render(`${data.type}Item.html`, renderData);
+        })
+        .catch(e => {
+          console.log(e);
+          res.send({ msg: "Error", success: false });
+        });
+    })
+    .catch(e => {
+      console.log(e);
+      res.send({ msg: "Error", success: false });
+    });
+};
 
-      const sections = data[0].sections;
-      let galleryLookups = [];
-      for (let i in sections) {
-        if (sections[i].type == "gallery") {
-          galleryLookups.push({ idx: i, data: sections[i].data });
-        }
-      }
-      if (data[0].gallery) {
-        media
-          .fetchStoredMedia(data[0].gallery)
-          .then(gallery => {
-            console.log(gallery);
-            data.gallery = gallery;
-            let renderData = deafultData(req);
-            renderData.item = data[0];
-            if (category) {
-              renderData.category = category;
-              renderData.items = data[1];
-            }
-            res.render(`${type}Item.html`, renderData);
-          })
-          .catch(e => {
-            console.log(e);
-            res.send({ msg: "Error", success: false });
+const resolveBlogGallerySections = async sections => {
+  const loopups = sections
+    .map((item, idx) => {
+      return { idx: idx, item: item };
+    })
+    .filter(elem => {
+      return elem.item.type == "gallery";
+    });
+  const promises = loopups.map(elem => {
+    return media.fetchStoredMedia(elem.item.data);
+  });
+  const galleryArray = await Promise.all(promises);
+  return galleryArray.map((galleryItem, idx) => {
+    return { idx: loopups[idx].idx, gallery: galleryItem };
+  });
+};
+
+exports.blogItem = async (req, res) => {
+  resolveCommonItemData(req)
+    .then(data => {
+      console.log("blogItem", data);
+      resolveBlogGallerySections(data.item.sections)
+        .then(galleryData => {
+          galleryData.forEach(galleryItem => {
+            data.item.sections[galleryItem.idx].data = galleryItem.gallery;
           });
-      } else if (galleryLookups.length > 0) {
-        let promises = [];
-        for (let i in galleryLookups) {
-          promises.push(media.fetchStoredMedia(galleryLookups[i].data));
-        }
-        Promise.all(promises)
-          .then(galleryArray => {
-            console.log(galleryArray);
-            for (let i in galleryArray) {
-              data[0].sections[galleryLookups[i].idx].data = galleryArray[i];
-            }
-            let renderData = deafultData(req);
-            renderData.item = data[0];
-
-            if (category) {
-              renderData.category = category;
-              renderData.items = data[1];
-            }
-
-            res.render(`${type}Item.html`, renderData);
-          })
-          .catch(e => {
-            console.log(e);
-            res.send({ msg: "Error", success: false });
-          });
-      }
+          let renderData = deafultData(req);
+          renderData.item = data.item;
+          renderData.category = data.category;
+          renderData.items = data.items;
+          res.render(`${data.type}Item.html`, renderData);
+        })
+        .catch(e => {
+          console.log(e);
+          res.send({ msg: "Error", success: false });
+        });
     })
     .catch(e => {
       console.log(e);
@@ -442,7 +457,10 @@ exports.loadImage = async (req, res) => {
   media
     .loadImage(res, req.params.id, toPng, req.query.width, req.query.height)
     .then()
-    .catch(e => console.log("Failed to load image", req.params.id, e));
+    .catch(e => {
+      console.log("Failed to load image", req.params.id, e);
+      res.redirect("/images/error.png");
+    });
 };
 
 exports.deleteMedia = async (req, res) => {
