@@ -109,7 +109,8 @@ const setupRoutes = app => {
   app.post(/^\/(shop|blog|gallery)\/category\/update$/, engine.updateCategory);
 
   app.get(/^\/(shop|blog)\/item\/new$/, engine.newItem);
-  app.get(/^\/(shop|blog)\/item\/([\w\d]{24})$/, engine.item);
+  app.get(/^\/(shop)\/item\/([\w\d]{24})$/, engine.shopItem);
+  app.get(/^\/(blog)\/item\/([\w\d]{24})$/, engine.blogItem);
   app.get(/^\/(shop|blog)\/edit\/([\w\d]{24})$/, engine.editItem);
   // app.get(/^\/(shop|blog)\/delete\/([\w\d]{24})$/, engine.deleteItem);
   app.post(/^\/(shop|blog)\/item\/create$/, engine.createItem);
