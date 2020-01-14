@@ -27,6 +27,7 @@ process.env.NODE_ENV = "production";
 process.env.EXPRESS_ENV = "production";
 
 const setupOptions = app => {
+  app.locals.basePath = basePath;
   app.set("views", `${basePath}/public/views`);
   app.set("view engine", "html");
   app.set("view cache", !config.debug);
@@ -102,8 +103,12 @@ const setupRoutes = app => {
     engine.editCategory
   );
   app.get(
-    /^\/(shop|blog|gallery)\/category\/delete\/([\w\d]{24})$/,
+    /^\/(shop|blog)\/category\/delete\/([\w\d]{24})$/,
     engine.deleteCategory
+  );
+  app.get(
+    /^\/(gallery)\/category\/delete\/([\w\d]{24})$/,
+    engine.deleteGalleryCategory
   );
   app.post(/^\/(shop|blog|gallery)\/category\/create$/, engine.createCategory);
   app.post(/^\/(shop|blog|gallery)\/category\/update$/, engine.updateCategory);
@@ -112,17 +117,9 @@ const setupRoutes = app => {
   app.get(/^\/(shop)\/item\/([\w\d]{24})$/, engine.shopItem);
   app.get(/^\/(blog)\/item\/([\w\d]{24})$/, engine.blogItem);
   app.get(/^\/(shop|blog)\/edit\/([\w\d]{24})$/, engine.editItem);
-  // app.get(/^\/(shop|blog)\/delete\/([\w\d]{24})$/, engine.deleteItem);
+  app.get(/^\/(shop|blog)\/delete\/([\w\d]{24})$/, engine.deleteItem);
   app.post(/^\/(shop|blog)\/item\/create$/, engine.createItem);
   app.post(/^\/(shop|blog)\/item\/update$/, engine.updateItem);
-
-  // app.get("/blog/item/new", engine.newBlogItem);
-  // app.post("/blog/item/create", engine.createBlogItem);
-
-  // app.get("/gallery/item/new", engine.newGallery);
-  // app.post("/gallery/item/create", engine.createGaller);
-
-  // app.get("/gallery/:category", engine.galleryItems);
 
   app.get("/image/:id", engine.loadImage);
 

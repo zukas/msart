@@ -103,10 +103,10 @@ exports.fetchStoredMedia = async elems => {
     });
 
     elems.forEach(elem => {
-      if (elem.type == "image") {
+      if (elem.type == "image" && query.images[elem.id]) {
         elem.filename = query.images[elem.id].filename;
         elem.caption = query.images[elem.id].caption;
-      } else if (elem.type == "video") {
+      } else if (elem.type == "video" && query.videos[elem.id]) {
         elem.url = query.videos[elem.id].url;
         elem.caption = query.videos[elem.id].caption;
       }
@@ -173,7 +173,7 @@ exports.removeStoredMedia = async data => {
   await Promise.all(promisses);
 };
 
-exports.loadImage = async (outStream, id, toPng, width, height) => {
+exports.loadImage = async (id, toPng, width, height) => {
   const objId = new ObjectID(id);
   width = width ? parseInt(width) : null;
   height = height ? parseInt(height) : null;
@@ -182,8 +182,6 @@ exports.loadImage = async (outStream, id, toPng, width, height) => {
     bucketName: "images"
   });
   const readStream = bucket.openDownloadStream(objId);
-  const pipeline = util.promisify(stream.pipeline);
-
   const sharpPipeline = toPng
     ? sharp()
         .resize(width, height)
@@ -191,5 +189,5 @@ exports.loadImage = async (outStream, id, toPng, width, height) => {
     : sharp()
         .resize(width, height)
         .webp();
-  return pipeline(readStream, sharpPipeline, outStream);
+  return readStream.pipe(sharpPipeline);
 };
