@@ -174,6 +174,7 @@ exports.editCategory = async (req, res) => {
 exports.deleteCategory = async (req, res) => {
   const type = req.params[0];
   const id = req.params[1];
+  console.log("deleteCategory", type, id);
   target[type]
     .removeCategory(id)
     .then(() => {
@@ -182,6 +183,16 @@ exports.deleteCategory = async (req, res) => {
         .then(() => res.redirect(`/${type}`))
         .catch(() => res.redirect(`/${type}`));
     })
+    .catch(() => res.redirect(`/${type}`));
+};
+
+exports.deleteGalleryCategory = async (req, res) => {
+  const type = req.params[0];
+  const id = req.params[1];
+  console.log("deleteGalleryCategory", type, id);
+  categories
+    .deleteCatagory(id)
+    .then(() => res.redirect(`/${type}`))
     .catch(() => res.redirect(`/${type}`));
 };
 
@@ -241,6 +252,23 @@ exports.updateItem = async (req, res) => {
     .updateItem(req.body)
     .then(() => res.send({ msg: "Done" }))
     .catch(() => res.send({ msg: "Error" }));
+};
+
+exports.deleteItem = async (req, res) => {
+  const type = req.params[0];
+  const id = req.params[1];
+
+  const category =
+    req.session.navigation && req.session.navigation.root == type
+      ? req.session.navigation.category
+      : null;
+
+  console.log("deleteItem", type, id, category);
+
+  target[type]
+    .deleteItem(id)
+    .then(() => res.redirect(`/${type}/category/${category}`))
+    .catch(() => res.redirect(`/${type}/category/${category}`));
 };
 
 exports.categoryItems = async (req, res) => {
@@ -450,16 +478,18 @@ exports.uploadVideos = async (req, res) => {
 
 exports.loadImage = async (req, res) => {
   const toPng = false;
-  res.writeHead(200, {
-    "Content-Type": toPng ? "image/webp" : "image/webp",
-    "Cache-Control": "no-transform,public,max-age=86400"
-  });
   media
-    .loadImage(res, req.params.id, toPng, req.query.width, req.query.height)
-    .then()
+    .loadImage(req.params.id, toPng, req.query.width, req.query.height)
+    .then(stream => {
+      res.writeHead(200, {
+        "Content-Type": toPng ? "image/webp" : "image/webp",
+        "Cache-Control": "no-transform,public,max-age=86400"
+      });
+      stream.pipe(res);
+    })
     .catch(e => {
       console.log("Failed to load image", req.params.id, e);
-      res.redirect("/images/error.png");
+      res.sendFile(`${req.app.locals.basePath}/public/images/error.png`);
     });
 };
 
