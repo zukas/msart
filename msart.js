@@ -94,6 +94,8 @@ const setupRoutes = app => {
 
   app.post("/login", engine.doLogin);
 
+  app.post(/^\/(about|contact)\/set$/, engine.updatePageData);
+
   app.get(/^\/(shop|blog|gallery)$/, engine.categories);
   app.get(/^\/(shop|blog)\/category\/(none|[\w\d]{24})$/, engine.categoryItems);
   app.get(/^\/gallery\/category\/([\w\d]{24})$/, engine.galleryCategoryItems);
