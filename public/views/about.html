@@ -1,12 +1,52 @@
 {% extends 'layout.html' %}
 
+{% ifAsync admin %}
+  {% import "components/media/preview.njk" as mediaPreviewPanel %}
+{% endif %}
+
+{% block script %}
+  {% ifAsync admin %}
+    {% include "components/media/preview.js" %}
+    {% include "control/about.js" %}
+  {% endif %}
+{% endblock script %}
+
+
 {% block css %}
-  <link rel="stylesheet" href="css/about.css"/>
+  {% include "style/about.css" %}
+  {% ifAsync admin %}
+    {% include "components/base/checkbox.css" %}
+    {% include "components/media/preview.css" %}
+  {% endif %}
 {% endblock css %}
 
+
+{% block onload %}
+  {% ifAsync admin %}
+    createMediaPreviewPanel("about-thumb-media-select");
+  {% endif %}
+{% endblock onload %}
+
+
 {% block content %}
+  {% if admin %}
+    {{ mediaPreviewPanel.render("about-thumb-media-select", images, videos, true) }}
+  {% endif %}
   <div class="panel">
     <h2 class="robo-text">About</h2>
-
+    <div class="about-layout">
+      {% if admin %}
+        <div id="about-data" class="h-layout">
+          <div id="{{data.thumb}}" class="thumb-preview" type="image" {% if data %} style="background-image: url(/image/{{data.thumb}}?width=1920);" {% endif %} onclick="mediaThumbClicked(event, 'images')"></div>
+          <textarea id="description" class="text-invert" type="text" placeholder="Description">{{data.desc}}</textarea>
+        </div>
+        <div class="common-btn green" onclick="saveAbout(event)">Save</div>
+      {% else %}
+        <div class="h-layout">
+          <div id="{{data.thumb}}" class="thumb-preview" type="image" {% if data %} style="background-image: url(/image/{{data.thumb}}?width=1920);" {% endif %}></div>
+          <div id="description" class="text-invert">{{data.desc}}</div>
+        </div>
+      {% endif %}
+    </div>
   </div>
 {% endblock %}

@@ -7,6 +7,7 @@ const shop = require("./shop");
 const blog = require("./blog");
 const gallery = require("./gallery");
 const user = require("./user");
+const generic = require("./generic");
 
 const target = {
   shop: shop,
@@ -93,11 +94,50 @@ exports.manager = async (req, res) => {
 };
 
 exports.about = async (req, res) => {
-  res.render("about.html", deafultData(req));
+  if (req.session.admin) {
+    Promise.all([generic.loadPageData("about"), media.fetchStoredMedia()])
+      .then(data => {
+        let renderData = deafultData(req);
+        renderData.data = data[0];
+        renderData.images = data[1].images;
+        renderData.videos = data[1].videos;
+        res.render("about.html", renderData);
+      })
+      .catch(e => {
+        console.log("categories load error =", e);
+        res.render("about.html", deafultData(req));
+      });
+  } else {
+    generic
+      .loadPageData("about")
+      .then(data => {
+        let renderData = deafultData(req);
+        renderData.data = data;
+        res.render("about.html", renderData);
+      })
+      .catch(e => {
+        console.log("categories load error =", e);
+        res.render("about.html", deafultData(req));
+      });
+  }
 };
 
 exports.contact = async (req, res) => {
   res.render("contact.html", deafultData(req));
+};
+
+exports.updatePageData = async (req, res) => {
+  const type = req.params[0];
+  console.log("updatePageData", type);
+  generic
+    .setPageData(type, req.body)
+    .then(() => {
+      res.send({ msg: "Done" });
+    })
+    .catch(e => {
+      console.log("updatePageData error =", e);
+      res.send({ msg: "Error" });
+    });
 };
 
 exports.categories = async (req, res) => {
