@@ -123,7 +123,7 @@ exports.about = async (req, res) => {
 };
 
 exports.contact = async (req, res) => {
-  res.render("contact.html", deafultData(req));
+  res.send({ msg: "Done" });
 };
 
 exports.updatePageData = async (req, res) => {

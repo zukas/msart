@@ -94,6 +94,8 @@ const setupRoutes = app => {
 
   app.post("/login", engine.doLogin);
 
+  app.post("/contact/send", engine.contact);
+
   app.post(/^\/(about|contact)\/set$/, engine.updatePageData);
 
   app.get(/^\/(shop|blog|gallery)$/, engine.categories);

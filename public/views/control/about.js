@@ -63,3 +63,35 @@ function saveAbout(e) {
       debug("saveAbout::response - parsed", r);
     });
 }
+
+function sendMessage(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  debug("sendMessage", e);
+  const form = document.getElementById("form");
+  const name = form.querySelector("#name").value;
+  const email = form.getElementById("#email").value;
+  const msg = form.getElementById("#message").value;
+
+  const data = { name: name, email: email, msg: msg };
+  debug("sendMessage", data);
+
+  return fetch(`/contact/send`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(response => {
+      debug("sendMessage::response", response);
+      form.querySelector("#name").value = "";
+      form.getElementById("#email").value = "";
+      form.getElementById("#message").value = "";
+      return response.json();
+    })
+    .then(r => {
+      debug("sendMessage::response - parsed", r);
+    });
+}
