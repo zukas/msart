@@ -4,15 +4,17 @@
 }
 
 .h-layout {
-  display: table;
-  border-spacing: 1vw;
-  margin: 0 -1vw;
+  position: relative;
+  display: block;
+  width: 50vw;
+  min-width: 640px;
+  margin: 0px auto;
 }
 
 .thumb-preview {
-  display: table-cell;
-  width: 40vw;
-  height: 30vw;
+  display: block;
+  width: 100%;
+  padding-top: 75%;
   background-image: url(/images/add.png);
   background-repeat: no-repeat;
   background-position: center;
@@ -20,6 +22,7 @@
   border: 2px solid var(--base-blue);
   border-radius: 4px;
   background-color: var(--base-light);
+  margin-bottom: 20px;
 }
 
 .thumb-preview:not([style*="background-image"]) {
@@ -32,17 +35,86 @@
 }
 
 #description {
-  display: table-cell;
-  width: 40vw;
-  height: 30vw;
+  display: block;
+  width: 100%;
   box-sizing: border-box;
   border-radius: 4px;
+  margin-bottom: 20px;
 }
 
 textarea#description {
   border: 1px solid var(--base-blue);
+  min-height: 200px;
 }
 
-textarea#description::selection, textarea#description::-moz-selection {
+textarea#description::selection,
+textarea#description::-moz-selection {
   background-color: var(--hilight-blue);
+}
+
+#info-block,
+#form {
+  display: block;
+  float: left;
+  width: 25vw;
+  min-width: 320px;
+}
+
+#info-block h2,
+#form h2 {
+  display: block;
+  line-height: 60px;
+  height: 60px;
+}
+
+#media {
+  position: relative;
+  display: block;
+  width: 210px;
+  height: 60px;
+}
+
+#media a {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#media a:first-child {
+  margin-left: 0px;
+}
+
+#media div {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  background-position: center;
+}
+
+#facebook {
+  background-image: url(images/media/facebook.png);
+}
+
+#instagram {
+  background-image: url(images/media/instagram.png);
+}
+
+#youtube {
+  background-image: url(images/media/youtube.png);
+}
+
+input,
+textarea {
+  display: block;
+  background-color: var(--base-light);
+  border: 1px solid var(--base-blue);
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 1.4em;
+  line-height: 1.6em;
+}
+
+textarea {
+  min-height: 200px;
 }

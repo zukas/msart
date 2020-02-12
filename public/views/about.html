@@ -38,13 +38,31 @@
       {% if admin %}
         <div id="about-data" class="h-layout">
           <div id="{{data.thumb}}" class="thumb-preview" type="image" {% if data %} style="background-image: url(/image/{{data.thumb}}?width=1920);" {% endif %} onclick="mediaThumbClicked(event, 'images')"></div>
-          <textarea id="description" class="text-invert" type="text" placeholder="Description">{{data.desc}}</textarea>
+          <textarea id="description" class="text" type="text" placeholder="Description">{{data.desc}}</textarea>
+          <div class="common-btn green" onclick="saveAbout(event)">Save</div>
         </div>
-        <div class="common-btn green" onclick="saveAbout(event)">Save</div>
       {% else %}
         <div class="h-layout">
           <div id="{{data.thumb}}" class="thumb-preview" type="image" {% if data %} style="background-image: url(/image/{{data.thumb}}?width=1920);" {% endif %}></div>
-          <div id="description" class="text-invert">{{data.desc}}</div>
+          <div id="description" class="text-invert">{{data.desc | safe | escape | nl2br}}</div>
+          <div id="info-block" >
+            <h2 class="text-invert">Follow me</h2>
+            <div id="media">
+              <a href="https://www.facebook.com/MSCraftshop/" target="_blank"><div id="facebook"></div
+              ></a>
+              <a href="https://www.instagram.com/mscraftshop/" target="_blank"><div id="instagram"></div
+              ></a>
+              <a href="https://www.youtube.com/channel/UC2Jcki7JYpQZ2sNIpbBomWQ" target="_blank"><div id="youtube"></div
+              ></a>
+            </div>
+          </div>
+          <div id="form">
+            <h2 class="text-invert">Contact me</h2>
+            <input id="name" class="text" placeholder="Name"/>
+            <input id="email" class="text" placeholder="Email"/>
+            <textarea id="message" class="text" placeholder="Message"></textarea>
+            <div class="common-btn green noselect" onclick="sendMessage(event)">Send</div>
+          </div>
         </div>
       {% endif %}
     </div>

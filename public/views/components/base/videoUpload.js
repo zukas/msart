@@ -32,10 +32,15 @@ function VideoUploadController(
   };
 
   self.publish = () => {
-    debug(videos);
+    const data = videos.map(src => {
+      return {
+        url: src
+      };
+    });
+    debug(data);
     return fetch("/manager/upload/videos", {
       method: "POST",
-      body: JSON.stringify({ videos: videos }),
+      body: JSON.stringify({ videos: data }),
       cache: "no-cache",
       headers: {
         "Content-Type": "application/json"
