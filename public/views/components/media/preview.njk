@@ -1,5 +1,3 @@
-{% import "../base/checkbox.njk" as checkbox %}
-
 {% macro __render_internal(images, videos, captionChanged) %}
   <div class="media-preview-container">
     {% if images %}
@@ -11,7 +9,7 @@
             {% else %}
               <div class="thumb-caption">{{ image.caption | default(image.filename) }}</div>
             {% endif %}
-            {{ checkbox.render("preview-thumb-chk") }}
+            <div class="selected-mark">&#x2714;</div>
           </div>
         {% endfor %}
       </div>
@@ -26,7 +24,7 @@
             {% else %}
               <div class="thumb-caption">{{ video.caption | default(video.url) }}</div>
             {% endif %}
-            {{ checkbox.render("preview-thumb-chk") }}
+            <div class="selected-mark">&#x2714;</div>
           </div>
         {% endfor %}
       </div>

@@ -100,7 +100,6 @@ function GalleryPreviewJs(
       let itemPreview = document.createElement("div");
       let itemNumber = document.createElement("div");
       let itemControl = document.createElement("div");
-      let itemCaption = document.createElement("div");
       let thumb = document.createElement("div");
       let thumbPreview = document.createElement("div");
 
@@ -109,7 +108,6 @@ function GalleryPreviewJs(
       itemNumber.className = "gallery-item-number";
       itemControl.className = "gallery-item-control common-btn red";
       itemControl.innerHTML = "Remove";
-      itemCaption.className = "gallery-item-caption";
 
       itemPreview.id = newNtem.id;
       itemPreview.setAttribute("type", newNtem.type);
@@ -146,7 +144,6 @@ function GalleryPreviewJs(
       item.appendChild(itemPreview);
       item.appendChild(itemNumber);
       item.appendChild(itemControl);
-      item.appendChild(itemCaption);
 
       itemFragment.appendChild(item);
       thumbFragment.appendChild(thumb);

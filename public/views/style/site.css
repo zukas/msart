@@ -163,14 +163,11 @@ a:active {
 }
 
 @font-face {
-  font-family: write;
-  src: url(/fonts/AlexBrush-Regular.ttf);
+  font-family: WorkSans;
+  src: url(/fonts/WorkSans-VariableFont_wght.ttf);
 }
 
-@font-face {
-  font-family: LobsterTwo;
-  src: url(/fonts/LobsterTwo-Regular.otf);
-}
+
 
 :root {
   --base-light: #fcfcfc;
@@ -202,12 +199,12 @@ h2 {
 }
 
 h3 {
-  font-size: 1.2em !important;
+  font-size: 1.3em !important;
   line-height: 1.4em;
 }
 
 html {
-  font-family: LobsterTwo;
+  font-family: WorkSans;
   min-width: var(--base-min-width);
   width: 100%;
   background-color: var(--base-light);
@@ -219,7 +216,7 @@ html {
 
 body {
   position: initial;
-  font-family: LobsterTwo;
+  font-family: WorkSans;
   min-width: var(--base-min-width);
   width: 100%;
   min-width: 720px;
@@ -227,6 +224,14 @@ body {
   background-color: var(--base-light);
   scroll-behavior: smooth;
   min-height: 100%;
+}
+
+#content * {
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  transition: all 1s ease;
 }
 
 #loader {
@@ -313,14 +318,8 @@ input[type="password"]:focus {
   text-shadow: none;
 }
 
-*[currency]::after {
+*[currency]::before {
   content: attr(currency);
-  font-family: "Times New Roman", Times, serif;
-  font-weight: bold;
-}
-
-.written-text {
-  font-family: write;
 }
 
 .panel {
@@ -333,22 +332,26 @@ input[type="password"]:focus {
 
 .header-text {
   color: var(--text-color);
-  font-size: 1.2em;
+  font-size: 1.3em;
+  line-height: 1.4em;
 }
 
 .text {
   color: var(--text-color);
   font-size: 1.1em;
+  line-height: 1.2em;
 }
 
 .text-invert {
   color: var(--text-invert-color);
   font-size: 1.1em;
+  line-height: 1.2em;
 }
 
 .text-invert-light {
   color: var(--text-invert-color);
   font-size: 1.1em;
+  line-height: 1.2em;
 }
 
 .control-button {

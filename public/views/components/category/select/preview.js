@@ -5,24 +5,22 @@ function CategoryPreviewPopup(frame, btn, elems) {
 
   debug(btn);
 
-  let change = e => {
+  let clicked = e => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.target.checked) {
-      list.push(
-        e.target.parentNode.parentNode.parentNode.parentNode.parentNode
-      );
-    } else {
-      const index = list.indexOf(
-        e.target.parentNode.parentNode.parentNode.parentNode.parentNode
-      );
+
+    if (e.target.getAttribute("selected")) {
+      e.target.removeAttribute("selected");
+      const index = list.indexOf(e.target);
       list.splice(index, 1);
+    } else {
+      e.target.setAttribute("selected", true);
+      list.push(e.target);
     }
   };
 
   elems.forEach(elem => {
-    elem.addEventListener("change", change);
-    elem.checked = false;
+    elem.addEventListener("click", clicked);
   });
 
   self.getSelected = () => {
@@ -45,12 +43,9 @@ function CategoryPreviewPopup(frame, btn, elems) {
     debug("CategoryPreviewPopup::setSelected", items, elems);
     items.forEach(i => {
       elems.forEach(elem => {
-        const parentRoot =
-          elem.parentNode.parentNode.parentNode.parentNode.parentNode;
-        debug(parentRoot.id, i, parentRoot.id == i);
-        if (parentRoot.id == i) {
-          elem.checked = true;
-          list.push(parentRoot);
+        if (elem.id == i) {
+          elem.setAttribute("selected", true);
+          list.push(elem);
         }
       });
     });
@@ -73,7 +68,9 @@ function CategoryPreviewPopup(frame, btn, elems) {
   self.clearSelection = except => {
     list = [];
     elems.forEach(elem => {
-      elem.checked = except == elem;
+      if (elem != except) {
+        elem.removeAttribute("selected");
+      }
     });
   };
 
@@ -104,9 +101,7 @@ function categoryPreviewPopup(id) {
 function createCategoryPreviewPopup(id) {
   const frame = document.querySelector(`#${id}`);
   const selectBtn = frame.querySelector("#category-popup-select");
-  const elems = document.querySelectorAll(
-    `#${id} .preview-category-chk input[type=checkbox]`
-  );
+  const elems = document.querySelectorAll(`#${id} .category-item`);
   const obj = new CategoryPreviewPopup(frame, selectBtn, elems);
   document.attachFeature("categoryPreviewPopup", `id-${id}`, obj);
 }

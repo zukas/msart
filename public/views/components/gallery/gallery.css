@@ -108,19 +108,6 @@
   right: 5px;
 }
 
-.gallery-item-caption {
-  text-align: right;
-  color: var(--base-light);
-  background-color: var(--base-blue);
-  font-size: 1.4vh;
-  line-height: 2vh;
-  padding: 4px 16px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-bottom-left-radius: 4px;
-  z-index: 5;
-}
 
 .gallery-thumb-row {
   position: relative;

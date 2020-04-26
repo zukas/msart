@@ -12,7 +12,8 @@
   width: 100%;
 }
 
-.new-shop-item-layout input, .new-shop-item-layout textarea {
+.new-shop-item-layout input,
+.new-shop-item-layout textarea {
   display: block;
   border: 2px solid var(--base-blue);
   border-radius: 4px;
@@ -33,7 +34,8 @@
   min-height: 300px;
 }
 
-.new-shop-item-layout ::selection, .new-shop-item-layout ::-moz-selection {
+.new-shop-item-layout ::selection,
+.new-shop-item-layout ::-moz-selection {
   background: var(--hilight-blue);
 }
 
@@ -42,7 +44,7 @@
 }
 
 .new-shop-item-layout .thumb-preview {
-  height: 37.5vw;
+  height: 28.125vw;
   background-image: url(/images/add.png);
   background-size: 120px;
   background-repeat: no-repeat;

@@ -6,7 +6,11 @@
 }
 
 .navigation-menu+.panel .gallery-layout {
-  margin-left: 1.65vw;
+  margin-left: 12.15vw;
+}
+
+.navigation-menu:hover +.panel .gallery-layout  {
+  margin-left: 2.15vw;
 }
 
 #gallery-item-gallery {

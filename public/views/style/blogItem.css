@@ -3,15 +3,10 @@
   position: relative;
   width: 50vw;
   margin-left: 21vw;
-  -webkit-transition: margin-left 1s ease;
-  -moz-transition: margin-left 1s ease;
-  -o-transition: margin-left 1s ease;
-  -ms-transition: margin-left 1s ease;
-  transition: margin-left 1s ease;
 }
 
-.navigation-menu:hover+.panel .blog-item-layout {
-  margin-left: 10vw;
+.navigation-menu:hover + .panel .blog-item-layout {
+  margin-left: 11vw;
 }
 
 .blog-item-layout h2 {
@@ -33,7 +28,7 @@
 }
 
 .blog-item-layout .media-item {
-  height: 37.5vw;
+  height: 28.125vw;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

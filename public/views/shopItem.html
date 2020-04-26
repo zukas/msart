@@ -23,26 +23,25 @@
   <div id="shop-item" class="panel">
     <h1 class="robo-text">Shop Item</h1>
     <div class="shop-item-layout">
-      <h1 id="caption" class="text-invert">{{item.caption}}</h1>
-      <br />
       {{ galleryPreviewPanel.render("shop-item-gallery", item.gallery) }}
-      <br />
-      <h3 id="description" class="text-invert">{{item.description | escape | nl2br }}</h3>
-      <br />
-      <br />
-      <h2 id="price" class="text-invert" currency="&#163">{{item.price}}</h2>
-      <br />
-      <div class="common-btn green">Order</div>
-      {% if admin %}
-        <a href="/shop/edit/{{item.id}}">
-          <div class="common-btn blue">Edit</div>
-        </a>
-        <a href="/shop/delete/{{item.id}}">
-          <div class="common-btn red">Delete</div>
-        </a>
-      {% endif %}
-      <br />
-      <br />
+      <div class="info-block">
+        <h2 id="caption" class="text">{{item.caption}}</h2>
+        <br />
+        <h1 id="price" class="text" currency="&#163">{{item.price}}</h1>
+        <br />
+        <div class="common-btn green">Order</div>
+        {% if admin %}
+          <a href="/shop/edit/{{item.id}}">
+            <div class="common-btn blue">Edit</div>
+          </a>
+          <a href="/shop/delete/{{item.id}}">
+            <div class="common-btn red">Delete</div>
+          </a>
+        {% endif %}
+        <br />
+        <br />
+        <h3 id="description" class="text">{{item.description | escape | nl2br }}</h3>
+      <div/>
     </div>
   </div>
 {% endblock content %}

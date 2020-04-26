@@ -10,9 +10,9 @@
             <div class="category-item-description">{{category.description}}</div>
           </div>
           <div id="{{category.thumb}}" class="category-item-image" style="background-image: url(/image/{{category.thumb}});">
-            {{ checkbox.render("preview-category-chk") }}
           </div>
         </div>
+        <div class="selected-mark">&#x2714;</div>
       </div>
     {% endfor %}
   </div>

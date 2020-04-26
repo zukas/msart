@@ -4,26 +4,24 @@ function MediaPreviewPanelJs(frame, btn, elems) {
   let multi = true;
   let callbacks = [];
 
-  let change = e => {
+  let clicked = e => {
     e.preventDefault();
     e.stopPropagation();
-    if (multi) {
-      if (e.target.checked) {
-        list.push(e.target.parentNode.parentNode.parentNode);
-      } else {
-        const index = list.indexOf(e.target.parentNode.parentNode.parentNode);
-        list.splice(index, 1);
-      }
-    } else {
+    if (!multi) {
       self.clearSelection(e.target);
-      if (e.target.checked) {
-        list.push(e.target.parentNode.parentNode.parentNode);
-      }
+    }
+    if (e.target.getAttribute("selected")) {
+      e.target.removeAttribute("selected");
+      const index = list.indexOf(e.target);
+      list.splice(index, 1);
+    } else {
+      e.target.setAttribute("selected", true);
+      list.push(e.target);
     }
   };
 
   elems.forEach(elem => {
-    elem.addEventListener("change", change);
+    elem.addEventListener("click", clicked);
   });
 
   self.getSelected = () => {
@@ -61,7 +59,9 @@ function MediaPreviewPanelJs(frame, btn, elems) {
   self.clearSelection = except => {
     list = [];
     elems.forEach(elem => {
-      elem.checked = except == elem;
+      if (elem != except) {
+        elem.removeAttribute("selected");
+      }
     });
   };
 
@@ -116,9 +116,7 @@ function mediaPreviewPanel(id) {
 function createMediaPreviewPanel(id) {
   const frame = document.querySelector(`#${id}`);
   const selectBtn = frame.querySelector("#media-popup-select");
-  const elems = document.querySelectorAll(
-    `#${id} .preview-thumb-chk input[type=checkbox]`
-  );
+  const elems = document.querySelectorAll(`#${id} .preview-thumb`);
   const obj = new MediaPreviewPanelJs(frame, selectBtn, elems);
   document.attachFeature("mediaPreviewPanel", `id-${id}`, obj);
 }
