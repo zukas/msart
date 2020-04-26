@@ -461,12 +461,12 @@ exports.blogItem = async (req, res) => {
           res.render(`${data.type}Item.html`, renderData);
         })
         .catch(e => {
-          console.log(e);
+          console.log("blogItem", e);
           res.send({ msg: "Error", success: false });
         });
     })
     .catch(e => {
-      console.log(e);
+      console.log("blogItem", e);
       res.send({ msg: "Error", success: false });
     });
 };
@@ -505,7 +505,7 @@ exports.uploadImages = async (req, res) => {
   media
     .storeImages(req.files)
     .then(() => res.send({ msg: "Done" }))
-    .catch(() => res.send({ msg: "Error" }));
+    .catch((e) => { console.log("uploadImages", e); res.send({ msg: "Error" }); } );
 };
 
 exports.uploadVideos = async (req, res) => {
@@ -513,7 +513,7 @@ exports.uploadVideos = async (req, res) => {
   media
     .storeVideos(req.body.videos)
     .then(() => res.send({ msg: "Done" }))
-    .catch(() => res.send({ msg: "Error" }));
+    .catch((e) => { console.log("uploadIuploadVideosmages", e); res.send({ msg: "Error" }); } );
 };
 
 exports.loadImage = async (req, res) => {
@@ -538,7 +538,7 @@ exports.deleteMedia = async (req, res) => {
     .removeStoredMedia(req.body)
     .then(() => res.send({ msg: "Done" }))
     .catch(e => {
-      console.log(e);
+      console.log("deleteMedia", e);
       res.send({ msg: "Error" });
     });
 };
@@ -548,7 +548,7 @@ exports.updateMedia = async (req, res) => {
     .updateMediaMetadata(req.body)
     .then(() => res.send({ msg: "Done", success: true }))
     .catch(e => {
-      console.log(e);
+      console.log("updateMedia", e);
       res.send({ msg: "Error", success: false });
     });
 };

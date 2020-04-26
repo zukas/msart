@@ -20,8 +20,27 @@ const https = require("https");
 const fs = require("fs");
 const forceSSL = require("express-force-ssl");
 const compression = require("compression");
-const path = require("path");
-const basePath = path.dirname(process.argv[1]);
+const basePath = process.cwd();
+const options = (args => {
+  let opt = {
+    port : config.ssl ? 443 : 80
+  };
+  for(let i = 0; i < args.length; ++i)
+  {
+    switch(args[i])
+    {
+      case "--port":{
+        opt["port"] = parseInt(args[i + 1]);
+        i++;
+        break;
+      }
+      default: {
+        console.log("Unrecognised option:", args[i]);
+      }
+    }
+  }
+  return opt;
+})(process.argv.slice(2));
 
 process.env.NODE_ENV = "production";
 process.env.EXPRESS_ENV = "production";
@@ -158,7 +177,7 @@ const createServer = async app => {
 };
 
 const getServerPort = () => {
-  return config.ssl ? 443 : process.env.PORT || 80;
+  return options["port"];
 };
 
 (async () => {
