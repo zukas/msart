@@ -110,6 +110,7 @@ const setupRoutes = app => {
   app.get("/manager", engine.manager);
   app.get("/about", engine.about);
   app.get("/contact", engine.contact);
+  app.get("/basket", engine.basket);
 
   app.post("/login", engine.doLogin);
 

@@ -1,5 +1,14 @@
 .category-select-panel {
   box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+
+.category-select-panel-inner {
+  display: block;
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
 }
 
 .category-select-panel .category-item-caption {

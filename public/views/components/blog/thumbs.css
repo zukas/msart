@@ -5,7 +5,7 @@
   float: left;
   width: 24.7%;
   margin: 0.15%;
-  background-color: var(--base-light);
+  background-color: var(--base-dark);
   border-radius: 4px;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .blog-item-internal {
-  padding: 10px;
+  padding: 3px;
 }
 
 .blog-item-image {

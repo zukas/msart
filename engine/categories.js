@@ -3,17 +3,17 @@
 const db = require("../db");
 const ObjectID = require("mongodb").ObjectID;
 
-exports.getCategories = async (type, all) => {
+exports.getCategories = async (type, admin) => {
   const query = (() => {
     let temp = { type: type };
-    if (!all) {
+    if (admin) {
       temp.published = true;
     }
     return temp;
   })();
 
   const categories = await db.categories
-    .find(query, { _id: 1, thumb: 1, caption: 1, description: 1, updated: 1 })
+    .find(query, { _id: 1, thumb: 1, caption: 1, description: 1, updated: 1, published: 1 })
     .toArray();
 
   console.log("getCategories", categories);
@@ -28,13 +28,13 @@ exports.getCategories = async (type, all) => {
   });
 };
 
-exports.getCategory = async (id, type, all) => {
+exports.getCategory = async (id, type, admin) => {
   if (id == "none") {
     return { id: "none" };
   }
   const query = (() => {
     let temp = { _id: ObjectID(id), type: type };
-    if (!all) {
+    if (admin) {
       temp.published = true;
     }
     return temp;
@@ -46,7 +46,8 @@ exports.getCategory = async (id, type, all) => {
     caption: 1,
     description: 1,
     gallery: 1,
-    updated: 1
+    updated: 1,
+    published: 1
   });
 
   category["id"] = category["_id"];

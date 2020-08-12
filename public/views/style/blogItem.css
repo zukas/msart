@@ -21,7 +21,7 @@
   width: 100%;
   min-height: 2em;
   background-color: var(--base-light);
-  border: 2px solid var(--base-blue);
+  border: 1px solid var(--base-dark);
   border-radius: 4px;
   padding: 0em 0.1em;
   box-sizing: border-box;
@@ -32,7 +32,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  border: 2px solid var(--base-blue);
+  border: 1px solid var(--base-dark);
   border-radius: 4px;
   background-color: var(--base-light);
 }
@@ -44,7 +44,7 @@
 
 .gallery-container {
   width: 100%;
-  border: 2px solid var(--base-blue);
+  border: 1px solid var(--base-dark);
   border-radius: 4px;
   background-color: var(--base-light);
 }

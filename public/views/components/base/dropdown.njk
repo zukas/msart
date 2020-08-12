@@ -1,6 +1,6 @@
 {% macro render(id, text, items, openDir = "down") %}
   <div id="{{id}}" class="dropdown" onmouseenter="((e) => { e.target.classList.add('open'); })(event);" onmouseleave="((e) => { e.target.classList.remove('open'); })(event);">
-    <div class="dropbtn common-btn green">{{text}}</div>
+    <div class="dropbtn common-btn blue">{{text}}</div>
     <div class="dropdown-content {{openDir}}">
       {% for item in items %}
         <div class="dropdown-item text common-btn blue" onclick="((e) => { e.preventDefault(); e.stopPropagation(); const parent = e.target.parentNode.parentNode; parent.classList.remove('open'); {{item.callback}}(parent); })(event);">{{item.text}}</div>

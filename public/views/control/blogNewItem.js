@@ -5,7 +5,7 @@ const uniqueID = (() => {
   };
 })();
 
-function BlogItemCreator(caption, thumb, description, categories) {
+function BlogItemCreator(caption, thumb, description, categories, published) {
   let self = this;
   let sectionsList = [];
   let sectionsFn = {};
@@ -44,7 +44,7 @@ function BlogItemCreator(caption, thumb, description, categories) {
       thumb: thumb.id,
       description: description.value,
       categories: categories.getSelected(),
-      published: true,
+      published: published.checked,
       sections: sections
     };
 
@@ -99,8 +99,9 @@ function createBlogManager() {
   const categories = categoryPreviewPanel(
     "new-blog-item-category-select-panel"
   );
+  const published = panel.querySelector(".checkbox-container input");
 
-  const obj = new BlogItemCreator(caption, image, desc, categories);
+  const obj = new BlogItemCreator(caption, image, desc, categories, published);
   document.attachFeature("blogManager", "id-create-blog-manager", obj);
 }
 

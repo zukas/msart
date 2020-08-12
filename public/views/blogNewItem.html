@@ -6,6 +6,7 @@
 {% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
 {% import "components/base/dropdown.njk" as dropdown %}
 {% import "components/blog/sections.njk" as blogSections %}
+{% import "components/base/checkbox.njk" as checkbox %}
 
 {% block script %}
   {% include "control/blogNewItem.js" %}
@@ -42,19 +43,19 @@
   <div id="new-blog-item" class="panel">
     <h2 class="robo-text">New Blog Item</h2>
     <div class="new-blog-item-layout">
-      <h2 class="text-invert">Title</h2>
+      <h2 class="text">Title</h2>
       <input id="caption" class="text" type="text" placeholder="Item's title" name="title" autofocus="true" required="true" value="{{item.caption}}">
       <br />
-      <h2 class="text-invert">Thumb image</h2>
+      <h2 class="text">Thumb image</h2>
       <div id="{{item.thumb}}" class="thumb-preview" type="image" {% if item %} style="background-image: url(/image/{{item.thumb}}?width=1920);" {% endif %} onclick="mediaThumbClicked(event, 'images')"></div>
       <br />
-      <h2 class="text-invert">Description</h2>
+      <h2 class="text">Description</h2>
       <textarea id="description" class="text" type="text" placeholder="Item's description" name="desc" required="true">{{item.description}}</textarea>
       <br />
-      <h2 class="text-invert">Categories</h2>
+      <h2 class="text">Categories</h2>
       {{ categoryPreviewPanel.render("new-blog-item-category-select-panel", categories, item.categories) }}
       <br />
-      <h2 class="text-invert">Blog post content</h2>
+      <h2 class="text">Blog post content</h2>
       {{ dropdown.render("new-blog-item-section-type-add", "Add section", [
         { text: "Header", callback: "addBlogHeaderSection" },
         { text: "Text", callback: "addBlogTextSection" },
@@ -64,6 +65,10 @@
       }}
       <br />
       <br />
+      <div class="new-blog-item-publish">
+        {{ checkbox.render("new-blog-item-publish-inline") }}
+        <div class="text">Published</div>
+      </div>
       {% if item %}
         <div class="common-btn green" onclick="updateBlogItem(event, '{{item.id}}')">Update</div>
       {% else %}

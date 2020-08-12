@@ -75,22 +75,27 @@ exports.doLogin = async (req, res) => {
 };
 
 exports.manager = async (req, res) => {
-  media
-    .fetchStoredMedia()
-    .then(media => {
-      console.log(media);
-      let renderData = deafultData(req);
-      renderData.images = media.images;
-      renderData.videos = media.videos;
-      res.render("manager.html", renderData);
-    })
-    .catch(e => {
-      console.log("manager load error =", e);
-      let renderData = deafultData(req);
-      renderData.images = [];
-      renderData.videos = [];
-      res.render("manager.html", renderData);
-    });
+  if (req.session.admin) {
+    media
+      .fetchStoredMedia()
+      .then(media => {
+        console.log(media);
+        let renderData = deafultData(req);
+        renderData.images = media.images;
+        renderData.videos = media.videos;
+        res.render("manager.html", renderData);
+      })
+      .catch(e => {
+        console.log("manager load error =", e);
+        let renderData = deafultData(req);
+        renderData.images = [];
+        renderData.videos = [];
+        res.render("manager.html", renderData);
+      });
+  }
+  else {
+    res.redirect("/");
+  }
 };
 
 exports.about = async (req, res) => {
@@ -122,29 +127,49 @@ exports.about = async (req, res) => {
   }
 };
 
+exports.basket = async (req, res) => {
+  generic
+    .loadPageData("basket")
+    .then(data => {
+      let renderData = deafultData(req);
+      renderData.data = data;
+      res.render("basket.html", renderData);
+    })
+    .catch(e => {
+      console.log("basket load error =", e);
+      res.render("basket.html", deafultData(req));
+    });
+};
+
 exports.contact = async (req, res) => {
   res.send({ msg: "Done" });
 };
 
 exports.updatePageData = async (req, res) => {
-  const type = req.params[0];
-  console.log("updatePageData", type);
-  generic
-    .setPageData(type, req.body)
-    .then(() => {
-      res.send({ msg: "Done" });
-    })
-    .catch(e => {
-      console.log("updatePageData error =", e);
-      res.send({ msg: "Error" });
-    });
+  if (req.session.admin) {
+    const type = req.params[0];
+    console.log("updatePageData", type);
+    generic
+      .setPageData(type, req.body)
+      .then(() => {
+        res.send({ msg: "Done" });
+      })
+      .catch(e => {
+        console.log("updatePageData error =", e);
+        res.send({ msg: "Error" });
+      });
+  }
+  else {
+    console.log("Not an admin");
+    res.send({ msg: "Error" })
+  }
 };
 
 exports.categories = async (req, res) => {
   const type = req.params[0];
   console.log("categories", type);
   categories
-    .getCategories(type, true)
+    .getCategories(type, req.session.admin)
     .then(items => {
       console.log(items);
       let renderData = deafultData(req);
@@ -162,153 +187,199 @@ exports.categories = async (req, res) => {
 };
 
 exports.newCategory = async (req, res) => {
-  const type = req.params[0];
-  console.log("newCategory", type);
-  media
-    .fetchStoredMedia()
-    .then(media => {
-      console.log(media);
-      let renderData = deafultData(req);
-      renderData.images = media.images;
-      renderData.videos = media.videos;
-      renderData.target = type;
-      res.render("categoryNew.html", renderData);
-    })
-    .catch(e => {
-      console.log("manager load error =", e);
-      let renderData = deafultData(req);
-      renderData.images = [];
-      renderData.videos = [];
-      renderData.target = type;
-      res.render("categoryNew.html", renderData);
-    });
+  if (req.session.admin) {
+    const type = req.params[0];
+    console.log("newCategory", type);
+    media
+      .fetchStoredMedia()
+      .then(media => {
+        console.log(media);
+        let renderData = deafultData(req);
+        renderData.images = media.images;
+        renderData.videos = media.videos;
+        renderData.target = type;
+        res.render("categoryNew.html", renderData);
+      })
+      .catch(e => {
+        console.log("manager load error =", e);
+        let renderData = deafultData(req);
+        renderData.images = [];
+        renderData.videos = [];
+        renderData.target = type;
+        res.render("categoryNew.html", renderData);
+      });
+  }
+  else {
+    res.redirect("/");
+  }
 };
 
 exports.editCategory = async (req, res) => {
-  const type = req.params[0];
-  const id = req.params[1];
-  console.log("editCategory", type);
-  Promise.all([
-    media.fetchStoredMedia(),
-    categories.getCategory(id, type, true)
-  ])
-    .then(data => {
-      console.log(data);
-      let renderData = deafultData(req);
-      renderData.category = data[1];
-      renderData.images = data[0].images;
-      renderData.videos = data[0].videos;
-      renderData.target = type;
-      res.render("categoryNew.html", renderData);
-    })
-    .catch(e => {
-      console.log("manager load error =", e);
-      let renderData = deafultData(req);
-      renderData.images = [];
-      renderData.videos = [];
-      renderData.target = type;
-      res.render("categoryNew.html", renderData);
-    });
+  if (req.session.admin) {
+    const type = req.params[0];
+    const id = req.params[1];
+    console.log("editCategory", type);
+    Promise.all([
+      media.fetchStoredMedia(),
+      categories.getCategory(id, type, true)
+    ])
+      .then(data => {
+        console.log(data);
+        let renderData = deafultData(req);
+        renderData.category = data[1];
+        renderData.images = data[0].images;
+        renderData.videos = data[0].videos;
+        renderData.target = type;
+        res.render("categoryNew.html", renderData);
+      })
+      .catch(e => {
+        console.log("manager load error =", e);
+        let renderData = deafultData(req);
+        renderData.images = [];
+        renderData.videos = [];
+        renderData.target = type;
+        res.render("categoryNew.html", renderData);
+      });
+  } else {
+    res.redirect("/");
+  }
 };
 
 exports.deleteCategory = async (req, res) => {
-  const type = req.params[0];
-  const id = req.params[1];
-  console.log("deleteCategory", type, id);
-  target[type]
-    .removeCategory(id)
-    .then(() => {
-      categories
-        .deleteCatagory(id)
-        .then(() => res.redirect(`/${type}`))
-        .catch(() => res.redirect(`/${type}`));
-    })
-    .catch(() => res.redirect(`/${type}`));
+  if (req.session.admin) {
+    const type = req.params[0];
+    const id = req.params[1];
+    console.log("deleteCategory", type, id);
+    target[type]
+      .removeCategory(id)
+      .then(() => {
+        categories
+          .deleteCatagory(id)
+          .then(() => res.redirect(`/${type}`))
+          .catch(() => res.redirect(`/${type}`));
+      })
+      .catch(() => res.redirect(`/${type}`));
+  }
+  else {
+    res.redirect("/");
+  }
 };
 
 exports.deleteGalleryCategory = async (req, res) => {
-  const type = req.params[0];
-  const id = req.params[1];
-  console.log("deleteGalleryCategory", type, id);
-  categories
-    .deleteCatagory(id)
-    .then(() => res.redirect(`/${type}`))
-    .catch(() => res.redirect(`/${type}`));
+  if (req.session.admin) {
+    const type = req.params[0];
+    const id = req.params[1];
+    console.log("deleteGalleryCategory", type, id);
+    categories
+      .deleteCatagory(id)
+      .then(() => res.redirect(`/${type}`))
+      .catch(() => res.redirect(`/${type}`));
+  } else {
+    res.redirect("/");
+  }
 };
 
 exports.createCategory = async (req, res) => {
-  let data = req.body;
-  data.type = req.params[0];
-  categories
-    .addCategory(data)
-    .then(() => res.send({ msg: "Done" }))
-    .catch(() => res.send({ msg: "Error" }));
+  if (req.session.admin) {
+    let data = req.body;
+    data.type = req.params[0];
+    categories
+      .addCategory(data)
+      .then(() => res.send({ msg: "Done" }))
+      .catch(() => res.send({ msg: "Error" }));
+  }
+  else {
+    res.send({ msg: "Error" });
+  }
 };
 
 exports.updateCategory = async (req, res) => {
-  let data = req.body;
-  data.type = req.params[0];
-  categories
-    .updateCategory(data)
-    .then(() => res.send({ msg: "Done" }))
-    .catch(() => res.send({ msg: "Error" }));
+  if (req.session.admin) {
+    let data = req.body;
+    data.type = req.params[0];
+    categories
+      .updateCategory(data)
+      .then(() => res.send({ msg: "Done" }))
+      .catch(() => res.send({ msg: "Error" }));
+  } else {
+    res.send({ msg: "Error" });
+  }
 };
 
 exports.newItem = async (req, res) => {
-  const type = req.params[0];
-  Promise.all([media.fetchStoredMedia(), categories.getCategories(type)])
-    .then(data => {
-      console.log(data);
-      let renderData = deafultData(req);
-      renderData.images = data[0].images;
-      renderData.videos = data[0].videos;
-      renderData.categories = data[1];
-      res.render(`${type}NewItem.html`, renderData);
-      console.log(renderData);
-    })
-    .catch(e => {
-      console.log("manager load error =", e);
-      let renderData = deafultData(req);
-      renderData.images = [];
-      renderData.videos = [];
-      renderData.categories = [];
-      res.render(`${type}NewItem.html`, renderData);
-    });
+  if (req.session.admin) {
+    const type = req.params[0];
+    Promise.all([media.fetchStoredMedia(), categories.getCategories(type)])
+      .then(data => {
+        console.log(data);
+        let renderData = deafultData(req);
+        renderData.images = data[0].images;
+        renderData.videos = data[0].videos;
+        renderData.categories = data[1];
+        res.render(`${type}NewItem.html`, renderData);
+        console.log(renderData);
+      })
+      .catch(e => {
+        console.log("manager load error =", e);
+        let renderData = deafultData(req);
+        renderData.images = [];
+        renderData.videos = [];
+        renderData.categories = [];
+        res.render(`${type}NewItem.html`, renderData);
+      });
+  } else {
+    res.redirect("/");
+  }
 };
 
 exports.createItem = async (req, res) => {
-  const type = req.params[0];
-  console.log("createItem", type, req.body);
-  target[type]
-    .addItem(req.body)
-    .then(() => res.send({ msg: "Done" }))
-    .catch(() => res.send({ msg: "Error" }));
+  if (req.session.admin) {
+    const type = req.params[0];
+    console.log("createItem", type, req.body);
+    target[type]
+      .addItem(req.body)
+      .then(() => res.send({ msg: "Done" }))
+      .catch(() => res.send({ msg: "Error" }));
+  }
+  else {
+    res.send({ msg: "Error" });
+  }
 };
 
 exports.updateItem = async (req, res) => {
-  const type = req.params[0];
-  console.log("updateItem", type, req.body);
-  target[type]
-    .updateItem(req.body)
-    .then(() => res.send({ msg: "Done" }))
-    .catch(() => res.send({ msg: "Error" }));
+  if (req.session.admin) {
+    const type = req.params[0];
+    console.log("updateItem", type, req.body);
+    target[type]
+      .updateItem(req.body)
+      .then(() => res.send({ msg: "Done" }))
+      .catch(() => res.send({ msg: "Error" }));
+  }
+  else {
+    res.send({ msg: "Error" });
+  }
 };
 
 exports.deleteItem = async (req, res) => {
-  const type = req.params[0];
-  const id = req.params[1];
+  if (req.session.admin) {
+    const type = req.params[0];
+    const id = req.params[1];
 
-  const category =
-    req.session.navigation && req.session.navigation.root == type
-      ? req.session.navigation.category
-      : null;
+    const category =
+      req.session.navigation && req.session.navigation.root == type
+        ? req.session.navigation.category
+        : null;
 
-  console.log("deleteItem", type, id, category);
+    console.log("deleteItem", type, id, category);
 
-  target[type]
-    .deleteItem(id)
-    .then(() => res.redirect(`/${type}/category/${category}`))
-    .catch(() => res.redirect(`/${type}/category/${category}`));
+    target[type]
+      .deleteItem(id)
+      .then(() => res.redirect(`/${type}/category/${category}`))
+      .catch(() => res.redirect(`/${type}/category/${category}`));
+  }
+  else {
+    res.redirect("/");
+  }
 };
 
 exports.categoryItems = async (req, res) => {
@@ -316,9 +387,9 @@ exports.categoryItems = async (req, res) => {
   const category = req.params[1];
   console.log("categoryItems", type, category);
   Promise.all([
-    target[type].getItems(category, true),
-    categories.getCategories(type, true),
-    categories.getCategory(category, type, true)
+    target[type].getItems(category, req.session.admin),
+    categories.getCategories(type, req.session.admin),
+    categories.getCategory(category, type, req.session.admin)
   ])
     .then(data => {
       console.log(data);
@@ -389,7 +460,7 @@ const resolveCommonItemData = async req => {
       : null;
 
   const requests = category
-    ? [target[type].getItem(id), target[type].getItems(category, true)]
+    ? [target[type].getItem(id), target[type].getItems(category, req.session.admin)]
     : [target[type].getItem(id)];
 
   const requestData = await Promise.all(requests);
@@ -472,48 +543,60 @@ exports.blogItem = async (req, res) => {
 };
 
 exports.editItem = async (req, res) => {
-  const type = req.params[0];
-  const id = req.params[1];
+  if (req.session.admin) {
+    const type = req.params[0];
+    const id = req.params[1];
 
-  Promise.all([
-    media.fetchStoredMedia(),
-    categories.getCategories(type),
-    target[type].getItem(id)
-  ])
-    .then(data => {
-      console.log(data);
-      let renderData = deafultData(req);
-      renderData.images = data[0].images;
-      renderData.videos = data[0].videos;
-      renderData.categories = data[1];
-      renderData.item = data[2];
-      res.render(`${type}NewItem.html`, renderData);
-      console.log(renderData);
-    })
-    .catch(e => {
-      console.log("manager load error =", e);
-      let renderData = deafultData(req);
-      renderData.images = [];
-      renderData.videos = [];
-      renderData.categories = [];
-      renderData.item = {};
-      res.render(`${type}NewItem.html`, renderData);
-    });
+    Promise.all([
+      media.fetchStoredMedia(),
+      categories.getCategories(type),
+      target[type].getItem(id)
+    ])
+      .then(data => {
+        console.log(data);
+        let renderData = deafultData(req);
+        renderData.images = data[0].images;
+        renderData.videos = data[0].videos;
+        renderData.categories = data[1];
+        renderData.item = data[2];
+        res.render(`${type}NewItem.html`, renderData);
+        console.log(renderData);
+      })
+      .catch(e => {
+        console.log("manager load error =", e);
+        let renderData = deafultData(req);
+        renderData.images = [];
+        renderData.videos = [];
+        renderData.categories = [];
+        renderData.item = {};
+        res.render(`${type}NewItem.html`, renderData);
+      });
+  } else {
+    res.redirect("/");
+  }
 };
 
 exports.uploadImages = async (req, res) => {
-  media
-    .storeImages(req.files)
-    .then(() => res.send({ msg: "Done" }))
-    .catch((e) => { console.log("uploadImages", e); res.send({ msg: "Error" }); } );
+  if (req.session.admin) {
+    media
+      .storeImages(req.files)
+      .then(() => res.send({ msg: "Done" }))
+      .catch((e) => { console.log("uploadImages", e); res.send({ msg: "Error" }); });
+  } else {
+    res.send({ msg: "Error" });
+  }
 };
 
 exports.uploadVideos = async (req, res) => {
-  console.log("uploadVideos", req.body);
-  media
-    .storeVideos(req.body.videos)
-    .then(() => res.send({ msg: "Done" }))
-    .catch((e) => { console.log("uploadIuploadVideosmages", e); res.send({ msg: "Error" }); } );
+  if (req.session.admin) {
+    console.log("uploadVideos", req.body);
+    media
+      .storeVideos(req.body.videos)
+      .then(() => res.send({ msg: "Done" }))
+      .catch((e) => { console.log("uploadIuploadVideosmages", e); res.send({ msg: "Error" }); });
+  } else {
+    res.send({ msg: "Error" });
+  }
 };
 
 exports.loadImage = async (req, res) => {
@@ -534,21 +617,29 @@ exports.loadImage = async (req, res) => {
 };
 
 exports.deleteMedia = async (req, res) => {
-  media
-    .removeStoredMedia(req.body)
-    .then(() => res.send({ msg: "Done" }))
-    .catch(e => {
-      console.log("deleteMedia", e);
-      res.send({ msg: "Error" });
-    });
+  if (req.session.admin) {
+    media
+      .removeStoredMedia(req.body)
+      .then(() => res.send({ msg: "Done" }))
+      .catch(e => {
+        console.log("deleteMedia", e);
+        res.send({ msg: "Error" });
+      });
+  } else {
+    res.send({ msg: "Error" });
+  }
 };
 
 exports.updateMedia = async (req, res) => {
-  media
-    .updateMediaMetadata(req.body)
-    .then(() => res.send({ msg: "Done", success: true }))
-    .catch(e => {
-      console.log("updateMedia", e);
-      res.send({ msg: "Error", success: false });
-    });
+  if (req.session.admin) {
+    media
+      .updateMediaMetadata(req.body)
+      .then(() => res.send({ msg: "Done", success: true }))
+      .catch(e => {
+        console.log("updateMedia", e);
+        res.send({ msg: "Error", success: false });
+      });
+  } else {
+    res.send({ msg: "Error" });
+  }
 };

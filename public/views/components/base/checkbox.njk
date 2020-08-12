@@ -1,7 +1,11 @@
-{% macro render(class) %}
+{% macro render(class, checked) %}
   <div class="{{class}}">
     <div class="checkbox-container">
+      {% if checked %}
+      <input type="checkbox" checked>
+      {% else %}
       <input type="checkbox">
+      {% endif %}
       <span class="checkmark"></span>
     </div>
   </div>

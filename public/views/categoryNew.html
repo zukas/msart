@@ -2,6 +2,7 @@
 
 {% import "components/media/preview.njk" as mediaPreviewPanel %}
 {% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
+{% import "components/base/checkbox.njk" as checkbox %}
 
 {% block script %}
   {% include "control/categoryNew.js" %}
@@ -18,8 +19,11 @@
 
 {% block onload %}
 createMediaPreviewPanel("new-category-media-select");
-createGalleryPreviewPanel("gallery-item-gallery");
-setupAddGalleryItem();
+{% if target == "gallery" %}
+  createGalleryPreviewPanel("gallery-item-gallery");
+  setupAddGalleryItem();
+{% endif %}
+applyTempValues();
 {% endblock onload %}
 
 {% block content %}
@@ -27,20 +31,24 @@ setupAddGalleryItem();
   <div id="new-category" target="{{target}}" class="panel">
     <h2 class="robo-text">New Category</h2>
     <div class="new-category-layout">
-      <h2 class="text-invert">Caption</b2>
-      <input id="caption" type="text" placeholder="Caption" autofocus="true" required="true" value="{{category.caption}}">
+      <h2 class="text">Caption</h2>
+      <input id="caption" type="text" class="text" placeholder="Caption" autofocus="true" required="true" value="{{category.caption}}">
       <br />
-      <h2 class="text-invert">Thumb image</b2>
+      <h2 class="text">Thumb image</h2>
       <div id="{{category.thumb}}" type="image" {% if category %} style="background-image: url(/image/{{category.thumb}}?width=1920);" {% endif %} class="thumb-preview" onclick="mediaThumbClicked(event, 'images')"></div>
       <br />
-      <h2 class="text-invert">Description</b2>
-      <textarea id="description" type="text" placeholder="Description" required="true">{{category.description}}</textarea>
+      <h2 class="text">Description</h2>
+      <textarea id="description" type="text" class="text" placeholder="Description" required="true">{{category.description}}</textarea>
       <br />
       {% if target == "gallery" %}
-        <h2 class="text-invert">Gallery</b2>
+        <h2 class="text">Gallery</h2>
         {{ galleryPreviewPanel.render("gallery-item-gallery", category.gallery, "new-gallery-item", admin) }}
         <br />
       {% endif %}
+      <div class="new-category-publish">
+        {{ checkbox.render("new-category-publish-inline") }}
+        <div class="text">Published</div>
+      </div>
       {% if category %}
         <div class="common-btn green" onclick="updateCategory(event, '{{category.id}}')">Update</div>
       {% else %}

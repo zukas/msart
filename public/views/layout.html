@@ -50,10 +50,31 @@
       <div id="title" class="main-title noselect"></div>
       <div id="main-menu" class="no-select">
         <span>
+          <div class="menu-item noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/about"><div>About</div></a>
+            </div>
+          </div>
+          <div class="menu-item noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/blog"><div>Blog</div></a>
+            </div>
+          </div>
+          <div class="menu-item noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/shop"><div>Shop</div></a>
+            </div>
+          </div>
+          <div class="menu-item noselect">
+            <div class="menu-dropdown text noselect">
+              <a href="/gallery"><div>Gallery</div></a>
+            </div>
+          </div>
+          <div class="menu-item-split noselect"></div>
           {% if admin %}
-              <div class="menu-item header-text noselect">
+              <div class="menu-item noselect">
                 <div class="menu-dropdown text noselect">
-                  <a href="/manager">Manager</a>
+                  <a href="/manager"><div>Manager</div></a>
                 </div>
                 <div class="menu-dropdown-content">
                     <div class="menu-dropdown-item text">
@@ -65,36 +86,21 @@
                 </div>
               </div>
           {% elif username %}
-            <div class="menu-item header-text noselect">
+            <div class="menu-item noselect">
               <div class="menu-dropdown text noselect">
-                <a href="/home">Hello, {{forename}} {{surname}}</a>
+                <a href="/home"><div>Hello, {{forename}} {{surname}}</div></a>
               </div>
             </div>
           {% else %}
-            <div class="menu-item header-text noselect">
+            <div class="menu-item noselect">
               <div class="menu-dropdown text noselect">
-                <a href="/login">Login</a>
+                <a href="/login"><div>Login</div></a>
               </div>
             </div>
           {% endif %}
-          <div class="menu-item header-text noselect">
+          <div class="menu-item icon noselect">
             <div class="menu-dropdown text noselect">
-              <a href="/about">About</a>
-            </div>
-          </div>
-          <div class="menu-item header-text noselect">
-            <div class="menu-dropdown text noselect">
-              <a href="/blog">Blog</a>
-            </div>
-          </div>
-          <div class="menu-item header-text noselect">
-            <div class="menu-dropdown text noselect">
-              <a href="/shop">Shop</a>
-            </div>
-          </div>
-          <div class="menu-item header-text noselect">
-            <div class="menu-dropdown text noselect">
-              <a href="/gallery">Gallery</a>
+              <a href="/basket"><div></div></a>
             </div>
           </div>
         </span>

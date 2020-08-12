@@ -5,9 +5,8 @@
   min-height: 100%;
   padding: 5px;
   margin: 5px 0px;
-  border: 2px solid var(--base-blue);
   border-radius: 4px;
-  background-color: var(--base-light);
+  background-color: var(--base-dark);
   overflow: auto;
 }
 
@@ -73,4 +72,5 @@
   border: 1px solid var(--base-dark);
   z-index: 99;
   padding-bottom: 135px;
+  background-color: var(--base-mid);
 }

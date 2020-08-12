@@ -1,11 +1,11 @@
 {% import "../gallery/gallery.njk" as galleryPreviewPanel %}
 
 {% macro renderHeader(data) %}
-  <h2 class="text-invert">{{data}}</h2>
+  <h2 class="text">{{data}}</h2>
 {% endmacro %}
 
 {% macro renderText(data) %}
-  <h3 class="text-invert">{{data | escape | nl2br}}</h3>
+  <h3 class="text">{{data | escape | nl2br}}</h3>
 {% endmacro %}
 
 {% macro renderMedia(data) %}

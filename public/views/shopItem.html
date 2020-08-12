@@ -16,6 +16,7 @@
 
 {% block onload %}
   createGalleryPreviewPanel("shop-item-gallery");
+  
 {% endblock onload %}
 
 {% block content %}
@@ -41,7 +42,7 @@
         <br />
         <br />
         <h3 id="description" class="text">{{item.description | escape | nl2br }}</h3>
-      <div/>
+      </div>
     </div>
   </div>
 {% endblock content %}

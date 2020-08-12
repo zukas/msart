@@ -1,7 +1,13 @@
 function CategoryPreviewPanel(frame, popup) {
   let self = this;
 
-  popup.registerSelectionCallback(popupSelection);
+  popup.registerSelectionCallback(() => {
+    popup.hide();
+
+    const selection = popup.getSelected();
+    debug(selection);
+    popupSelection(selection);
+  });
 
   self.getSelected = () => {
     const data = frame.querySelectorAll(".category-item");
@@ -12,14 +18,14 @@ function CategoryPreviewPanel(frame, popup) {
     });
   };
 
-  function popupSelection() {
-    popup.hide();
+  self.setSelected = (items) => {
+    popupSelection(items);
+    popup.setSelected(self.getSelected());
+  }
 
-    const selection = popup.getSelected();
-    debug(selection);
+  function popupSelection(items) {
     let fragment = document.createDocumentFragment();
-
-    selection.forEach(elem => {
+    items.forEach(elem => {
       let categoryItem = document.createElement("div");
       categoryItem.id = elem.id;
       categoryItem.className = "category-item";

@@ -3,6 +3,7 @@
 .checkbox-container {
   display: block;
   position: relative;
+  box-sizing: border-box;
   padding-left: 35px;
   margin-bottom: 12px;
   cursor: pointer;
@@ -17,18 +18,22 @@
 
 .checkbox-container input {
   position: absolute;
+  box-sizing: border-box;
   top: 0px;
   left: 0px;
+  margin: 0px;
+  padding: 0px;
   opacity: 0;
   cursor: pointer;
-  height: 0;
-  width: 0;
+  height: 25px;
+  width: 25px;
 }
 
 /* Create a custom checkbox */
 
 .checkbox-container .checkmark {
   position: absolute;
+  box-sizing: border-box;
   top: 0;
   left: 0;
   height: 25px;
@@ -40,7 +45,7 @@
 /* On mouse-over, add a grey background color */
 
 .checkbox-container:hover input ~ .checkmark {
-  background-color: var(--base-mid);
+  background-color: var(--base-dark);
 }
 
 /* When the checkbox is checked, add a blue background */
@@ -70,8 +75,8 @@
 /* Style the checkmark/indicator */
 
 .checkbox-container .checkmark:after {
-  left: 9px;
-  top: 5px;
+  left: 8px;
+  top: 4px;
   width: 5px;
   height: 10px;
   border: solid var(--base-light);

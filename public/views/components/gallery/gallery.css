@@ -5,6 +5,9 @@
 
 .gallery-container {
   position: relative;
+  border: 1px solid var(--base-dark);
+  border-radius: 4px;
+  background-color: var(--base-light);
 }
 
 .gallery-item-container {
@@ -45,7 +48,7 @@
 
 .gallery-item-preview[type="new"]:hover {
   background-image: url(/images/add-white.png);
-  background-color: var(--base-mid);
+  background-color: var(--base-dark);
 }
 
 .gallery-nav-btn,
@@ -97,7 +100,7 @@
   padding: 4px 16px;
   position: absolute;
   top: 0;
-  background-color: var(--base-blue);
+  background-color: var(--base-dark);
   border-bottom-right-radius: 4px;
   z-index: 5;
 }
@@ -157,7 +160,7 @@
 
 .gallery-thumb-preview[type="new"] {
   background-image: url(/images/add.png);
-  background-size: 80px;
+  background-size: 5.8vw;
 }
 
 .gallery-thumb-preview[active="true"],

@@ -54,12 +54,12 @@
               <div id="{{data.thumb}}" class="thumb-preview" type="image" {% if data %} style="background-image: url(/image/{{data.thumb}}?width=1920);" {% endif %}></div>
             </div>
             <div class="ratio-wrapper">
-              <div id="description" class="text-invert">{{data.desc | safe | escape | nl2br}}</div>
+              <div id="description" class="text">{{data.desc | safe | escape | nl2br}}</div>
             </div>
           </div>
           <div class="v-layout">
             <div id="info-block" >
-              <h2 class="text-invert">Follow me</h2>
+              <h2 class="text">Follow me</h2>
               <div id="media">
                 <a href="https://www.facebook.com/MSCraftshop/" target="_blank"><div id="facebook"></div
                 ></a>
@@ -70,7 +70,7 @@
               </div>
             </div>
             <div id="form">
-              <h2 class="text-invert">Contact me</h2>
+              <h2 class="text">Contact me</h2>
               <input id="name" class="text" placeholder="Name"/>
               <input id="email" class="text" placeholder="Email"/>
               <textarea id="message" class="text" placeholder="Message"></textarea>

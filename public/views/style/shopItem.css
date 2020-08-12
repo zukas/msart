@@ -4,8 +4,8 @@
   width: 96vw;
   vertical-align: top;
   table-layout: fixed;
-  border-spacing: 2vw 0px;
-  margin: 0px -2vw;
+  border-spacing: 1vw 0px;
+  margin: 0px -1vw;
 }
 
 .navigation-menu:hover + .panel .shop-item-layout {
@@ -31,7 +31,7 @@
   width: 100%;
   min-height: 2em;
   background-color: var(--base-light);
-  border: 2px solid var(--base-blue);
+  border: 2px solid var(--base-dark);
   border-radius: 4px;
   padding: 0em 0.1em;
   box-sizing: border-box;
@@ -42,7 +42,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  border: 2px solid var(--base-blue);
+  border: 2px solid var(--base-dark);
   border-radius: 4px;
   background-color: var(--base-light);
 }
@@ -54,9 +54,6 @@
 
 #shop-item-gallery {
   width: 70%;
-  border: 2px solid var(--base-blue);
-  border-radius: 4px;
-  background-color: var(--base-light);
 }
 
 .info-block {
@@ -64,6 +61,7 @@
   background-image: url(/images/white_bg.jpg);
   background-repeat: repeat;
   background-size: 100px;
-  border: 1px solid var(--base-blue);
+  border: 1px solid var(--base-dark);
   border-radius: 4px;
+  padding: 10px;
 }

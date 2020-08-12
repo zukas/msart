@@ -24,6 +24,7 @@ function mediaPreviewSelection(target) {
   target.id = item.id;
   if (item.type == "image") {
     target.style.backgroundImage = `url('/image/${item.id}?width=1920')`;
+    sessionStorage.setItem("category-thumb-preview", item.id);
   } else if (item.type == "video" && item.src) {
     let video = document.createElement("iframe");
     video.src = item.src;
@@ -48,6 +49,7 @@ function createNewCategory(e) {
     target == "gallery"
       ? galleryPreviewPanel("gallery-item-gallery").getItems()
       : null;
+  const published = panel.querySelector(".checkbox-container input").checked;
 
   return fetch(`/${target}/category/create`, {
     method: "POST",
@@ -56,7 +58,7 @@ function createNewCategory(e) {
       thumb: image.id,
       description: desc.value,
       gallery: galleryItems,
-      published: true
+      published: published
     }),
     cache: "no-cache",
     headers: {
@@ -66,6 +68,10 @@ function createNewCategory(e) {
     .then(response => response.json())
     .then(r => {
       debug(r);
+      sessionStorage.removeItem(`category-caption`);
+      sessionStorage.removeItem(`category-thumb-preview`);
+      sessionStorage.removeItem(`category-description`);
+      sessionStorage.removeItem(`category-gallery-item-gallery`);
       location.assign(`/${target}`);
     });
 }
@@ -82,6 +88,7 @@ function updateCategory(e, id) {
     target == "gallery"
       ? galleryPreviewPanel("gallery-item-gallery").getItems()
       : null;
+  const published = panel.querySelector(".checkbox-container input").checked;
 
   return fetch(`/${target}/category/update`, {
     method: "POST",
@@ -91,7 +98,7 @@ function updateCategory(e, id) {
       thumb: image.id,
       description: desc.value,
       gallery: galleryItems,
-      published: true
+      published: published
     }),
     cache: "no-cache",
     headers: {
@@ -101,6 +108,10 @@ function updateCategory(e, id) {
     .then(response => response.json())
     .then(r => {
       debug(r);
+      sessionStorage.removeItem(`category-caption`);
+      sessionStorage.removeItem(`category-thumb-preview`);
+      sessionStorage.removeItem(`category-description`);
+      sessionStorage.removeItem(`category-gallery-item-gallery`);
       location.assign(`/${target}`);
     });
 }
@@ -118,6 +129,7 @@ function galleryItemSelection() {
 
   const gallery = galleryPreviewPanel("gallery-item-gallery");
   gallery.addItems(items);
+  sessionStorage.setItem("category-gallery-item-gallery", JSON.stringify(items));
 }
 
 function setupAddGalleryItem() {
@@ -131,4 +143,43 @@ function setupAddGalleryItem() {
     panel.registerSelectionCallback(galleryItemSelection);
     panel.show();
   };
+}
+
+function applyTempValues(){
+
+  debug("onload new category");
+  if (typeof (Storage) !== "undefined") {
+    let panel = document.querySelector("#new-category");
+    let caption = panel.querySelector("#caption");
+    let image = panel.querySelector(".thumb-preview");
+    let desc = panel.querySelector("#description");
+    let galerry = galleryPreviewPanel("gallery-item-gallery");
+
+    const caption_value = sessionStorage.getItem(`category-caption`);
+    const image_value = sessionStorage.getItem(`category-thumb-preview`);
+    const desc_value = sessionStorage.getItem(`category-description`);
+    const galerry_value = sessionStorage.getItem(`category-gallery-item-gallery`);
+
+    if (caption_value) {
+      caption.value = caption_value;
+    }
+    if (image_value) {
+      image.id = image_value;
+      image.setAttribute("type", "image");
+      image.style.backgroundImage = `url(/image/${image_value}?width=1920)`;
+    }
+    if (desc_value) {
+      desc.value = desc_value;
+    }
+    if (galerry_value) {
+      galerry.addItems(JSON.parse(galerry_value));
+    }
+
+    caption.addEventListener("change", () => {
+      sessionStorage.setItem("category-caption", caption.value);
+    });
+    desc.addEventListener("change", () => {
+      sessionStorage.setItem("category-description", desc.value);
+    });
+  }
 }

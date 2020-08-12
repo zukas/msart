@@ -4,6 +4,7 @@
 {% import "components/category/select/preview.njk" as categoryPreviewPopup %}
 {% import "components/category/select/panel.njk" as categoryPreviewPanel %}
 {% import "components/gallery/gallery.njk" as galleryPreviewPanel %}
+{% import "components/base/checkbox.njk" as checkbox %}
 
 {% block script %}
   {% include "control/shopNewItem.js" %}
@@ -29,6 +30,8 @@
   createCategoryPreviewPanel("new-shop-item-category-select-panel", "new-shop-item-category-select");
   createGalleryPreviewPanel("new-shop-item-gallery");
   setupAddGalleryItem();
+  setupCategorySelect();
+  applyTempValues();
 {% endblock onload %}
 
 {% block content %}
@@ -37,24 +40,29 @@
   <div id="new-shop-item" class="panel">
     <h2 class="robo-text">New Shop Item</h2>
     <div class="new-shop-item-layout">
-      <h2 class="text-invert">Title</h2>
+      <h2 class="text">Title</h2>
       <input id="caption" class="text" type="text" placeholder="Item's title" name="title" autofocus="true" required="true" value="{{item.caption}}">
       <br />
-      <h2 class="text-invert">Thumb image</h2>
+      <h2 class="text">Thumb image</h2>
       <div id="{{item.thumb}}" class="thumb-preview" {% if item %} style="background-image: url(/image/{{item.thumb}}?width=1920);" {% endif %} onclick="mediaThumbClicked(event, 'images')"></div>
       <br />
-      <h2 class="text-invert">Description</h2>
+      <h2 class="text">Description</h2>
       <textarea id="description" type="text" placeholder="Item's description" name="desc" required="true">{{item.description}}</textarea>
       <br />
-      <h2 class="text-invert">Price</h2>
+      <h2 class="text">Price</h2>
       <input id="price" type="number" placeholder="Item's price" name="price" required="true" value="{{item.price}}">
       <br />
-      <h2 class="text-invert">Gallery images</h2>
+      <h2 class="text">Gallery images</h2>
       {{ galleryPreviewPanel.render("new-shop-item-gallery", item.gallery, "new-gallery-item", admin) }}
       <br />
-      <h2 class="text-invert">Categories</h2>
+      <h2 class="text">Categories</h2>
       {{ categoryPreviewPanel.render("new-shop-item-category-select-panel", categories, item.categories) }}
       <br />
+      <br />
+      <div class="new-shop-item-publish">
+        {{ checkbox.render("new-shop-item-publish-inline", item.published ) }}
+        <div class="text">Published</div>
+      </div>
       {% if item %}
       <div class="common-btn green" onclick="updateShopItem(event, '{{item.id}}')">Update</div>
       {% else %}

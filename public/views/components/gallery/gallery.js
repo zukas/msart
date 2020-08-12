@@ -49,11 +49,16 @@ function GalleryPreviewJs(
     const thumbs = thumbContainer.querySelectorAll(
       ".gallery-thumb-preview:not([type='new'])"
     );
-    return Array.from(thumbs).map(thumb => {
-      const type = thumb.getAttribute("type");
-      return type == "video"
-        ? { id: thumb.id, type: type, src: thumb.querySelector("iframe").src }
-        : { id: thumb.id, type: type };
+    return Array.from(thumbs).filter(thumb => {
+      const thumbType = thumb.getAttribute("type");
+      const validType = ["image", "video"].filter(valType => valType == thumbType);
+      debug("getItem", thumb.id, thumbType, thumb.id && thumb.id.length > 0, validType);
+      return thumb.id && thumb.id.length > 0 && validType;
+    }).map(thumb => {
+      const thumbType = thumb.getAttribute("type");
+      return thumbType == "video"
+        ? { id: thumb.id, type: thumbType, src: thumb.querySelector("iframe").src }
+        : { id: thumb.id, type: thumbType };
     });
   };
 
